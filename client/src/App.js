@@ -1,5 +1,8 @@
-import React from "react";
-// import getWeb3 from "./getWeb3";
+import React from 'react';
+import { Container } from 'react-bootstrap';
+import Header from './components/Header';
+import Footer from './components/Footer';
+// import getWeb3 from './getWeb3';
 
 const App = () => {
   // state = { storageValue: 0, web3: null, accounts: null, contract: null };
@@ -45,13 +48,19 @@ const App = () => {
   //   this.setState({ storageValue: response });
   // };
 
-    // if (!this.state.web3) {
-    //   return <div>Loading Web3, accounts, and contract...</div>;
-    // }
-    return (
-      <>
-        <h1>Good to Go!</h1>
-        {/* <p>
+  // if (!this.state.web3) {
+  //   return <div>Loading Web3, accounts, and contract...</div>;
+  // }
+  return (
+    <>
+      <Header />
+      <main className='py-3'>
+        <Container>
+          <h1>Good to Go!</h1>
+        </Container>
+      </main>
+      <Footer />
+      {/* <p>
           If your contracts compiled and migrated successfully, below will show
           a stored value of 5 (by default).
         </p>
@@ -59,9 +68,8 @@ const App = () => {
           Try changing the value stored on <strong>line 40</strong> of App.js.
         </p>
         <div>The stored value is: {this.state.storageValue}</div> */}
-      </>
-    );
-
-}
+    </>
+  );
+};
 
 export default App;
