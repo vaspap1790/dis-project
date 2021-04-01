@@ -1,8 +1,10 @@
 import React from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomeScreen from './screens/HomeScreen';
+import ProductScreen from './screens/ProductScreen';
 // import getWeb3 from './getWeb3';
 
 const App = () => {
@@ -53,11 +55,12 @@ const App = () => {
   //   return <div>Loading Web3, accounts, and contract...</div>;
   // }
   return (
-    <>
+    <Router>
       <Header />
       <main className='py-3'>
         <Container>
-          <HomeScreen />
+          <Route path='/' component={HomeScreen} exact />
+          <Route path='/product/:id' component={ProductScreen} />
         </Container>
       </main>
       <Footer />
@@ -69,7 +72,7 @@ const App = () => {
           Try changing the value stored on <strong>line 40</strong> of App.js.
         </p>
         <div>The stored value is: {this.state.storageValue}</div> */}
-    </>
+    </Router>
   );
 };
 
