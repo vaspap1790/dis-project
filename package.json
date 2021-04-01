@@ -1,0 +1,25 @@
+{
+  "name": "datadapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "node server/server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vaspap1790/dis-project.git"
+  },
+  "author": "Vasilis Papadimitrakopoulos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vaspap1790/dis-project/issues"
+  },
+  "homepage": "https://github.com/vaspap1790/dis-project#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
