@@ -1,29 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import Packet from '../components/Packet';
-import axios from 'axios';
+import { listPackets } from '../actions/packetActions';
 
 const HomeScreen = () => {
-  const [packets, setPackets] = useState([]);
+  const dispatch = useDispatch();
+
+  const packetList = useSelector((state) => state.packetList);
+  const { loading, error, packets } = packetList;
 
   useEffect(() => {
-    const fetchPackets = async () => {
-      const { data } = await axios.get('/api/packets');
-      setPackets(data);
-    };
-    fetchPackets();
-  }, []);
+    dispatch(listPackets());
+  }, [dispatch]);
 
   return (
     <>
       <h1>Latest Packets</h1>
-      <Row>
-        {packets.map((packet) => (
-          <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
-            <Packet packet={packet} />
-          </Col>
-        ))}
-      </Row>
+      {loading ? (
+        <h2>Loading...</h2>
+      ) : error ? (
+        <h3>{error}</h3>
+      ) : (
+        <Row>
+          {packets.map((packet) => (
+            <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
+              <Packet packet={packet} />
+            </Col>
+          ))}
+        </Row>
+      )}
     </>
   );
 };
