@@ -5,3 +5,18 @@ main {
 .rating span {
   margin: 0.04rem;
 }
+
+h1 {
+  font-size: 1.8rem;
+  padding: 1rem 0;
+}
+
+h2 {
+  font-size: 1.4rem;
+  padding: 0.5rem 0;
+}
+
+.vertically-aligned {
+  display: flex;
+  align-items: center;
+}

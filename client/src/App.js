@@ -5,6 +5,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import HomeScreen from './screens/HomeScreen';
 import PacketScreen from './screens/PacketScreen';
+import CartScreen from './screens/CartScreen';
 // import getWeb3 from './getWeb3';
 
 const App = () => {
@@ -61,6 +62,7 @@ const App = () => {
         <Container>
           <Route path='/' component={HomeScreen} exact />
           <Route path='/packet/:id' component={PacketScreen} />
+          <Route path='/cart/:id?' component={CartScreen} />
         </Container>
       </main>
       <Footer />

@@ -7,15 +7,22 @@ import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { listPacketDetails } from '../actions/packetActions';
 
-const PacketScreen = ({ match }) => {
+const PacketScreen = ({ history, match }) => {
   const dispatch = useDispatch();
 
   const packetDetails = useSelector((state) => state.packetDetails);
   const { loading, error, packet } = packetDetails;
 
+  const cart = useSelector((state) => state.cart);
+  const { cartItems } = cart;
+
   useEffect(() => {
     dispatch(listPacketDetails(match.params.id));
   }, [dispatch, match]);
+
+  const addToCartHandler = () => {
+    history.push(`/cart/${match.params.id}`);
+  };
 
   return (
     <>
@@ -60,8 +67,22 @@ const PacketScreen = ({ match }) => {
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <Button className='btn-block' type='button'>
-                    Purchase
+                  <Button
+                    onClick={addToCartHandler}
+                    className='btn-block'
+                    type='button'
+                    disabled={cartItems.find(
+                      (cartItem) => cartItem.packet === packet._id
+                    )}
+                    title={
+                      cartItems.find(
+                        (cartItem) => cartItem.packet === packet._id
+                      )
+                        ? 'You have already added this item to your Cart'
+                        : 'Add this item to your Cart'
+                    }
+                  >
+                    Add to Cart
                   </Button>
                 </ListGroup.Item>
               </ListGroup>
