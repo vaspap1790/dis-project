@@ -1,10 +1,14 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { packetListReducer } from './reducers/packetReducers';
+import {
+  packetListReducer,
+  packetDetailsReducer
+} from './reducers/packetReducers';
 
 const reducer = combineReducers({
-  packetList: packetListReducer
+  packetList: packetListReducer,
+  packetDetails: packetDetailsReducer
 });
 
 const initialState = {};
