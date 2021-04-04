@@ -2,7 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import colors from 'colors';
 import connectDB from './config/db.js';
-import packets from './data/packets.js';
+import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+import packetRoutes from './routes/packetRoutes.js';
 
 dotenv.config();
 
@@ -14,15 +15,12 @@ app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-app.get('/api/packets', (req, res) => {
-  res.json(packets);
-});
+// Middlewares
+app.use('/api/packets', packetRoutes);
+app.use(notFound);
+app.use(errorHandler);
 
-app.get('/api/packets/:id', (req, res) => {
-  const packet = packets.find((p) => p._id === req.params.id);
-  res.json(packet);
-});
-
+// Configuration
 const PORT = process.env.PORT || 5000;
 
 app.listen(
