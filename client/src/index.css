@@ -16,7 +16,12 @@ h2 {
   padding: 0.5rem 0;
 }
 
-.vertically-aligned {
+.v-align {
   display: flex;
   align-items: center;
+}
+
+.h-align {
+  display: flex;
+  justify-content: center;
 }

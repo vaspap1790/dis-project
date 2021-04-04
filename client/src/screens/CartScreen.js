@@ -57,16 +57,16 @@ const CartScreen = ({ match, history }) => {
             {cartItems.map((item) => (
               <ListGroup.Item key={item.packet}>
                 <Row>
-                  <Col md={1}>
+                  <Col md={1} className='v-align h-align'>
                     <Image src={item.image} alt={item.name} fluid rounded />
                   </Col>
-                  <Col md={5} className='vertically-aligned'>
+                  <Col md={7} className='v-align'>
                     <Link to={`/packet/${item.packet}`}>{item.name}</Link>
                   </Col>
-                  <Col md={2} className='vertically-aligned'>
+                  <Col md={1} className='v-align h-align'>
                     ${item.price}
                   </Col>
-                  <Col md={2}>
+                  <Col md={1} className='v-align h-align'>
                     <Button
                       type='button'
                       variant='light'
@@ -75,7 +75,7 @@ const CartScreen = ({ match, history }) => {
                       <i className='fas fa-trash'></i>
                     </Button>
                   </Col>
-                  <Col md={2}>
+                  <Col md={2} className='v-align h-align'>
                     <Button
                       type='button'
                       className='btn-block'
