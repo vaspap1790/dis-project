@@ -4,6 +4,7 @@ import colors from 'colors';
 import connectDB from './config/db.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import packetRoutes from './routes/packetRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 dotenv.config();
 
@@ -11,12 +12,18 @@ connectDB();
 
 const app = express();
 
+// Middlewares
+// Permit json in the request body
+app.use(express.json());
+
+// Routing
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
-
-// Middlewares
 app.use('/api/packets', packetRoutes);
+app.use('/api/users', userRoutes);
+
+// Error Handling
 app.use(notFound);
 app.use(errorHandler);
 
