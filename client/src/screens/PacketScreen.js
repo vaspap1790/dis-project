@@ -4,15 +4,15 @@ import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
 import Rating from '../components/Rating';
 import axios from 'axios';
 
-const ProductScreen = ({ match }) => {
-  const [product, setProduct] = useState({});
+const PacketScreen = ({ match }) => {
+  const [packet, setPacket] = useState({});
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      const { data } = await axios.get(`/api/products/${match.params.id}`);
-      setProduct(data);
+    const fetchPacket = async () => {
+      const { data } = await axios.get(`/api/packets/${match.params.id}`);
+      setPacket(data);
     };
-    fetchProduct();
+    fetchPacket();
   }, [match]);
 
   return (
@@ -22,21 +22,21 @@ const ProductScreen = ({ match }) => {
       </Link>
       <Row>
         <Col md={6}>
-          <Image src={product.image} alt={product.name} fluid />
+          <Image src={packet.image} alt={packet.name} fluid />
         </Col>
         <Col md={3}>
           <ListGroup variant='flush'>
             <ListGroup.Item>
-              <h3>{product.name}</h3>
+              <h3>{packet.name}</h3>
             </ListGroup.Item>
             <ListGroup.Item>
               <Rating
-                value={product.rating}
-                text={`${product.numReviews} reviews`}
+                value={packet.rating}
+                text={`${packet.numReviews} reviews`}
               />
             </ListGroup.Item>
-            <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
-            <ListGroup.Item>Description: ${product.description}</ListGroup.Item>
+            <ListGroup.Item>Price: ${packet.price}</ListGroup.Item>
+            <ListGroup.Item>Description: ${packet.description}</ListGroup.Item>
           </ListGroup>
         </Col>
         <Col md={3}>
@@ -46,7 +46,7 @@ const ProductScreen = ({ match }) => {
                 <Row>
                   <Col>Price:</Col>
                   <Col>
-                    <strong>${product.price}</strong>
+                    <strong>${packet.price}</strong>
                   </Col>
                 </Row>
               </ListGroup.Item>
@@ -63,4 +63,4 @@ const ProductScreen = ({ match }) => {
   );
 };
 
-export default ProductScreen;
+export default PacketScreen;
