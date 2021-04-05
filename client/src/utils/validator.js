@@ -3,7 +3,7 @@ function validateEmail(email) {
   return re.test(email);
 }
 
-const validate = (username, email, password, confirmPassword) => {
+const validateRegister = (username, email, password, confirmPassword) => {
   if (
     username.length === 0 ||
     email.length === 0 ||
@@ -22,4 +22,18 @@ const validate = (username, email, password, confirmPassword) => {
   }
 };
 
-export default validate;
+const validateUpdate = (username, email, password, confirmPassword) => {
+  if (username.length === 0 || email.length === 0) {
+    return 'Username and email cannot be empty';
+  } else if (!validateEmail(email)) {
+    return 'Please enter a valid email address';
+  } else if (password.length !== 0 && password.length < 8) {
+    return 'Password must be at least 8 digits long';
+  } else if (password.length !== 0 && password !== confirmPassword) {
+    return 'Passwords do not match';
+  } else {
+    return 'Valid';
+  }
+};
+
+export { validateRegister, validateUpdate };

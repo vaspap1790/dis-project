@@ -6,7 +6,7 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
 import { register } from '../actions/userActions';
-import validate from '../utils/validateRegisterForm';
+import { validateRegister } from '../utils/validator';
 
 const RegisterScreen = ({ location, history }) => {
   const [username, setUsername] = useState('');
@@ -31,10 +31,20 @@ const RegisterScreen = ({ location, history }) => {
   const submitHandler = (e) => {
     e.preventDefault();
 
-    if (validate(username, email, password, confirmPassword) !== 'Valid') {
-      setMessage(validate(username, email, password, confirmPassword));
+    if (
+      validateRegister(username, email, password, confirmPassword) !== 'Valid'
+    ) {
+      setMessage(validateRegister(username, email, password, confirmPassword));
     } else {
       dispatch(register(username, email, password));
+      setMessage(undefined);
+    }
+  };
+
+  const setPasswordHandler = (text) => {
+    setPassword(text);
+    if (text.length === 0) {
+      setConfirmPassword('');
     }
   };
 
@@ -69,7 +79,7 @@ const RegisterScreen = ({ location, history }) => {
             type='password'
             placeholder='Enter password'
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => setPasswordHandler(e.target.value)}
           ></Form.Control>
         </Form.Group>
         <Form.Group controlId='confirmPassword'>
@@ -77,6 +87,7 @@ const RegisterScreen = ({ location, history }) => {
           <Form.Control
             type='password'
             placeholder='Confirm password'
+            disabled={password.length === 0}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           ></Form.Control>

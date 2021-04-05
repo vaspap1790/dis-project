@@ -6,14 +6,21 @@ import {
   packetDetailsReducer
 } from './reducers/packetReducers';
 import { cartReducer } from './reducers/cartReducers';
-import { userLoginReducer, userRegisterReducer } from './reducers/userReducers';
+import {
+  userLoginReducer,
+  userRegisterReducer,
+  userDetailsReducer,
+  userUpdateProfileReducer
+} from './reducers/userReducers';
 
 const reducer = combineReducers({
   packetList: packetListReducer,
   packetDetails: packetDetailsReducer,
   cart: cartReducer,
   userLogin: userLoginReducer,
-  userRegister: userRegisterReducer
+  userRegister: userRegisterReducer,
+  userDetails: userDetailsReducer,
+  userUpdateProfile: userUpdateProfileReducer
 });
 
 const cartItemsFromStorage = localStorage.getItem('cartItems')
