@@ -11,7 +11,7 @@ const PacketScreen = ({ history, match }) => {
   const dispatch = useDispatch();
 
   const packetDetails = useSelector((state) => state.packetDetails);
-  const { loading, error, packet } = packetDetails;
+  const { loadingDetails, error, packet } = packetDetails;
 
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
@@ -29,7 +29,7 @@ const PacketScreen = ({ history, match }) => {
       <Link className='btn btn-light my-3' to='/'>
         Go Back
       </Link>
-      {loading ? (
+      {loadingDetails ? (
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>

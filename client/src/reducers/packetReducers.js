@@ -4,7 +4,8 @@ import {
   PACKET_LIST_FAIL,
   PACKET_DETAILS_REQUEST,
   PACKET_DETAILS_SUCCESS,
-  PACKET_DETAILS_FAIL
+  PACKET_DETAILS_FAIL,
+  PRE_PACKET_DETAILS_REQUEST
 } from '../constants/packetConstants';
 
 export const packetListReducer = (state = { packets: [] }, action) => {
@@ -26,11 +27,13 @@ export const packetDetailsReducer = (
 ) => {
   switch (action.type) {
     case PACKET_DETAILS_REQUEST:
-      return { loading: true, ...state };
+      return { loadingDetails: true, ...state };
+    case PRE_PACKET_DETAILS_REQUEST:
+      return { loadingDetails: true, packet: {} };
     case PACKET_DETAILS_SUCCESS:
-      return { loading: false, packet: action.payload };
+      return { loadingDetails: false, packet: action.payload };
     case PACKET_DETAILS_FAIL:
-      return { loading: false, error: action.payload };
+      return { loadingDetails: false, error: action.payload };
     default:
       return state;
   }
