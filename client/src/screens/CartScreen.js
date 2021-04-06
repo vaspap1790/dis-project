@@ -37,7 +37,8 @@ const CartScreen = ({ match, history }) => {
               Shopping Cart{' '}
               {cartItems.length !== 0 ? (
                 <span className='text-muted small'>
-                  Subtotal ({cartItems.length}) items $
+                  Subtotal ({cartItems.length}) items{' '}
+                  <i className='fab fa-ethereum'></i>
                   {cartItems
                     .reduce((acc, item) => acc + item.price, 0)
                     .toFixed(2)}
@@ -56,17 +57,19 @@ const CartScreen = ({ match, history }) => {
                 {cartItems.map((item) => (
                   <ListGroup.Item key={item.packet}>
                     <Row>
-                      <Col md={1} className='v-align h-align'>
+                      <Col md={1} lg={1} className='v-align h-align'>
                         <Image src={item.image} alt={item.name} fluid rounded />
                       </Col>
-                      <Col md={7} className='v-align'>
+                      <Col md={8} lg={7} className='cart-text'>
                         <Link to={`/packet/${item.packet}`}>{item.name}</Link>
                       </Col>
-                      <Col md={1} className='v-align h-align'>
-                        ${item.price}
+                      <Col md={1} lg={1} className='v-align h-align'>
+                        <i className='fab fa-ethereum'></i>
+                        {item.price}
                       </Col>
-                      <Col md={1} className='v-align h-align'>
+                      <Col md={1} lg={1} className='v-align h-align'>
                         <Button
+                          title='Remove from Cart'
                           type='button'
                           variant='light'
                           onClick={() => removeFromCartHandler(item.packet)}
@@ -74,13 +77,24 @@ const CartScreen = ({ match, history }) => {
                           <i className='fas fa-trash'></i>
                         </Button>
                       </Col>
-                      <Col md={2} className='v-align h-align'>
+                      <Col md={1} lg={2} className='v-align h-align'>
                         <Button
+                          title='Purchase'
                           type='button'
-                          className='btn-block'
+                          className='btn-block btn-sm btn-Text'
                           onClick={() => purchaseHandler(item.packet)}
                         >
-                          Purchase
+                          <span className='btnText'>Purchase</span>{' '}
+                          <i className='fab fa-ethereum fa-lg'></i>
+                        </Button>
+                        <Button
+                          title='Purchase'
+                          type='button'
+                          variant='light'
+                          className='btn-Icon'
+                          onClick={() => purchaseHandler(item.packet)}
+                        >
+                          <i className='btnIcon fab fa-ethereum fa-lg'></i>
                         </Button>
                       </Col>
                     </Row>
