@@ -26,7 +26,7 @@ const PacketScreen = ({ history, match }) => {
 
   return (
     <>
-      <Link className='btn btn-light my-3' to='/'>
+      <Link className='btn btn-primary my-3' to='/'>
         Go Back
       </Link>
       {loadingDetails ? (
@@ -38,55 +38,66 @@ const PacketScreen = ({ history, match }) => {
           <Col md={6}>
             <Image src={packet.image} alt={packet.name} fluid />
           </Col>
-          <Col md={3}>
-            <ListGroup variant='flush'>
-              <ListGroup.Item>
-                <h3>{packet.name}</h3>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Rating
-                  value={packet.rating}
-                  text={`${packet.numReviews} reviews`}
-                />
-              </ListGroup.Item>
-              <ListGroup.Item>Price: ${packet.price}</ListGroup.Item>
-              <ListGroup.Item>
-                Description: ${packet.description}
-              </ListGroup.Item>
-            </ListGroup>
-          </Col>
-          <Col md={3}>
-            <Card>
-              <ListGroup variant='flush'>
-                <ListGroup.Item>
-                  <Row>
-                    <Col>Price:</Col>
-                    <Col>
-                      <strong>${packet.price}</strong>
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Button
-                    onClick={addToCartHandler}
-                    className='btn-block'
-                    type='button'
-                    disabled={cartItems.find(
-                      (cartItem) => cartItem.packet === packet._id
-                    )}
-                    title={
-                      cartItems.find(
-                        (cartItem) => cartItem.packet === packet._id
-                      )
-                        ? 'You have already added this item to your Cart'
-                        : 'Add this item to your Cart'
-                    }
-                  >
-                    Add to Cart
-                  </Button>
-                </ListGroup.Item>
-              </ListGroup>
-            </Card>
+          <Col md={6}>
+            <Row className='d-flex'>
+              <Col
+                md={{ span: 12, order: 'last' }}
+                lg={{ span: 6, order: 'first' }}
+              >
+                <ListGroup variant='flush'>
+                  <ListGroup.Item>
+                    <h3>{packet.name}</h3>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <Rating
+                      value={packet.rating}
+                      text={`${packet.numReviews} reviews`}
+                    />
+                  </ListGroup.Item>
+                  <ListGroup.Item>Category: {packet.category}</ListGroup.Item>
+                  <ListGroup.Item>
+                    Description: {packet.description}
+                  </ListGroup.Item>
+                </ListGroup>
+              </Col>
+              <Col
+                md={{ span: 12, order: 'first' }}
+                lg={{ span: 6, order: 'last' }}
+              >
+                <Card>
+                  <ListGroup variant='flush'>
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>Price:</Col>
+                        <Col>
+                          <i className='fab fa-ethereum'></i>
+                          {packet.price}
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <Button
+                        onClick={addToCartHandler}
+                        className='btn-block'
+                        type='button'
+                        disabled={cartItems.find(
+                          (cartItem) => cartItem.packet === packet._id
+                        )}
+                        title={
+                          cartItems.find(
+                            (cartItem) => cartItem.packet === packet._id
+                          )
+                            ? 'You have already added this item to your Cart'
+                            : 'Add this item to your Cart'
+                        }
+                      >
+                        Add to Cart
+                      </Button>
+                    </ListGroup.Item>
+                  </ListGroup>
+                </Card>
+              </Col>
+            </Row>
           </Col>
         </Row>
       )}

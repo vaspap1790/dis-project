@@ -19,14 +19,15 @@ const Packet = ({ packet }) => {
       </Link>
       <Card.Body>
         <Link to={`/packet/${packet._id}`} onClick={clickHandler}>
-          <Card.Title as='div'>
-            <strong>{packet.name}</strong>
-          </Card.Title>
+          <Card.Title as='div'>{packet.name}</Card.Title>
         </Link>
         <Card.Text>
           <Rating value={packet.rating} text={`${packet.numReviews} reviews`} />
         </Card.Text>
-        <Card.Text as='h3'>${packet.price}</Card.Text>
+        <Card.Text as='h3'>
+          <i className='fab fa-ethereum'></i>
+          {packet.price}
+        </Card.Text>
       </Card.Body>
     </Card>
   );

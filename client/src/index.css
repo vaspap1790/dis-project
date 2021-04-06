@@ -26,6 +26,7 @@ h2 {
   justify-content: center;
 }
 
+/* Responsive CartScreen */
 @media screen and (max-width: 691px) {
   .cart-text {
     display: flex;
@@ -60,7 +61,3 @@ h2 {
     display: none;
   }
 }
-
-/* .fa-ethereum .black {
-  color: black;
-} */

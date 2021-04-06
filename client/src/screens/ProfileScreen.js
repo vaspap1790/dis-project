@@ -109,7 +109,11 @@ const ProfileScreen = ({ history }) => {
               onChange={(e) => setConfirmPassword(e.target.value)}
             ></Form.Control>
           </Form.Group>
-          <Button variant='primary' type='submit'>
+          <Button
+            variant='primary'
+            className='btn btn-sm btn-block'
+            type='submit'
+          >
             Update
           </Button>
         </Form>
