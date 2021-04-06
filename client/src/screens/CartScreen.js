@@ -24,7 +24,10 @@ const CartScreen = ({ match, history }) => {
     dispatch(removeFromCart(id));
     history.push(`/cart`);
   };
-  const purchaseHandler = (id) => {};
+
+  const purchaseHandler = (id) => {
+    console.log(id);
+  };
 
   return (
     <>
