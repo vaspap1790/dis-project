@@ -1,7 +1,8 @@
 import {
   CART_ADD_ITEM,
   CART_REMOVE_ITEM,
-  CART_PRE_ADD_ITEM
+  CART_PRE_ADD_ITEM,
+  ITEM_ALREADY_IN_CART
 } from '../constants/cartConstants';
 
 export const cartReducer = (state = { cartItems: [] }, action) => {
@@ -10,6 +11,11 @@ export const cartReducer = (state = { cartItems: [] }, action) => {
       return {
         ...state,
         cartLoading: true
+      };
+    case ITEM_ALREADY_IN_CART:
+      return {
+        ...state,
+        cartLoading: false
       };
     case CART_ADD_ITEM:
       return {

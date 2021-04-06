@@ -49,7 +49,9 @@ const CartScreen = ({ match, history }) => {
               <Message>
                 Your Cart is empty{' '}
                 <bold>
-                  <Link to='/'>Go Back</Link>
+                  <Link to='/' style={{ fontWeight: 'bold' }}>
+                    Go Back
+                  </Link>
                 </bold>
               </Message>
             ) : (
@@ -90,8 +92,8 @@ const CartScreen = ({ match, history }) => {
                         <Button
                           title='Purchase'
                           type='button'
-                          variant='light'
-                          className='btn-Icon'
+                          variant='primary'
+                          className='btn-Icon btn-sm'
                           onClick={() => purchaseHandler(item.packet)}
                         >
                           <i className='btnIcon fab fa-ethereum fa-lg'></i>
