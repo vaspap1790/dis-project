@@ -62,7 +62,11 @@ const CartScreen = ({ match, history }) => {
                       <Col md={1} lg={1} className='v-align h-align'>
                         <Image src={item.image} alt={item.name} fluid rounded />
                       </Col>
-                      <Col md={8} lg={7} className='cart-text'>
+                      <Col
+                        md={8}
+                        lg={7}
+                        className='cart-text d-flex align-items-center'
+                      >
                         <Link to={`/packet/${item.packet}`}>{item.name}</Link>
                       </Col>
                       <Col md={1} lg={1} className='v-align h-align'>
@@ -72,28 +76,38 @@ const CartScreen = ({ match, history }) => {
                       <Col md={1} lg={1} className='v-align h-align'>
                         <Button
                           title='Remove from Cart'
+                          className='btn-Icon-Remove'
                           type='button'
                           variant='light'
                           onClick={() => removeFromCartHandler(item.packet)}
                         >
                           <i className='fas fa-trash'></i>
                         </Button>
+                        <Button
+                          title='Remove from Cart'
+                          className='btn-block btn-sm btn-Text-Remove my-2'
+                          type='button'
+                          variant='primary'
+                          onClick={() => removeFromCartHandler(item.packet)}
+                        >
+                          Remove <i className='fas fa-trash'></i>
+                        </Button>
                       </Col>
                       <Col md={1} lg={2} className='v-align h-align'>
                         <Button
                           title='Purchase'
                           type='button'
-                          className='btn-block btn-sm btn-Text'
+                          className='btn-block btn-sm btn-Text-Checkout'
                           onClick={() => purchaseHandler(item.packet)}
                         >
-                          <span className='btnText'>Purchase</span>{' '}
+                          <span className='btn-Text-Checkout'>Purchase</span>{' '}
                           <i className='fab fa-ethereum fa-lg'></i>
                         </Button>
                         <Button
                           title='Purchase'
                           type='button'
                           variant='primary'
-                          className='btn-Icon btn-sm'
+                          className='btn-Icon-Checkout btn-sm'
                           onClick={() => purchaseHandler(item.packet)}
                         >
                           <i className='btnIcon fab fa-ethereum fa-lg'></i>

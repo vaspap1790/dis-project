@@ -27,37 +27,36 @@ h2 {
 }
 
 /* Responsive CartScreen */
-@media screen and (max-width: 691px) {
+@media screen and (max-width: 768px) {
   .cart-text {
-    display: flex;
-    align-items: center;
     justify-content: center;
     margin: 1rem;
   }
 }
 
-@media screen and (min-width: 692px) {
-  .cart-text {
-    display: flex;
-    align-items: center;
-    justify-content: left;
+@media screen and (max-width: 768px) {
+  .btn-Icon-Checkout {
+    display: none;
+  }
+  .btn-Icon-Remove {
+    display: none;
   }
 }
 
-@media screen and (max-width: 768px) {
-  .btn-Icon {
+@media screen and (min-width: 768px) {
+  .btn-Text-Remove {
     display: none;
   }
 }
 
 @media screen and (min-width: 992px) {
-  .btn-Icon {
+  .btn-Icon-Checkout {
     display: none;
   }
 }
 
 @media screen and (min-width: 768px) and (max-width: 992px) {
-  .btn-Text {
+  .btn-Text-Checkout {
     display: none;
   }
 }
