@@ -3,20 +3,6 @@ function validateEmail(email) {
   return re.test(email);
 }
 
-const validateUpdate = (username, email, password, confirmPassword) => {
-  if (username.length === 0 || email.length === 0) {
-    return 'Username and email cannot be empty';
-  } else if (!validateEmail(email)) {
-    return 'Please enter a valid email address';
-  } else if (password.length !== 0 && password.length < 8) {
-    return 'Password must be at least 8 digits long';
-  } else if (password.length !== 0 && password !== confirmPassword) {
-    return 'Passwords do not match';
-  } else {
-    return 'Valid';
-  }
-};
-
 const validateUsername = (username) => {
   if ((username.length !== 0 && username.length < 5) || username.length > 15) {
     return false;
@@ -46,7 +32,6 @@ const validateConfirmPassword = (password, confirmPassword) => {
 };
 
 export {
-  validateUpdate,
   validateUsername,
   validateEmail,
   validatePassword,

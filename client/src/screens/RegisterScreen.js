@@ -28,7 +28,6 @@ const RegisterScreen = ({ location, history }) => {
   const redirect = location.search ? location.search.split('=')[1] : '/';
 
   useEffect(() => {
-    console.log(username.length === 0);
     if (userInfo) {
       history.push(redirect);
     }

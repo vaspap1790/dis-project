@@ -1,7 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, ListGroup, Image, Button, Alert } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  ListGroup,
+  Image,
+  Button,
+  Alert,
+  Spinner
+} from 'react-bootstrap';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { addToCart, removeFromCart } from '../actions/cartActions';
@@ -34,6 +42,7 @@ const CartScreen = ({ match, history }) => {
 
   const purchaseHandler = (id) => {
     dispatch(addNewAccess(id));
+    history.push(`/cart`);
   };
 
   const handleOnClose = () => {
@@ -119,7 +128,20 @@ const CartScreen = ({ match, history }) => {
                       </Col>
                       <Col md={1} lg={2} className='v-align h-align'>
                         {loadingAccess ? (
-                          <Loader />
+                          <Button
+                            disabled
+                            type='button'
+                            className='btn btn-primary btn-sm btn-block'
+                          >
+                            Loading...
+                            <Spinner
+                              as='span'
+                              animation='border'
+                              size='sm'
+                              role='status'
+                              aria-hidden='true'
+                            />
+                          </Button>
                         ) : (
                           <>
                             {' '}

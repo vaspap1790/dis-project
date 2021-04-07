@@ -1,54 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import { Form, Button, Row, Col, Alert } from 'react-bootstrap';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { getUserDetails, updateUserProfile } from '../actions/userActions';
-import { validateUpdate } from '../utils/validator';
-import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants';
+import { updateUserProfile, emptySuccess } from '../actions/userActions';
+import {
+  validateUsername,
+  validateEmail,
+  validatePassword,
+  validateConfirmPassword
+} from '../utils/validator';
 
 const ProfileScreen = ({ history }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [message, setMessage] = useState(null);
 
   const dispatch = useDispatch();
-
-  const userDetails = useSelector((state) => state.userDetails);
-  const { loading, error, user } = userDetails;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
-  const { success } = userUpdateProfile;
+  const { updateSuccess, loading, error } = userUpdateProfile;
 
   useEffect(() => {
-    if (!userInfo) {
+    if (!userLogin || !userInfo) {
       history.push('/login');
     } else {
-      if (!user || !user.username || success) {
-        dispatch({ type: USER_UPDATE_PROFILE_RESET });
-        dispatch(getUserDetails('profile'));
-      } else {
-        setUsername(user.username);
-        setEmail(user.email);
-      }
+      setUsername(userInfo.username);
+      setEmail(userInfo.email);
+      setPassword('');
+      setConfirmPassword('');
     }
-  }, [dispatch, history, userInfo, user, success]);
+  }, [dispatch, history, userLogin, userInfo]);
+
+  const validForm =
+    validateUsername(username) &&
+    validateEmail(email) &&
+    validatePassword(password) &&
+    validateConfirmPassword(password, confirmPassword);
 
   const submitHandler = (e) => {
     e.preventDefault();
 
-    if (
-      validateUpdate(username, email, password, confirmPassword) !== 'Valid'
-    ) {
-      setMessage(validateUpdate(username, email, password, confirmPassword));
-    } else {
-      dispatch(updateUserProfile({ id: user._id, username, email, password }));
-      setMessage('Profile Updated');
+    if (validForm) {
+      dispatch(
+        updateUserProfile({ id: userInfo._id, username, email, password })
+      );
     }
   };
 
@@ -59,58 +59,129 @@ const ProfileScreen = ({ history }) => {
     }
   };
 
+  const handleOnClose = () => {
+    dispatch(emptySuccess());
+  };
+
   return (
     <Row>
       <Col md={3}>
         <h2> User Profile</h2>
-        {message && message !== 'Profile Updated' ? (
-          <Message variant='danger'>{message}</Message>
-        ) : null}
-        {message && message === 'Profile Updated' ? (
-          <Message variant='success'>{message}</Message>
-        ) : null}
+        {updateSuccess && (
+          <Alert
+            variant='success'
+            onClose={() => {
+              handleOnClose();
+            }}
+            dismissible
+          >
+            Profile Updated
+          </Alert>
+        )}
         {error && <Message variant='danger'>{error}</Message>}
         {loading && <Loader />}
         <Form onSubmit={submitHandler}>
           <Form.Group controlId='username'>
             <Form.Label>Username</Form.Label>
             <Form.Control
+              className={
+                username.length === 0 || username === userInfo.username
+                  ? ''
+                  : validateUsername(username)
+                  ? 'is-valid'
+                  : 'is-invalid'
+              }
               type='text'
               placeholder='Enter username'
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             ></Form.Control>
+            {username.length === 0 ? null : validateUsername(username) ? (
+              <div className='valid-feedback' display={'none'}>
+                Correct
+              </div>
+            ) : (
+              <div className='invalid-feedback'>
+                Username should be from 5 to 15 characters long
+              </div>
+            )}
           </Form.Group>
           <Form.Group controlId='email'>
             <Form.Label>Email Address</Form.Label>
             <Form.Control
+              className={
+                email.length === 0 || email === userInfo.email
+                  ? ''
+                  : validateEmail(email)
+                  ? 'is-valid'
+                  : 'is-invalid'
+              }
               type='text'
               placeholder='Enter email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             ></Form.Control>
+            {email.length === 0 ? null : validateEmail(email) ? (
+              <div className='valid-feedback'>Correct</div>
+            ) : (
+              <div className='invalid-feedback'>
+                Please insert a valid email
+              </div>
+            )}
           </Form.Group>
           <Form.Group controlId='password'>
             <Form.Label>Change Password</Form.Label>
             <Form.Control
+              className={
+                password.length === 0
+                  ? ''
+                  : validatePassword(password)
+                  ? 'is-valid'
+                  : 'is-invalid'
+              }
               type='password'
               placeholder='Enter password'
               value={password}
               onChange={(e) => setPasswordHandler(e.target.value)}
             ></Form.Control>
+            {password.length === 0 ? null : validatePassword(password) ? (
+              <div className='valid-feedback'>Correct</div>
+            ) : (
+              <div className='invalid-feedback'>
+                Password should be from 8 to 15 characters long
+              </div>
+            )}
           </Form.Group>
           <Form.Group controlId='confirmPassword'>
             <Form.Label>Confirm new Password</Form.Label>
             <Form.Control
+              className={
+                confirmPassword.length === 0
+                  ? ''
+                  : validateConfirmPassword(password, confirmPassword)
+                  ? 'is-valid'
+                  : 'is-invalid'
+              }
               type='password'
               placeholder='Confirm password'
               disabled={password.length === 0}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             ></Form.Control>
+            {confirmPassword.length === 0 ? null : validateConfirmPassword(
+                password,
+                confirmPassword
+              ) ? (
+              <div className='valid-feedback'>Correct</div>
+            ) : (
+              <div className='invalid-feedback'>
+                Confrim Password should be much Password
+              </div>
+            )}
           </Form.Group>
           <Button
             variant='primary'
+            disabled={!validForm}
             className='btn btn-sm btn-block'
             type='submit'
           >
