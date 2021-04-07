@@ -2,9 +2,16 @@ import axios from 'axios';
 import {
   ACCESS_ADD_REQUEST,
   ACCESS_ADD_SUCCESS,
-  ACCESS_ADD_FAIL
+  ACCESS_ADD_FAIL,
+  ACCESS_EMPTY_SUCCESS
 } from '../constants/accessConstants';
 import { CART_REMOVE_ITEM } from '../constants/cartConstants';
+
+export const emptySuccess = () => async (dispatch) => {
+  dispatch({
+    type: ACCESS_EMPTY_SUCCESS
+  });
+};
 
 export const addNewAccess = (packetId) => async (dispatch, getState) => {
   try {

@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, ListGroup, Image, Button } from 'react-bootstrap';
+import { Row, Col, ListGroup, Image, Button, Alert } from 'react-bootstrap';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { addToCart, removeFromCart } from '../actions/cartActions';
-import { addNewAccess } from '../actions/accessActions';
+import { addNewAccess, emptySuccess } from '../actions/accessActions';
 
 const CartScreen = ({ match, history }) => {
   const packetId = match.params.id;
@@ -19,7 +19,7 @@ const CartScreen = ({ match, history }) => {
   const { cartItems, cartLoading } = cart;
 
   const accessAdd = useSelector((state) => state.accessAdd);
-  const { access, success, error } = accessAdd;
+  const { access, success, error, loadingAccess } = accessAdd;
 
   useEffect(() => {
     if (packetId) {
@@ -34,9 +34,10 @@ const CartScreen = ({ match, history }) => {
 
   const purchaseHandler = (id) => {
     dispatch(addNewAccess(id));
-    if (success) {
-      history.push('/cart');
-    }
+  };
+
+  const handleOnClose = () => {
+    dispatch(emptySuccess());
   };
 
   return (
@@ -60,9 +61,15 @@ const CartScreen = ({ match, history }) => {
             </h1>
             {error && <Message variant='danger'>{error}</Message>}
             {success && (
-              <Message variant='success'>
+              <Alert
+                variant='success'
+                onClose={() => {
+                  handleOnClose();
+                }}
+                dismissible
+              >
                 You successfully purchased the item
-              </Message>
+              </Alert>
             )}
             {cartItems.length === 0 ? (
               <Message>
@@ -111,34 +118,43 @@ const CartScreen = ({ match, history }) => {
                         </Button>
                       </Col>
                       <Col md={1} lg={2} className='v-align h-align'>
-                        <Button
-                          disabled={userInfo ? false : true}
-                          title={
-                            userInfo
-                              ? 'Purchase this item'
-                              : 'You have to log in to perform that action'
-                          }
-                          type='button'
-                          className='btn-block btn-sm btn-Text-Checkout'
-                          onClick={() => purchaseHandler(item.packet)}
-                        >
-                          <span className='btn-Text-Checkout'>Purchase</span>{' '}
-                          <i className='fab fa-ethereum fa-lg'></i>
-                        </Button>
-                        <Button
-                          disabled={userInfo ? false : true}
-                          title={
-                            userInfo
-                              ? 'Purchase this item'
-                              : 'You have to log in to perform that action'
-                          }
-                          type='button'
-                          variant='primary'
-                          className='btn-Icon-Checkout btn-sm'
-                          onClick={() => purchaseHandler(item.packet)}
-                        >
-                          <i className='btnIcon fab fa-ethereum fa-lg'></i>
-                        </Button>
+                        {loadingAccess ? (
+                          <Loader />
+                        ) : (
+                          <>
+                            {' '}
+                            <Button
+                              disabled={userInfo ? false : true}
+                              title={
+                                userInfo
+                                  ? 'Purchase this item'
+                                  : 'You have to log in to perform that action'
+                              }
+                              type='button'
+                              className='btn-block btn-sm btn-Text-Checkout'
+                              onClick={() => purchaseHandler(item.packet)}
+                            >
+                              <span className='btn-Text-Checkout'>
+                                Purchase
+                              </span>{' '}
+                              <i className='fab fa-ethereum fa-lg'></i>
+                            </Button>
+                            <Button
+                              disabled={userInfo ? false : true}
+                              title={
+                                userInfo
+                                  ? 'Purchase this item'
+                                  : 'You have to log in to perform that action'
+                              }
+                              type='button'
+                              variant='primary'
+                              className='btn-Icon-Checkout btn-sm'
+                              onClick={() => purchaseHandler(item.packet)}
+                            >
+                              <i className='btnIcon fab fa-ethereum fa-lg'></i>
+                            </Button>
+                          </>
+                        )}
                       </Col>
                     </Row>
                   </ListGroup.Item>
