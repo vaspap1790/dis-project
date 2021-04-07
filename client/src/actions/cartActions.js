@@ -14,7 +14,7 @@ export const addToCart = (id) => async (dispatch, getState) => {
   const { data } = await axios.get(`/api/packets/${id}`);
 
   const itemExists = getState().cart.cartItems.find(
-    (x) => x.packet === data._id
+    (cartItem) => cartItem.packet === data._id
   );
 
   if (!itemExists) {

@@ -5,14 +5,21 @@ import { Row, Col, ListGroup, Image, Button } from 'react-bootstrap';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { addToCart, removeFromCart } from '../actions/cartActions';
+import { addNewAccess } from '../actions/accessActions';
 
 const CartScreen = ({ match, history }) => {
   const packetId = match.params.id;
 
   const dispatch = useDispatch();
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   const cart = useSelector((state) => state.cart);
   const { cartItems, cartLoading } = cart;
+
+  const accessAdd = useSelector((state) => state.accessAdd);
+  const { access, success, error } = accessAdd;
 
   useEffect(() => {
     if (packetId) {
@@ -26,7 +33,10 @@ const CartScreen = ({ match, history }) => {
   };
 
   const purchaseHandler = (id) => {
-    console.log(id);
+    dispatch(addNewAccess(id));
+    if (success) {
+      history.push('/cart');
+    }
   };
 
   return (
@@ -48,14 +58,18 @@ const CartScreen = ({ match, history }) => {
                 </span>
               ) : null}
             </h1>
+            {error && <Message variant='danger'>{error}</Message>}
+            {success && (
+              <Message variant='success'>
+                You successfully purchased the item
+              </Message>
+            )}
             {cartItems.length === 0 ? (
               <Message>
                 Your Cart is empty{' '}
-                <bold>
-                  <Link to='/' style={{ fontWeight: 'bold' }}>
-                    Go Back
-                  </Link>
-                </bold>
+                <Link to='/' style={{ fontWeight: 'bold' }}>
+                  Go Back
+                </Link>
               </Message>
             ) : (
               <ListGroup variant='flash'>
@@ -98,7 +112,12 @@ const CartScreen = ({ match, history }) => {
                       </Col>
                       <Col md={1} lg={2} className='v-align h-align'>
                         <Button
-                          title='Purchase'
+                          disabled={userInfo ? false : true}
+                          title={
+                            userInfo
+                              ? 'Purchase this item'
+                              : 'You have to log in to perform that action'
+                          }
                           type='button'
                           className='btn-block btn-sm btn-Text-Checkout'
                           onClick={() => purchaseHandler(item.packet)}
@@ -107,7 +126,12 @@ const CartScreen = ({ match, history }) => {
                           <i className='fab fa-ethereum fa-lg'></i>
                         </Button>
                         <Button
-                          title='Purchase'
+                          disabled={userInfo ? false : true}
+                          title={
+                            userInfo
+                              ? 'Purchase this item'
+                              : 'You have to log in to perform that action'
+                          }
                           type='button'
                           variant='primary'
                           className='btn-Icon-Checkout btn-sm'
