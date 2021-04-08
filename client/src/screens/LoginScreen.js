@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Form, Button, Row, Col } from 'react-bootstrap';
-import Message from '../components/Message';
+import { Form, Button, Row, Col, Alert } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
-import { login } from '../actions/userActions';
+import { login, emptyLoginError } from '../actions/userActions';
 
 const LoginScreen = ({ location, history }) => {
   const [email, setEmail] = useState('');
@@ -27,12 +26,29 @@ const LoginScreen = ({ location, history }) => {
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(login(email, password));
+    setTimeout(function () {
+      dispatch(emptyLoginError());
+    }, 5000);
+  };
+
+  const handleErrorOnClose = () => {
+    dispatch(emptyLoginError());
   };
 
   return (
     <FormContainer>
       <h1>Sign In</h1>
-      {error && <Message variant='danger'>{error}</Message>}
+      {error && error !== null && (
+        <Alert
+          variant='danger'
+          onClose={() => {
+            handleErrorOnClose();
+          }}
+          dismissible
+        >
+          {error}
+        </Alert>
+      )}
       {loading && <Loader />}
       <Form onSubmit={submitHandler}>
         <Form.Group controlId='email'>

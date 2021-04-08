@@ -33,6 +33,9 @@ const ProfileScreen = ({ history }) => {
       setEmail(userInfo.email);
       setPassword('');
       setConfirmPassword('');
+      setTimeout(function () {
+        alert('Hello');
+      }, 3000);
     }
   }, [dispatch, history, userLogin, userInfo]);
 
@@ -85,7 +88,8 @@ const ProfileScreen = ({ history }) => {
             <Form.Label>Username</Form.Label>
             <Form.Control
               className={
-                username.length === 0 || username === userInfo.username
+                username.length === 0 ||
+                (userInfo && username === userInfo.username)
                   ? ''
                   : validateUsername(username)
                   ? 'is-valid'
@@ -110,7 +114,7 @@ const ProfileScreen = ({ history }) => {
             <Form.Label>Email Address</Form.Label>
             <Form.Control
               className={
-                email.length === 0 || email === userInfo.email
+                email.length === 0 || (userInfo && email === userInfo.email)
                   ? ''
                   : validateEmail(email)
                   ? 'is-valid'

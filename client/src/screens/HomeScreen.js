@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Alert } from 'react-bootstrap';
 import Packet from '../components/Packet';
 import Loader from '../components/Loader';
-import Message from '../components/Message';
 import { listPackets } from '../actions/packetActions';
 
 const HomeScreen = () => {
@@ -22,7 +21,7 @@ const HomeScreen = () => {
       {loading ? (
         <Loader />
       ) : error ? (
-        <Message variant='danger'>{error}</Message>
+        <Alert variant='danger'>{error}</Alert>
       ) : (
         <Row>
           {packets.map((packet) => (
