@@ -33,10 +33,14 @@ const LoginScreen = ({ location, history }) => {
   // Component Methods
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(login(email, password));
-    setTimeout(function () {
-      dispatch(emptyLoginError());
-    }, 5000);
+
+    if (validForm) {
+      dispatch(login(email, password));
+
+      setTimeout(function () {
+        dispatch(emptyLoginError());
+      }, 8000);
+    }
   };
 
   const handleErrorOnClose = () => {
@@ -80,9 +84,13 @@ const LoginScreen = ({ location, history }) => {
         <Form.Group controlId='password'>
           <Form.Label>
             Password{' '}
-            <a onClick={showHidePassword} title='Show/Hide Password'>
+            <span
+              className='link'
+              onClick={showHidePassword}
+              title='Show/Hide Password'
+            >
               <i className='fas fa-eye search-icon'></i>
-            </a>
+            </span>
           </Form.Label>
           <Form.Control
             type={passwordType}

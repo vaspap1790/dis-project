@@ -12,7 +12,6 @@ export const USER_LOGOUT = 'USER_LOGOUT';
 // Messages
 export const USER_LOGIN_EMPTY_ERROR = 'USER_LOGIN_EMPTY_ERROR';
 
-export const USER_REGISTER_EMPTY_SUCCESS = 'USER_REGISTER_EMPTY_SUCCESS';
 export const USER_REGISTER_EMPTY_ERROR = 'USER_REGISTER_EMPTY_ERROR';
 
 /////////////////////////// User Profile Actions ///////////////////////////////

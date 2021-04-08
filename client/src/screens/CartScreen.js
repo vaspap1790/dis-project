@@ -27,7 +27,7 @@ const CartScreen = ({ match, history }) => {
   const { cartItems, cartLoading } = cart;
 
   const accessAdd = useSelector((state) => state.accessAdd);
-  const { access, success, error, loadingAccess } = accessAdd;
+  const { success, error, loadingAccess } = accessAdd;
 
   useEffect(() => {
     if (packetId) {

@@ -6,7 +6,6 @@ import {
   USER_REGISTER_REQUEST,
   USER_REGISTER_SUCCESS,
   USER_REGISTER_FAIL,
-  USER_REGISTER_EMPTY_SUCCESS,
   USER_REGISTER_EMPTY_ERROR,
   USER_LOGOUT,
   USER_UPDATE_PROFILE_REQUEST,
@@ -101,6 +100,12 @@ export const register = (username, email, password) => async (dispatch) => {
           : error.message
     });
   }
+};
+
+export const emptyRegisterError = () => async (dispatch) => {
+  dispatch({
+    type: USER_REGISTER_EMPTY_ERROR
+  });
 };
 
 //////////////////////////////// Logout Actions //////////////////////////////////

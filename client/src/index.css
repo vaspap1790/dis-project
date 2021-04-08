@@ -26,6 +26,10 @@ h2 {
   justify-content: center;
 }
 
+.link:hover {
+  cursor: pointer;
+}
+
 /* Responsive CartScreen */
 @media screen and (max-width: 768px) {
   .cart-text {
@@ -59,8 +63,4 @@ h2 {
   .btn-Text-Checkout {
     display: none;
   }
-}
-
-a:hover {
-  cursor: pointer;
 }

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Form, Button, Row, Col, FormControl } from 'react-bootstrap';
-import Message from '../components/Message';
+import { Form, Button, Row, Col, Alert } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
-import { register } from '../actions/userActions';
+import { register, emptyRegisterError } from '../actions/userActions';
 import {
   validateUsername,
   validateEmail,
@@ -14,27 +13,23 @@ import {
 } from '../utils/validator';
 
 const RegisterScreen = ({ location, history }) => {
+  // Hook that enables components to interact with the App State through reducers
+  const dispatch = useDispatch();
+
+  // Component level State
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordType, setPasswordType] = useState('password');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [confirmPasswordType, setConfirmPasswordType] = useState('password');
-  const [message, setMessage] = useState(null);
 
-  const dispatch = useDispatch();
-
+  // App level State
   const userRegister = useSelector((state) => state.userRegister);
   const { loading, error, userInfo } = userRegister;
 
+  // Component Variables
   const redirect = location.search ? location.search.split('=')[1] : '/';
-
-  useEffect(() => {
-    if (userInfo) {
-      history.push(redirect);
-    }
-  }, [history, userInfo, redirect]);
-
   const validForm =
     validateUsername(username) &&
     validateEmail(email) &&
@@ -43,29 +38,28 @@ const RegisterScreen = ({ location, history }) => {
     validatePassword(password) &&
     validateConfirmPassword(password, confirmPassword);
 
+  // Hook that triggers when component did mount
+  useEffect(() => {
+    if (userInfo) {
+      history.push(redirect);
+    }
+  }, [history, userInfo, redirect]);
+
+  // Component Methods
   const submitHandler = (e) => {
     e.preventDefault();
 
-    if (
-      username.length === 0 ||
-      email.length === 0 ||
-      password.length === 0 ||
-      confirmPassword.length === 0
-    ) {
-      setMessage('All fields are required');
-    } else {
-      if (validForm) {
-        dispatch(register(username, email, password));
-        setMessage(undefined);
-      }
+    if (validForm) {
+      dispatch(register(username, email, password));
+
+      setTimeout(function () {
+        dispatch(emptyRegisterError());
+      }, 8000);
     }
   };
 
-  const setPasswordHandler = (text) => {
-    setPassword(text);
-    if (text.length === 0) {
-      setConfirmPassword('');
-    }
+  const handleErrorOnClose = () => {
+    dispatch(emptyRegisterError());
   };
 
   const showHidePassword = () => {
@@ -78,11 +72,28 @@ const RegisterScreen = ({ location, history }) => {
     setConfirmPasswordType(type);
   };
 
+  const setPasswordHandler = (text) => {
+    setPassword(text);
+    if (text.length === 0) {
+      setConfirmPassword('');
+    }
+  };
+
+  // What will be rendered
   return (
     <FormContainer>
       <h1>Sign Up</h1>
-      {message && <Message variant='danger'>{message}</Message>}
-      {error && <Message variant='danger'>{error}</Message>}
+      {error && error !== null && (
+        <Alert
+          variant='danger'
+          onClose={() => {
+            handleErrorOnClose();
+          }}
+          dismissible
+        >
+          {error}
+        </Alert>
+      )}
       {loading && <Loader />}
       <Form onSubmit={submitHandler}>
         <Form.Group controlId='username'>
@@ -138,9 +149,13 @@ const RegisterScreen = ({ location, history }) => {
         <Form.Group controlId='password'>
           <Form.Label>
             Password{' '}
-            <a onClick={showHidePassword} title='Show/Hide Password'>
+            <span
+              className='link'
+              onClick={showHidePassword}
+              title='Show/Hide Password'
+            >
               <i className='fas fa-eye search-icon'></i>
-            </a>
+            </span>
           </Form.Label>
           <Form.Control
             className={
@@ -168,12 +183,13 @@ const RegisterScreen = ({ location, history }) => {
         <Form.Group controlId='confirmPassword'>
           <Form.Label>
             Confirm Password{' '}
-            <a
+            <span
+              className='link'
               onClick={showHideConfirmPassword}
               title='Show/Hide Confirm Password'
             >
               <i className='fas fa-eye search-icon'></i>
-            </a>
+            </span>
           </Form.Label>
           <Form.Control
             className={
