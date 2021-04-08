@@ -60,3 +60,7 @@ h2 {
     display: none;
   }
 }
+
+a:hover {
+  cursor: pointer;
+}

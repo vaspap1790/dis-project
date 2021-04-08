@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import { Form, Button, Row, Col, FormControl } from 'react-bootstrap';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
@@ -17,7 +17,9 @@ const RegisterScreen = ({ location, history }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordType, setPasswordType] = useState('password');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPasswordType, setConfirmPasswordType] = useState('password');
   const [message, setMessage] = useState(null);
 
   const dispatch = useDispatch();
@@ -36,6 +38,8 @@ const RegisterScreen = ({ location, history }) => {
   const validForm =
     validateUsername(username) &&
     validateEmail(email) &&
+    password.length !== 0 &&
+    confirmPassword.length !== 0 &&
     validatePassword(password) &&
     validateConfirmPassword(password, confirmPassword);
 
@@ -64,6 +68,16 @@ const RegisterScreen = ({ location, history }) => {
     }
   };
 
+  const showHidePassword = () => {
+    let type = passwordType === 'text' ? 'password' : 'text';
+    setPasswordType(type);
+  };
+
+  const showHideConfirmPassword = () => {
+    let type = confirmPasswordType === 'text' ? 'password' : 'text';
+    setConfirmPasswordType(type);
+  };
+
   return (
     <FormContainer>
       <h1>Sign Up</h1>
@@ -83,6 +97,7 @@ const RegisterScreen = ({ location, history }) => {
             }
             type='text'
             placeholder='Enter username'
+            title='Enter username'
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           ></Form.Control>
@@ -96,6 +111,7 @@ const RegisterScreen = ({ location, history }) => {
             </div>
           )}
         </Form.Group>
+
         <Form.Group controlId='email'>
           <Form.Label>Email Address</Form.Label>
           <Form.Control
@@ -108,6 +124,7 @@ const RegisterScreen = ({ location, history }) => {
             }
             type='text'
             placeholder='Enter email'
+            title='Enter email'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           ></Form.Control>
@@ -117,8 +134,14 @@ const RegisterScreen = ({ location, history }) => {
             <div className='invalid-feedback'>Please insert a valid email</div>
           )}
         </Form.Group>
+
         <Form.Group controlId='password'>
-          <Form.Label>Password</Form.Label>
+          <Form.Label>
+            Password{' '}
+            <a onClick={showHidePassword} title='Show/Hide Password'>
+              <i className='fas fa-eye search-icon'></i>
+            </a>
+          </Form.Label>
           <Form.Control
             className={
               password.length === 0
@@ -127,8 +150,9 @@ const RegisterScreen = ({ location, history }) => {
                 ? 'is-valid'
                 : 'is-invalid'
             }
-            type='password'
+            type={passwordType}
             placeholder='Enter password'
+            title='Enter password'
             value={password}
             onChange={(e) => setPasswordHandler(e.target.value)}
           ></Form.Control>
@@ -140,8 +164,17 @@ const RegisterScreen = ({ location, history }) => {
             </div>
           )}
         </Form.Group>
+
         <Form.Group controlId='confirmPassword'>
-          <Form.Label>Confirm Password</Form.Label>
+          <Form.Label>
+            Confirm Password{' '}
+            <a
+              onClick={showHideConfirmPassword}
+              title='Show/Hide Confirm Password'
+            >
+              <i className='fas fa-eye search-icon'></i>
+            </a>
+          </Form.Label>
           <Form.Control
             className={
               confirmPassword.length === 0
@@ -150,8 +183,9 @@ const RegisterScreen = ({ location, history }) => {
                 ? 'is-valid'
                 : 'is-invalid'
             }
-            type='password'
+            type={confirmPasswordType}
             placeholder='Confirm password'
+            title='Confirm password'
             disabled={password.length === 0}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -167,7 +201,12 @@ const RegisterScreen = ({ location, history }) => {
             </div>
           )}
         </Form.Group>
-        <Button variant='primary' type='submit' disabled={!validForm}>
+        <Button
+          variant='primary'
+          type='submit'
+          disabled={!validForm}
+          title={validForm ? 'Register' : 'Enter all fields to submit'}
+        >
           Register
         </Button>
       </Form>
@@ -175,7 +214,10 @@ const RegisterScreen = ({ location, history }) => {
       <Row className='py-3'>
         <Col>
           Have an Account?{' '}
-          <Link to={redirect ? `/login?redirect=${redirect}` : '/login'}>
+          <Link
+            to={redirect ? `/login?redirect=${redirect}` : '/login'}
+            style={{ fontWeight: 'bold' }}
+          >
             Login
           </Link>
         </Col>
