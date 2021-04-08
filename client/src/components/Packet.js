@@ -6,12 +6,15 @@ import Rating from './Rating';
 import { prelistPacketDetails } from '../actions/packetActions';
 
 const Packet = ({ packet }) => {
+  // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
+  // Component Methods
   const clickHandler = () => {
     dispatch(prelistPacketDetails());
   };
 
+  // This will be rendered
   return (
     <Card className='my-3 p-3 rounded'>
       <Link to={`/packet/${packet._id}`}>

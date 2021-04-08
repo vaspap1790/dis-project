@@ -11,8 +11,8 @@ import {
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
-  USER_UPDATE_EMPTY_SUCCESS,
-  USER_UPDATE_EMPTY_ERROR,
+  USER_PROFILE_EMPTY_SUCCESS,
+  USER_PROFILE_EMPTY_ERROR,
   USER_DETAILS_REQUEST,
   USER_DETAILS_SUCCESS,
   USER_DETAILS_FAIL
@@ -157,13 +157,13 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
 
 export const emptyProfileError = () => async (dispatch) => {
   dispatch({
-    type: USER_UPDATE_EMPTY_ERROR
+    type: USER_PROFILE_EMPTY_ERROR
   });
 };
 
 export const emptyProfileSuccess = () => async (dispatch) => {
   dispatch({
-    type: USER_UPDATE_EMPTY_SUCCESS
+    type: USER_PROFILE_EMPTY_SUCCESS
   });
 };
 

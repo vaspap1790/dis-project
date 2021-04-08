@@ -6,15 +6,19 @@ import Loader from '../components/Loader';
 import { listPackets } from '../actions/packetActions';
 
 const HomeScreen = () => {
+  // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
+  // App level State
   const packetList = useSelector((state) => state.packetList);
   const { loading, error, packets } = packetList;
 
+  // Hook that triggers when component did mount
   useEffect(() => {
     dispatch(listPackets());
   }, [dispatch]);
 
+  // This will be rendered
   return (
     <>
       <h1>Latest Packets</h1>

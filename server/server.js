@@ -7,10 +7,13 @@ import packetRoutes from './routes/packetRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import accessRoutes from './routes/accessRoutes.js';
 
+// Global variables will be available through 'process.env.*' in '.env' file
 dotenv.config();
 
+// Connect to Database
 connectDB();
 
+// Instantiate Express server
 const app = express();
 
 // Middlewares

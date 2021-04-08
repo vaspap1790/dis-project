@@ -5,15 +5,19 @@ import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { logout } from '../actions/userActions';
 
 const Header = ({ history }) => {
+  // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
+  // App level State
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  // Component Methods
   const logoutHandler = () => {
     dispatch(logout());
   };
 
+  // This will be rendered
   return (
     <header>
       <Navbar bg='primary' variant='dark' expand='lg' collapseOnSelect>

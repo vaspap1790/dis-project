@@ -52,7 +52,7 @@ const LoginScreen = ({ location, history }) => {
     setPasswordType(type);
   };
 
-  // What will be rendered
+  // This will be rendered
   return (
     <FormContainer>
       <h1>Sign In</h1>

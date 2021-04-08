@@ -11,8 +11,8 @@ import {
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
-  USER_UPDATE_EMPTY_SUCCESS,
-  USER_UPDATE_EMPTY_ERROR,
+  USER_PROFILE_EMPTY_SUCCESS,
+  USER_PROFILE_EMPTY_ERROR,
   USER_DETAILS_REQUEST,
   USER_DETAILS_SUCCESS,
   USER_DETAILS_FAIL
@@ -64,9 +64,9 @@ export const userUpdateProfileReducer = (state = {}, action) => {
       };
     case USER_UPDATE_PROFILE_FAIL:
       return { loading: false, success: null, error: action.payload };
-    case USER_UPDATE_EMPTY_ERROR:
+    case USER_PROFILE_EMPTY_ERROR:
       return { ...state, error: null };
-    case USER_UPDATE_EMPTY_SUCCESS:
+    case USER_PROFILE_EMPTY_SUCCESS:
       return { ...state, success: null };
     default:
       return state;

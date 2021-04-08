@@ -3,15 +3,10 @@ import {
   ACCESS_ADD_REQUEST,
   ACCESS_ADD_SUCCESS,
   ACCESS_ADD_FAIL,
+  ACCESS_EMPTY_ERROR,
   ACCESS_EMPTY_SUCCESS
 } from '../constants/accessConstants';
 import { CART_REMOVE_ITEM } from '../constants/cartConstants';
-
-export const emptySuccess = () => async (dispatch) => {
-  dispatch({
-    type: ACCESS_EMPTY_SUCCESS
-  });
-};
 
 export const addNewAccess = (packetId) => async (dispatch, getState) => {
   try {
@@ -72,4 +67,16 @@ export const addNewAccess = (packetId) => async (dispatch, getState) => {
           : error.message
     });
   }
+};
+
+export const emptyAccessSuccess = () => async (dispatch) => {
+  dispatch({
+    type: ACCESS_EMPTY_SUCCESS
+  });
+};
+
+export const emptyAccessError = () => async (dispatch) => {
+  dispatch({
+    type: ACCESS_EMPTY_ERROR
+  });
 };

@@ -1,29 +1,41 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Image,
+  ListGroup,
+  Card,
+  Button,
+  Alert
+} from 'react-bootstrap';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
-import Message from '../components/Message';
 import { listPacketDetails } from '../actions/packetActions';
 
 const PacketScreen = ({ history, match }) => {
+  // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
+  // App level State
   const packetDetails = useSelector((state) => state.packetDetails);
   const { loadingDetails, error, packet } = packetDetails;
 
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
 
+  // Hook that triggers when component did mount
   useEffect(() => {
     dispatch(listPacketDetails(match.params.id));
   }, [dispatch, match]);
 
+  // Component Methods
   const addToCartHandler = () => {
     history.push(`/cart/${match.params.id}`);
   };
 
+  // This will be rendered
   return (
     <>
       <Link className='btn btn-primary my-3' to='/'>
@@ -32,7 +44,7 @@ const PacketScreen = ({ history, match }) => {
       {loadingDetails ? (
         <Loader />
       ) : error ? (
-        <Message variant='danger'>{error}</Message>
+        <Alert variant='danger'>{error}</Alert>
       ) : (
         <Row>
           <Col md={6}>

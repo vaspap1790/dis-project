@@ -10,16 +10,22 @@ import {
   Alert,
   Spinner
 } from 'react-bootstrap';
-import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { addToCart, removeFromCart } from '../actions/cartActions';
-import { addNewAccess, emptySuccess } from '../actions/accessActions';
+import {
+  addNewAccess,
+  emptyAccessError,
+  emptyAccessSuccess
+} from '../actions/accessActions';
 
 const CartScreen = ({ match, history }) => {
-  const packetId = match.params.id;
-
+  // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
+  // Request Parameters
+  const packetId = match.params.id;
+
+  // App level State
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -29,12 +35,14 @@ const CartScreen = ({ match, history }) => {
   const accessAdd = useSelector((state) => state.accessAdd);
   const { success, error, loadingAccess } = accessAdd;
 
+  // Hook that triggers when component did mount
   useEffect(() => {
     if (packetId) {
       dispatch(addToCart(packetId));
     }
   }, [dispatch, packetId]);
 
+  // Component Methods
   const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id));
     history.push(`/cart`);
@@ -43,12 +51,22 @@ const CartScreen = ({ match, history }) => {
   const purchaseHandler = (id) => {
     dispatch(addNewAccess(id));
     history.push(`/cart`);
+
+    setTimeout(function () {
+      dispatch(emptyAccessError());
+      dispatch(emptyAccessSuccess());
+    }, 8000);
   };
 
-  const handleOnClose = () => {
-    dispatch(emptySuccess());
+  const handleErrorOnClose = () => {
+    dispatch(emptyAccessError());
   };
 
+  const handleSuccessOnClose = () => {
+    dispatch(emptyAccessSuccess());
+  };
+
+  // This will be rendered
   return (
     <>
       {cartLoading ? (
@@ -68,25 +86,35 @@ const CartScreen = ({ match, history }) => {
                 </span>
               ) : null}
             </h1>
-            {error && <Message variant='danger'>{error}</Message>}
+            {error && error !== null && (
+              <Alert
+                variant='danger'
+                onClose={() => {
+                  handleErrorOnClose();
+                }}
+                dismissible
+              >
+                {error}
+              </Alert>
+            )}
             {success && (
               <Alert
                 variant='success'
                 onClose={() => {
-                  handleOnClose();
+                  handleSuccessOnClose();
                 }}
                 dismissible
               >
-                You successfully purchased the item
+                {success}
               </Alert>
             )}
             {cartItems.length === 0 ? (
-              <Message>
+              <Alert variant='info'>
                 Your Cart is empty{' '}
                 <Link to='/' style={{ fontWeight: 'bold' }}>
                   Go Back
                 </Link>
-              </Message>
+              </Alert>
             ) : (
               <ListGroup variant='flash'>
                 {cartItems.map((item) => (

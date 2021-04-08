@@ -94,7 +94,7 @@ const ProfileScreen = ({ history }) => {
     }
   };
 
-  // What will be rendered
+  // This will be rendered
   return (
     <Row>
       <Col md={3}>

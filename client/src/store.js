@@ -14,6 +14,7 @@ import {
   userUpdateProfileReducer
 } from './reducers/userReducers';
 
+// Initialise reducer
 const reducer = combineReducers({
   packetList: packetListReducer,
   packetDetails: packetDetailsReducer,
@@ -25,6 +26,7 @@ const reducer = combineReducers({
   accessAdd: accessAddReducer
 });
 
+// Get info from browser's local storage
 const cartItemsFromStorage = localStorage.getItem('cartItems')
   ? JSON.parse(localStorage.getItem('cartItems'))
   : [];
@@ -33,13 +35,16 @@ const userInfoFromStorage = localStorage.getItem('userInfo')
   ? JSON.parse(localStorage.getItem('userInfo'))
   : null;
 
+// Initialise App State
 const initialState = {
   cart: { cartItems: cartItemsFromStorage },
   userLogin: { userInfo: userInfoFromStorage }
 };
 
+// Initialise middleware
 const middleware = [thunk];
 
+// Initialise Store
 const store = createStore(
   reducer,
   initialState,
