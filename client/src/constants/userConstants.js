@@ -20,8 +20,8 @@ export const USER_UPDATE_PROFILE_SUCCESS = 'USER_UPDATE_PROFILE_SUCCESS';
 export const USER_UPDATE_PROFILE_FAIL = 'USER_UPDATE_PROFILE_FAIL';
 
 // Messages
-export const USER_UPDATE_EMPTY_SUCCESS = 'USER_UPDATE_EMPTY_SUCCESS';
 export const USER_UPDATE_EMPTY_ERROR = 'USER_UPDATE_EMPTY_ERROR';
+export const USER_UPDATE_EMPTY_SUCCESS = 'USER_UPDATE_EMPTY_SUCCESS';
 
 /////////////////////////// User Details Actions ////////////////////////////////
 export const USER_DETAILS_REQUEST = 'USER_DETAILS_REQUEST';

@@ -55,18 +55,19 @@ export const userRegisterReducer = (state = {}, action) => {
 export const userUpdateProfileReducer = (state = {}, action) => {
   switch (action.type) {
     case USER_UPDATE_PROFILE_REQUEST:
-      return { loading: true };
+      return { loading: true, error: null, success: null };
     case USER_UPDATE_PROFILE_SUCCESS:
       return {
         loading: false,
-        updateSuccess: true
+        success: 'Profile Updated',
+        error: null
       };
     case USER_UPDATE_PROFILE_FAIL:
-      return { loading: false, error: action.payload };
+      return { loading: false, success: null, error: action.payload };
+    case USER_UPDATE_EMPTY_ERROR:
+      return { ...state, error: null };
     case USER_UPDATE_EMPTY_SUCCESS:
-      return { updateSuccess: false };
-    // case USER_UPDATE_PROFILE_RESET:
-    //   return { errorUpdate: null, success: false };
+      return { ...state, success: null };
     default:
       return state;
   }

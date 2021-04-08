@@ -155,7 +155,13 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
   }
 };
 
-export const emptySuccess = () => async (dispatch) => {
+export const emptyProfileError = () => async (dispatch) => {
+  dispatch({
+    type: USER_UPDATE_EMPTY_ERROR
+  });
+};
+
+export const emptyProfileSuccess = () => async (dispatch) => {
   dispatch({
     type: USER_UPDATE_EMPTY_SUCCESS
   });

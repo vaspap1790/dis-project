@@ -95,6 +95,7 @@ const RegisterScreen = ({ location, history }) => {
         </Alert>
       )}
       {loading && <Loader />}
+
       <Form onSubmit={submitHandler}>
         <Form.Group controlId='username'>
           <Form.Label>Username</Form.Label>
