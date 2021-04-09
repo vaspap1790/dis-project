@@ -82,14 +82,20 @@ const LoginScreen = ({ location, history }) => {
         </Form.Group>
 
         <Form.Group controlId='password'>
-          <Form.Label>
+          <Form.Label className='d-flex justify-content-between'>
             Password{' '}
             <span
               className='link'
               onClick={showHidePassword}
               title='Show/Hide Password'
             >
-              <i className='fas fa-eye search-icon'></i>
+              <i
+                className={
+                  passwordType === 'text'
+                    ? 'fas fa-eye search-icon'
+                    : 'fas fa-eye-slash search-icon'
+                }
+              ></i>
             </span>
           </Form.Label>
           <Form.Control
