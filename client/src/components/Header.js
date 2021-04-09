@@ -21,7 +21,7 @@ const Header = ({ history }) => {
   return (
     <header>
       <Navbar bg='primary' variant='dark' expand='lg' collapseOnSelect>
-        <Container fluid>
+        <Container fluid className='px-4'>
           <LinkContainer to='/'>
             <Navbar.Brand>Data Dapp</Navbar.Brand>
           </LinkContainer>
@@ -34,7 +34,7 @@ const Header = ({ history }) => {
                 </Nav.Link>
               </LinkContainer>
               {userInfo ? (
-                <NavDropdown title={userInfo.username} id='username'>
+                <NavDropdown title={userInfo.username} alignRight id='username'>
                   <LinkContainer to='/profile'>
                     <NavDropdown.Item>Profile</NavDropdown.Item>
                   </LinkContainer>

@@ -3,10 +3,14 @@ import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import {
   packetListReducer,
-  packetDetailsReducer
+  packetDetailsReducer,
+  packetsUserReducer
 } from './reducers/packetReducers';
 import { cartReducer } from './reducers/cartReducers';
-import { accessAddReducer } from './reducers/accessReducers';
+import {
+  accessAddReducer,
+  accesssUserReducer
+} from './reducers/accessReducers';
 import {
   userLoginReducer,
   userRegisterReducer,
@@ -18,12 +22,14 @@ import {
 const reducer = combineReducers({
   packetList: packetListReducer,
   packetDetails: packetDetailsReducer,
+  packetsUser: packetsUserReducer,
   cart: cartReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,
   userUpdateProfile: userUpdateProfileReducer,
-  accessAdd: accessAddReducer
+  accessAdd: accessAddReducer,
+  accessUser: accesssUserReducer
 });
 
 // Get info from browser's local storage

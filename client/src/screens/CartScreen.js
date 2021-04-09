@@ -30,10 +30,10 @@ const CartScreen = ({ match, history }) => {
   const { userInfo } = userLogin;
 
   const cart = useSelector((state) => state.cart);
-  const { cartItems, cartLoading } = cart;
+  const { cartItems, loading: cartLoading } = cart;
 
   const accessAdd = useSelector((state) => state.accessAdd);
-  const { success, error, loadingAccess } = accessAdd;
+  const { success, error, loading: loadingAccess } = accessAdd;
 
   // Hook that triggers when component did mount
   useEffect(() => {

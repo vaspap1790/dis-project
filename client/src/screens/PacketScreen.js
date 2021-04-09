@@ -47,7 +47,7 @@ const PacketScreen = ({ history, match }) => {
         <Alert variant='danger'>{error}</Alert>
       ) : (
         <Row>
-          <Col md={6}>
+          <Col md={6} className='pr-0'>
             <Image src={packet.image} alt={packet.name} fluid />
           </Col>
           <Col md={6}>
@@ -55,6 +55,7 @@ const PacketScreen = ({ history, match }) => {
               <Col
                 md={{ span: 12, order: 'last' }}
                 lg={{ span: 6, order: 'first' }}
+                className='pr-0'
               >
                 <ListGroup variant='flush'>
                   <ListGroup.Item>

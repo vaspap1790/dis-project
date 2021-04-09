@@ -10,18 +10,18 @@ export const cartReducer = (state = { cartItems: [] }, action) => {
     case CART_PRE_ADD_ITEM:
       return {
         ...state,
-        cartLoading: true
+        loading: true
       };
     case ITEM_ALREADY_IN_CART:
       return {
         ...state,
-        cartLoading: false
+        loading: false
       };
     case CART_ADD_ITEM:
       return {
         ...state,
         cartItems: [...state.cartItems, action.payload],
-        cartLoading: false
+        loading: false
       };
     case CART_REMOVE_ITEM:
       return {

@@ -2,6 +2,10 @@ import {
   PACKET_LIST_REQUEST,
   PACKET_LIST_SUCCESS,
   PACKET_LIST_FAIL,
+  PACKET_USER_REQUEST,
+  PACKET_USER_SUCCESS,
+  PACKET_USER_FAIL,
+  PACKET_USER_EMPTY_ERROR,
   PACKET_DETAILS_REQUEST,
   PACKET_DETAILS_SUCCESS,
   PACKET_DETAILS_FAIL,
@@ -16,6 +20,21 @@ export const packetListReducer = (state = { packets: [] }, action) => {
       return { loading: false, packets: action.payload };
     case PACKET_LIST_FAIL:
       return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const packetsUserReducer = (state = { userPackets: [] }, action) => {
+  switch (action.type) {
+    case PACKET_USER_REQUEST:
+      return { loading: true, userPackets: [] };
+    case PACKET_USER_SUCCESS:
+      return { loading: false, userPackets: action.payload };
+    case PACKET_USER_FAIL:
+      return { loading: false, error: action.payload };
+    case PACKET_USER_EMPTY_ERROR:
+      return { error: null };
     default:
       return state;
   }

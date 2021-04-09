@@ -3,27 +3,31 @@ import {
   ACCESS_ADD_SUCCESS,
   ACCESS_ADD_FAIL,
   ACCESS_EMPTY_ERROR,
-  ACCESS_EMPTY_SUCCESS
+  ACCESS_EMPTY_SUCCESS,
+  ACCESS_PROFILE_REQUEST,
+  ACCESS_PROFILE_SUCCESS,
+  ACCESS_PROFILE_FAIL,
+  ACCESS_PROFILE_EMPTY_ERROR
 } from '../constants/accessConstants';
 
 export const accessAddReducer = (state = {}, action) => {
   switch (action.type) {
     case ACCESS_ADD_REQUEST:
       return {
-        loadingAccess: true,
+        loading: true,
         error: null,
         success: null
       };
     case ACCESS_ADD_SUCCESS:
       return {
-        loadingAccess: false,
+        loading: false,
         error: null,
         success: 'You successfully purchased the item',
         access: action.payload
       };
     case ACCESS_ADD_FAIL:
       return {
-        loadingAccess: false,
+        loading: false,
         error: action.payload,
         success: null
       };
@@ -35,6 +39,21 @@ export const accessAddReducer = (state = {}, action) => {
       return {
         success: null
       };
+    default:
+      return state;
+  }
+};
+
+export const accesssUserReducer = (state = { userAccess: [] }, action) => {
+  switch (action.type) {
+    case ACCESS_PROFILE_REQUEST:
+      return { loading: true, userAccess: [] };
+    case ACCESS_PROFILE_SUCCESS:
+      return { loading: false, userAccess: action.payload };
+    case ACCESS_PROFILE_FAIL:
+      return { loading: false, error: action.payload };
+    case ACCESS_PROFILE_EMPTY_ERROR:
+      return { error: null };
     default:
       return state;
   }

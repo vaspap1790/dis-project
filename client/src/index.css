@@ -30,7 +30,24 @@ h2 {
   cursor: pointer;
 }
 
-/* Responsive CartScreen */
+/* Profile Screen */
+.nav-item {
+  margin: 0rem;
+}
+
+.profileTabs > .nav-item {
+  color: white !important;
+}
+
+.profileTabs > .nav-link.active {
+  color: black !important;
+}
+
+#sidebarProfile {
+  background-color: #c6c8ca !important;
+}
+
+/* Responsive Cart Screen */
 @media screen and (max-width: 768px) {
   .cart-text {
     justify-content: center;

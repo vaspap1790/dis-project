@@ -18,4 +18,18 @@ const addNewAccess = asyncHandler(async (req, res) => {
   }
 });
 
-export { addNewAccess };
+// @desc    Fetch all user purchases
+// @route   GET /api/access/user/:id
+// @access  Private
+const getAccessesByUserId = asyncHandler(async (req, res) => {
+  const accesses = await Access.find({ user: req.params.id });
+
+  if (accesses && accesses.length !== 0) {
+    res.json(accesses);
+  } else {
+    res.status(404);
+    throw new Error('No items purchased');
+  }
+});
+
+export { addNewAccess, getAccessesByUserId };
