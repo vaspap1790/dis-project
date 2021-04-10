@@ -1,6 +1,7 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Packet from '../components/Packet';
+import DataTable from '../components/DataTable';
 import { Form, Button, Row, Col, Alert, Tabs, Tab } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import {
@@ -334,7 +335,7 @@ const ProfileScreen = ({ history }) => {
       {/************************  Main Profile Screen ****************************/}
       <Col md={9} className='pt-2'>
         <h2>User Data Packets</h2>
-        <Tabs defaultActiveKey='uploaded' transition={false}>
+        <Tabs defaultActiveKey='purchased' transition={false}>
           {/*************** Uploaded Tab *******************/}
           <Tab eventKey='uploaded' title='Uploaded'>
             <div className='p-2'>
@@ -377,7 +378,7 @@ const ProfileScreen = ({ history }) => {
                   {userAccessError}
                 </Alert>
               ) : (
-                'Purchase packets'
+                <DataTable data={userAccess} />
               )}
             </div>
           </Tab>

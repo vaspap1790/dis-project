@@ -60,6 +60,52 @@ h2 {
   background-color: #c6c8ca !important;
 }
 
+.order-4:hover,
+.caret-4-asc:hover,
+.caret-4-desc:hover {
+  cursor: pointer;
+}
+
+.order-4 {
+  -ms-flex-order: 4;
+  order: 4;
+}
+
+.order-4:before {
+  margin-left: 3.5px;
+  content: '\2191';
+  opacity: 0.4;
+}
+
+.order-4:after {
+  content: '\2193';
+  opacity: 0.4;
+}
+
+.caret-4-asc:before {
+  margin-left: 3.5px;
+  content: '\2191';
+}
+
+.caret-4-asc:after {
+  content: '\2193';
+  opacity: 0.4;
+}
+
+.caret-4-desc:before {
+  margin-left: 3.5px;
+  content: '\2191';
+  opacity: 0.4;
+}
+
+.caret-4-desc:after {
+  content: '\2193';
+}
+
+.filter-label {
+  margin-left: 2rem !important;
+}
+
 /* Responsive Cart Screen */
 @media screen and (max-width: 768px) {
   .cart-text {
