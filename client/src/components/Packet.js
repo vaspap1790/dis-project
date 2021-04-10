@@ -1,4 +1,5 @@
 import React from 'react';
+import Moment from 'react-moment';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
@@ -26,16 +27,18 @@ const Packet = ({ packet }) => {
         </Link>
         <Card.Text>
           <div>
-            {/* TODO: */}
             by{' '}
             <Link
-              to={`/packet/${packet._id}`}
+              to={`/profile/${packet.user._id}`}
               onClick={clickHandler}
               style={{ fontWeight: 'bold' }}
             >
               {packet.user.username}
             </Link>{' '}
-            at <span className='text-muted small'>{packet.createdAt}</span>
+            at{' '}
+            <span className='text-muted'>
+              <Moment format='D MMM YYYY hh:mm:ss'>{packet.createdAt}</Moment>
+            </span>
           </div>
           <Rating value={packet.rating} text={`${packet.numReviews} reviews`} />
         </Card.Text>
