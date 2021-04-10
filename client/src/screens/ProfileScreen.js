@@ -1,15 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Form,
-  Button,
-  Row,
-  Col,
-  Alert,
-  Tabs,
-  Tab,
-  Card
-} from 'react-bootstrap';
+import Packet from '../components/Packet';
+import { Form, Button, Row, Col, Alert, Tabs, Tab } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import {
   updateUserProfile,
@@ -110,6 +102,14 @@ const ProfileScreen = ({ history }) => {
     dispatch(emptyProfileSuccess());
   };
 
+  const handleUserPacketsErrorOnClose = () => {
+    dispatch(emptyUserPacketsError());
+  };
+
+  const handleUserAccessErrorOnClose = () => {
+    dispatch(emptyAccessProfileError());
+  };
+
   const showHidePassword = () => {
     let type = passwordType === 'text' ? 'password' : 'text';
     setPasswordType(type);
@@ -130,6 +130,7 @@ const ProfileScreen = ({ history }) => {
   // This will be rendered
   return (
     <Row>
+      {/************************  Side Profile Screen ****************************/}
       <Col md={3} className='table-dark p-2' id='sidebarProfile'>
         <h2 style={{ color: 'white' }}>User Details</h2>
         <Tabs
@@ -137,9 +138,11 @@ const ProfileScreen = ({ history }) => {
           transition={false}
           className='profileTabs'
         >
+          {/**************** Profile Tab *******************/}
           <Tab eventKey='profile' title='Profile'>
             <div className='p-2'>Profile</div>
           </Tab>
+          {/***************** Update Tab *******************/}
           <Tab eventKey='update' title='Update'>
             <div className='p-2'>
               {success && success !== null && (
@@ -321,16 +324,63 @@ const ProfileScreen = ({ history }) => {
               </Form>
             </div>
           </Tab>
+          {/**************** Reviews Tab *******************/}
           <Tab eventKey='reviews' title='Reviews'>
             <div className='p-2'>Reviews</div>
           </Tab>
         </Tabs>
       </Col>
+
+      {/************************  Main Profile Screen ****************************/}
       <Col md={9} className='pt-2'>
         <h2>User Data Packets</h2>
         <Tabs defaultActiveKey='uploaded' transition={false}>
-          <Tab eventKey='uploaded' title='Uploaded'></Tab>
-          <Tab eventKey='purchased' title='Purchased'></Tab>
+          {/*************** Uploaded Tab *******************/}
+          <Tab eventKey='uploaded' title='Uploaded'>
+            <div className='p-2'>
+              {loadingUserPackets ? (
+                <Loader />
+              ) : userPacketsError ? (
+                <Alert
+                  variant='danger'
+                  onClose={() => {
+                    handleUserPacketsErrorOnClose();
+                  }}
+                  dismissible
+                >
+                  {userPacketsError}
+                </Alert>
+              ) : (
+                <Row>
+                  {userPackets.map((packet) => (
+                    <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
+                      <Packet packet={packet} />
+                    </Col>
+                  ))}
+                </Row>
+              )}
+            </div>
+          </Tab>
+          {/*************** Purchased Tab ******************/}
+          <Tab eventKey='purchased' title='Purchased'>
+            <div className='p-2'>
+              {loadingUserAccess ? (
+                <Loader />
+              ) : userAccessError ? (
+                <Alert
+                  variant='danger'
+                  onClose={() => {
+                    handleUserAccessErrorOnClose();
+                  }}
+                  dismissible
+                >
+                  {userAccessError}
+                </Alert>
+              ) : (
+                'Purchase packets'
+              )}
+            </div>
+          </Tab>
         </Tabs>
       </Col>
     </Row>

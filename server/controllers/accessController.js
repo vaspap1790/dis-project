@@ -22,7 +22,10 @@ const addNewAccess = asyncHandler(async (req, res) => {
 // @route   GET /api/access/user/:id
 // @access  Private
 const getAccessesByUserId = asyncHandler(async (req, res) => {
-  const accesses = await Access.find({ user: req.params.id });
+  const accesses = await Access.find({ user: req.params.id }).populate(
+    'packet',
+    'name image'
+  );
 
   if (accesses && accesses.length !== 0) {
     res.json(accesses);

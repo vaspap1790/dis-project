@@ -30,6 +30,19 @@ h2 {
   cursor: pointer;
 }
 
+/* Home Screen */
+@media screen and (min-width: 692px) {
+  .card-title {
+    position: relative;
+    /* overflow: hidden; */
+    max-height: 50px;
+    min-height: 50px;
+    line-height: 22px;
+    /* overflow-wrap: break-word; */
+    width: 100%;
+  }
+}
+
 /* Profile Screen */
 .nav-item {
   margin: 0rem;
