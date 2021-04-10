@@ -28,6 +28,7 @@ h2 {
 
 .link:hover {
   cursor: pointer;
+  text-decoration: underline;
 }
 
 /* Home Screen */

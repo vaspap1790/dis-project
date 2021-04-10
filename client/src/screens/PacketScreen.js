@@ -35,12 +35,16 @@ const PacketScreen = ({ history, match }) => {
     history.push(`/cart/${match.params.id}`);
   };
 
+  const goBack = () => {
+    history.goBack();
+  };
+
   // This will be rendered
   return (
     <>
-      <Link className='btn btn-primary my-3' to='/'>
+      <Button className='btn btn-primary my-3' onClick={goBack}>
         Go Back
-      </Link>
+      </Button>
       {loadingDetails ? (
         <Loader />
       ) : error ? (

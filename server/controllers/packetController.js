@@ -5,7 +5,7 @@ import Packet from '../models/packetModel.js';
 // @route   GET /api/packets
 // @access  Public
 const getPackets = asyncHandler(async (req, res) => {
-  const packets = await Packet.find({});
+  const packets = await Packet.find({}).populate('user', 'username');
   if (packets && packets.length !== 0) {
     res.json(packets);
   } else {

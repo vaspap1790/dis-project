@@ -25,6 +25,18 @@ const Packet = ({ packet }) => {
           <Card.Title as='div'>{packet.name}</Card.Title>
         </Link>
         <Card.Text>
+          <div>
+            {/* TODO: */}
+            by{' '}
+            <Link
+              to={`/packet/${packet._id}`}
+              onClick={clickHandler}
+              style={{ fontWeight: 'bold' }}
+            >
+              {packet.user.username}
+            </Link>{' '}
+            at <span className='text-muted small'>{packet.createdAt}</span>
+          </div>
           <Rating value={packet.rating} text={`${packet.numReviews} reviews`} />
         </Card.Text>
         <Card.Text as='h3'>

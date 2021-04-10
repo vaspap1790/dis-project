@@ -43,6 +43,10 @@ const CartScreen = ({ match, history }) => {
   }, [dispatch, packetId]);
 
   // Component Methods
+  const goBack = () => {
+    history.goBack();
+  };
+
   const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id));
     history.push(`/cart`);
@@ -111,9 +115,13 @@ const CartScreen = ({ match, history }) => {
             {cartItems.length === 0 ? (
               <Alert variant='info'>
                 Your Cart is empty{' '}
-                <Link to='/' style={{ fontWeight: 'bold' }}>
+                <span
+                  onClick={goBack}
+                  className='link'
+                  style={{ fontWeight: 'bold' }}
+                >
                   Go Back
-                </Link>
+                </span>
               </Alert>
             ) : (
               <ListGroup variant='flash'>
