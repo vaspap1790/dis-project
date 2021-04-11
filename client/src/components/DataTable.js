@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
-import { Button, Image } from 'react-bootstrap';
+import { Image } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
@@ -91,7 +91,7 @@ const DataTable = ({ data }) => {
   const actionFormatter = (cell, row, rowIndex) => {
     return (
       <div className='v-align h-align' style={{ height: '4rem' }}>
-        <a
+        <span
           type='button'
           variant='primary'
           title='Download'
@@ -103,7 +103,7 @@ const DataTable = ({ data }) => {
             className='fas fa-file-download fa-2x'
             style={{ color: 'black' }}
           ></i>
-        </a>
+        </span>
       </div>
     );
   };

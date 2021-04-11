@@ -24,9 +24,12 @@ import {
   validateConfirmPassword
 } from '../utils/validator';
 
-const ProfileScreen = ({ history }) => {
+const ProfileScreen = ({ match, history }) => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
+
+  // Request Parameters
+  const userDetailsId = match.params.id;
 
   // Component level State
   const [username, setUsername] = useState('');
@@ -67,10 +70,19 @@ const ProfileScreen = ({ history }) => {
     validatePassword(password) &&
     validateConfirmPassword(password, confirmPassword);
 
+  const userDetails = !userInfo
+    ? true
+    : userDetailsId !== undefined && userInfo._id !== userDetailsId
+    ? true
+    : false;
+
   // Hook that triggers when component did mount
   useEffect(() => {
-    if (!userLogin || !userInfo) {
-      history.push('/login');
+    console.log(userInfo);
+    console.log(userDetailsId);
+    console.log(userDetails);
+    if (userDetails) {
+      dispatch(getUserPackets(userDetailsId));
     } else {
       setUsername(userInfo.username);
       setEmail(userInfo.email);
@@ -79,7 +91,7 @@ const ProfileScreen = ({ history }) => {
       dispatch(getUserPackets(userInfo._id));
       dispatch(getUserAccess(userInfo._id));
     }
-  }, [dispatch, history, userLogin, userInfo]);
+  }, [dispatch, history, userLogin, userInfo, userDetails]);
 
   // Component Methods
   const submitHandler = (e) => {
@@ -135,7 +147,7 @@ const ProfileScreen = ({ history }) => {
       <Col md={3} className='table-dark p-2' id='sidebarProfile'>
         <h2 style={{ color: 'white' }}>User Details</h2>
         <Tabs
-          defaultActiveKey='update'
+          defaultActiveKey='profile'
           transition={false}
           className='profileTabs'
         >
@@ -144,187 +156,193 @@ const ProfileScreen = ({ history }) => {
             <div className='p-2'>Profile</div>
           </Tab>
           {/***************** Update Tab *******************/}
-          <Tab eventKey='update' title='Update'>
-            <div className='p-2'>
-              {success && success !== null && (
-                <Alert
-                  variant='success'
-                  onClose={() => {
-                    handleSuccessOnClose();
-                  }}
-                  dismissible
-                >
-                  {success}
-                </Alert>
-              )}
-              {error && error !== null && (
-                <Alert
-                  variant='danger'
-                  onClose={() => {
-                    handleErrorOnClose();
-                  }}
-                  dismissible
-                >
-                  {error}
-                </Alert>
-              )}
-              {loading && <Loader />}
+          {!userDetails ? (
+            <Tab eventKey='update' title='Update'>
+              <div className='p-2'>
+                {success && success !== null && (
+                  <Alert
+                    variant='success'
+                    onClose={() => {
+                      handleSuccessOnClose();
+                    }}
+                    dismissible
+                  >
+                    {success}
+                  </Alert>
+                )}
+                {error && error !== null && (
+                  <Alert
+                    variant='danger'
+                    onClose={() => {
+                      handleErrorOnClose();
+                    }}
+                    dismissible
+                  >
+                    {error}
+                  </Alert>
+                )}
+                {loading && <Loader />}
 
-              <Form onSubmit={submitHandler}>
-                <Form.Group controlId='username'>
-                  <Form.Label>Username</Form.Label>
-                  <Form.Control
-                    className={
-                      username.length === 0 ||
-                      (userInfo && username === userInfo.username)
-                        ? ''
-                        : validateUsername(username)
-                        ? 'is-valid'
-                        : 'is-invalid'
-                    }
-                    type='text'
-                    placeholder='Enter username'
-                    title='Enter username'
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  ></Form.Control>
-                  {username.length === 0 ? null : validateUsername(username) ? (
-                    <div className='valid-feedback' display={'none'}>
-                      Correct
-                    </div>
-                  ) : (
-                    <div className='invalid-feedback'>
-                      Username should be from 5 to 15 characters long
-                    </div>
-                  )}
-                </Form.Group>
+                <Form onSubmit={submitHandler}>
+                  <Form.Group controlId='username'>
+                    <Form.Label>Username</Form.Label>
+                    <Form.Control
+                      className={
+                        username.length === 0 ||
+                        (userInfo && username === userInfo.username)
+                          ? ''
+                          : validateUsername(username)
+                          ? 'is-valid'
+                          : 'is-invalid'
+                      }
+                      type='text'
+                      placeholder='Enter username'
+                      title='Enter username'
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                    ></Form.Control>
+                    {username.length === 0 ? null : validateUsername(
+                        username
+                      ) ? (
+                      <div className='valid-feedback' display={'none'}>
+                        Correct
+                      </div>
+                    ) : (
+                      <div className='invalid-feedback'>
+                        Username should be from 5 to 15 characters long
+                      </div>
+                    )}
+                  </Form.Group>
 
-                <Form.Group controlId='email'>
-                  <Form.Label>Email Address</Form.Label>
-                  <Form.Control
-                    className={
-                      email.length === 0 ||
-                      (userInfo && email === userInfo.email)
-                        ? ''
-                        : validateEmail(email)
-                        ? 'is-valid'
-                        : 'is-invalid'
-                    }
-                    type='text'
-                    placeholder='Enter email'
-                    title='Enter email'
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  ></Form.Control>
-                  {email.length === 0 ? null : validateEmail(email) ? (
-                    <div className='valid-feedback'>Correct</div>
-                  ) : (
-                    <div className='invalid-feedback'>
-                      Please insert a valid email
-                    </div>
-                  )}
-                </Form.Group>
+                  <Form.Group controlId='email'>
+                    <Form.Label>Email Address</Form.Label>
+                    <Form.Control
+                      className={
+                        email.length === 0 ||
+                        (userInfo && email === userInfo.email)
+                          ? ''
+                          : validateEmail(email)
+                          ? 'is-valid'
+                          : 'is-invalid'
+                      }
+                      type='text'
+                      placeholder='Enter email'
+                      title='Enter email'
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    ></Form.Control>
+                    {email.length === 0 ? null : validateEmail(email) ? (
+                      <div className='valid-feedback'>Correct</div>
+                    ) : (
+                      <div className='invalid-feedback'>
+                        Please insert a valid email
+                      </div>
+                    )}
+                  </Form.Group>
 
-                <Form.Group controlId='password'>
-                  <Form.Label className='d-flex justify-content-between'>
-                    Change Password{' '}
-                    <span
-                      className='link'
-                      onClick={showHidePassword}
-                      title='Show/Hide Password'
-                    >
-                      <i
-                        className={
-                          passwordType === 'text'
-                            ? 'fas fa-eye search-icon'
-                            : 'fas fa-eye-slash search-icon'
-                        }
-                      ></i>
-                    </span>
-                  </Form.Label>
-                  <Form.Control
-                    className={
-                      password.length === 0
-                        ? ''
-                        : validatePassword(password)
-                        ? 'is-valid'
-                        : 'is-invalid'
-                    }
-                    type={passwordType}
-                    placeholder='Enter password'
-                    title='Enter password'
-                    value={password}
-                    onChange={(e) => setPasswordHandler(e.target.value)}
-                  ></Form.Control>
-                  {password.length === 0 ? null : validatePassword(password) ? (
-                    <div className='valid-feedback'>Correct</div>
-                  ) : (
-                    <div className='invalid-feedback'>
-                      Password should be from 8 to 15 characters long
-                    </div>
-                  )}
-                </Form.Group>
+                  <Form.Group controlId='password'>
+                    <Form.Label className='d-flex justify-content-between'>
+                      Change Password{' '}
+                      <span
+                        className='link'
+                        onClick={showHidePassword}
+                        title='Show/Hide Password'
+                      >
+                        <i
+                          className={
+                            passwordType === 'text'
+                              ? 'fas fa-eye search-icon'
+                              : 'fas fa-eye-slash search-icon'
+                          }
+                        ></i>
+                      </span>
+                    </Form.Label>
+                    <Form.Control
+                      className={
+                        password.length === 0
+                          ? ''
+                          : validatePassword(password)
+                          ? 'is-valid'
+                          : 'is-invalid'
+                      }
+                      type={passwordType}
+                      placeholder='Enter password'
+                      title='Enter password'
+                      value={password}
+                      onChange={(e) => setPasswordHandler(e.target.value)}
+                    ></Form.Control>
+                    {password.length === 0 ? null : validatePassword(
+                        password
+                      ) ? (
+                      <div className='valid-feedback'>Correct</div>
+                    ) : (
+                      <div className='invalid-feedback'>
+                        Password should be from 8 to 15 characters long
+                      </div>
+                    )}
+                  </Form.Group>
 
-                <Form.Group controlId='confirmPassword'>
-                  <Form.Label className='d-flex justify-content-between'>
-                    Confirm New Password{' '}
-                    <span
-                      className='link'
-                      onClick={showHideConfirmPassword}
-                      title='Show/Hide Confirm Password'
-                    >
-                      <i
-                        className={
-                          confirmPasswordType === 'text'
-                            ? 'fas fa-eye search-icon'
-                            : 'fas fa-eye-slash search-icon'
-                        }
-                      ></i>
-                    </span>
-                  </Form.Label>
-                  <Form.Control
-                    className={
-                      confirmPassword.length === 0
-                        ? ''
-                        : validateConfirmPassword(password, confirmPassword)
-                        ? 'is-valid'
-                        : 'is-invalid'
+                  <Form.Group controlId='confirmPassword'>
+                    <Form.Label className='d-flex justify-content-between'>
+                      Confirm New Password{' '}
+                      <span
+                        className='link'
+                        onClick={showHideConfirmPassword}
+                        title='Show/Hide Confirm Password'
+                      >
+                        <i
+                          className={
+                            confirmPasswordType === 'text'
+                              ? 'fas fa-eye search-icon'
+                              : 'fas fa-eye-slash search-icon'
+                          }
+                        ></i>
+                      </span>
+                    </Form.Label>
+                    <Form.Control
+                      className={
+                        confirmPassword.length === 0
+                          ? ''
+                          : validateConfirmPassword(password, confirmPassword)
+                          ? 'is-valid'
+                          : 'is-invalid'
+                      }
+                      type={confirmPasswordType}
+                      placeholder='Confirm password'
+                      title='Confirm password'
+                      disabled={password.length === 0}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                    ></Form.Control>
+                    {confirmPassword.length ===
+                    0 ? null : validateConfirmPassword(
+                        password,
+                        confirmPassword
+                      ) ? (
+                      <div className='valid-feedback'>Correct</div>
+                    ) : (
+                      <div className='invalid-feedback'>
+                        Confrim Password should be much Password
+                      </div>
+                    )}
+                  </Form.Group>
+                  <Button
+                    variant='primary'
+                    disabled={!validForm}
+                    title={
+                      validForm
+                        ? 'Update Profile'
+                        : 'Enter correct values to submit'
                     }
-                    type={confirmPasswordType}
-                    placeholder='Confirm password'
-                    title='Confirm password'
-                    disabled={password.length === 0}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                  ></Form.Control>
-                  {confirmPassword.length ===
-                  0 ? null : validateConfirmPassword(
-                      password,
-                      confirmPassword
-                    ) ? (
-                    <div className='valid-feedback'>Correct</div>
-                  ) : (
-                    <div className='invalid-feedback'>
-                      Confrim Password should be much Password
-                    </div>
-                  )}
-                </Form.Group>
-                <Button
-                  variant='primary'
-                  disabled={!validForm}
-                  title={
-                    validForm
-                      ? 'Update Profile'
-                      : 'Enter correct values to submit'
-                  }
-                  className='btn btn-sm btn-block'
-                  type='submit'
-                >
-                  Update
-                </Button>
-              </Form>
-            </div>
-          </Tab>
+                    className='btn btn-sm btn-block'
+                    type='submit'
+                  >
+                    Update
+                  </Button>
+                </Form>
+              </div>
+            </Tab>
+          ) : null}
           {/**************** Reviews Tab *******************/}
           <Tab eventKey='reviews' title='Reviews'>
             <div className='p-2'>Reviews</div>
@@ -335,7 +353,7 @@ const ProfileScreen = ({ history }) => {
       {/************************  Main Profile Screen ****************************/}
       <Col md={9} className='pt-2'>
         <h2>User Data Packets</h2>
-        <Tabs defaultActiveKey='purchased' transition={false}>
+        <Tabs defaultActiveKey='uploaded' transition={false}>
           {/*************** Uploaded Tab *******************/}
           <Tab eventKey='uploaded' title='Uploaded'>
             <div className='p-2'>
@@ -363,32 +381,35 @@ const ProfileScreen = ({ history }) => {
             </div>
           </Tab>
           {/*************** Purchased Tab ******************/}
-          <Tab eventKey='purchased' title='Purchased'>
-            <div className='p-2'>
-              {loadingUserAccess ? (
-                <Loader />
-              ) : userAccessError ? (
-                <Alert
-                  variant='danger'
-                  onClose={() => {
-                    handleUserAccessErrorOnClose();
-                  }}
-                  dismissible
-                >
-                  {userAccessError}{' '}
-                  {userAccessError === 'Not Authorised!' ? (
-                    <span>
-                      Try to Logout and Login again to refresh your access token
-                    </span>
-                  ) : (
-                    ''
-                  )}
-                </Alert>
-              ) : (
-                <DataTable data={userAccess} />
-              )}
-            </div>
-          </Tab>
+          {!userDetails ? (
+            <Tab eventKey='purchased' title='Purchased'>
+              <div className='p-2'>
+                {loadingUserAccess ? (
+                  <Loader />
+                ) : userAccessError ? (
+                  <Alert
+                    variant='danger'
+                    onClose={() => {
+                      handleUserAccessErrorOnClose();
+                    }}
+                    dismissible
+                  >
+                    {userAccessError}{' '}
+                    {userAccessError === 'Not Authorised!' ? (
+                      <span>
+                        Try to Logout and Login again to refresh your access
+                        token
+                      </span>
+                    ) : (
+                      ''
+                    )}
+                  </Alert>
+                ) : (
+                  <DataTable data={userAccess} />
+                )}
+              </div>
+            </Tab>
+          ) : null}
         </Tabs>
       </Col>
     </Row>
