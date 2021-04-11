@@ -157,13 +157,13 @@ const CartScreen = ({ match, history }) => {
                           variant='light'
                           onClick={() => removeFromCartHandler(item.packet)}
                         >
-                          <i className='fas fa-trash'></i>
+                          <i className='fas fa-trash trash'></i>
                         </Button>
                         <Button
                           title='Remove from Cart'
                           className='btn-block btn-sm btn-Text-Remove my-2'
                           type='button'
-                          variant='primary'
+                          variant='danger'
                           onClick={() => removeFromCartHandler(item.packet)}
                         >
                           Remove <i className='fas fa-trash'></i>
