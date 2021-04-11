@@ -78,9 +78,6 @@ const ProfileScreen = ({ match, history }) => {
 
   // Hook that triggers when component did mount
   useEffect(() => {
-    console.log(userInfo);
-    console.log(userDetailsId);
-    console.log(userDetails);
     if (userDetails) {
       dispatch(getUserPackets(userDetailsId));
     } else {
@@ -91,7 +88,7 @@ const ProfileScreen = ({ match, history }) => {
       dispatch(getUserPackets(userInfo._id));
       dispatch(getUserAccess(userInfo._id));
     }
-  }, [dispatch, history, userLogin, userInfo, userDetails]);
+  }, [dispatch, history, userLogin, userInfo, userDetails, userDetailsId]);
 
   // Component Methods
   const submitHandler = (e) => {
