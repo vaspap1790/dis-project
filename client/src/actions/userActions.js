@@ -14,6 +14,8 @@ import {
   USER_PROFILE_EMPTY_SUCCESS,
   USER_PROFILE_EMPTY_ERROR
 } from '../constants/userConstants';
+import { ACCESS_PROFILE_RESET } from '../constants/accessConstants';
+import { PACKET_USER_RESET } from '../constants/packetConstants';
 import axios from 'axios';
 
 //////////////////////////////// Login Actions ///////////////////////////////////
@@ -109,6 +111,8 @@ export const emptyRegisterError = () => async (dispatch) => {
 export const logout = () => (dispatch) => {
   localStorage.removeItem('userInfo');
   dispatch({ type: USER_LOGOUT });
+  dispatch({ type: ACCESS_PROFILE_RESET });
+  dispatch({ type: PACKET_USER_RESET });
 };
 
 /////////////////////////////// Profile Actions //////////////////////////////////

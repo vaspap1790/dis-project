@@ -9,7 +9,8 @@ import {
   PACKET_DETAILS_REQUEST,
   PACKET_DETAILS_SUCCESS,
   PACKET_DETAILS_FAIL,
-  PRE_PACKET_DETAILS_REQUEST
+  PRE_PACKET_DETAILS_REQUEST,
+  PACKET_USER_RESET
 } from '../constants/packetConstants';
 
 export const packetListReducer = (state = { packets: [] }, action) => {
@@ -33,6 +34,8 @@ export const packetsUserReducer = (state = { userData: [] }, action) => {
       return { loading: false, userData: action.payload };
     case PACKET_USER_FAIL:
       return { loading: false, error: action.payload };
+    case PACKET_USER_RESET:
+      return { userData: [] };
     case PACKET_USER_EMPTY_ERROR:
       return { error: null };
     default:
