@@ -26,7 +26,7 @@ const Packet = ({ packet }) => {
           <Card.Title as='div'>{packet.name}</Card.Title>
         </Link>
         <Card.Text>
-          <div>
+          <span style={{ display: 'block' }}>
             by{' '}
             <Link
               to={`/profile/${packet.user._id}`}
@@ -39,7 +39,7 @@ const Packet = ({ packet }) => {
             <span className='text-muted'>
               <Moment format='D MMM YYYY hh:mm:ss'>{packet.createdAt}</Moment>
             </span>
-          </div>
+          </span>
           <Rating value={packet.rating} text={`${packet.numReviews} reviews`} />
         </Card.Text>
         <Card.Text as='h3'>

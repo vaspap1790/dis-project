@@ -105,6 +105,16 @@ h2 {
 
 .filter-label {
   margin-left: 2rem !important;
+  margin-bottom: 0rem !important;
+}
+
+@media screen and (max-width: 992px) {
+  .filter-label {
+    display: none;
+  }
+  .hide-md {
+    display: none;
+  }
 }
 
 /* Responsive Cart Screen */

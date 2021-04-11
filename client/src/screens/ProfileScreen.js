@@ -375,7 +375,14 @@ const ProfileScreen = ({ history }) => {
                   }}
                   dismissible
                 >
-                  {userAccessError}
+                  {userAccessError}{' '}
+                  {userAccessError === 'Not Authorised!' ? (
+                    <span>
+                      Try to Logout and Login again to refresh your access token
+                    </span>
+                  ) : (
+                    ''
+                  )}
                 </Alert>
               ) : (
                 <DataTable data={userAccess} />

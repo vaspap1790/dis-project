@@ -98,7 +98,14 @@ const CartScreen = ({ match, history }) => {
                 }}
                 dismissible
               >
-                {error}
+                {error}{' '}
+                {error === 'Not Authorised!' ? (
+                  <span>
+                    Try to Logout and Login again to refresh your access token
+                  </span>
+                ) : (
+                  ''
+                )}
               </Alert>
             )}
             {success && (

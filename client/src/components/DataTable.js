@@ -9,39 +9,72 @@ import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 //import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
 const DataTable = ({ data }) => {
-  const downloadFormatter = (cell, row, rowIndex) => {
+  // Header formatters
+  const imageHeaderFormatter = (column, colIndex) => {
     return (
-      <div className='v-align' style={{ height: '4rem' }}>
-        <Button
-          className='btn btn-sm btn-primary'
-          onClick={() => {
-            console.log(cell);
-          }}
-        >
-          Download
-        </Button>
+      <div className='v-align h-align' style={{ height: '3rem' }}>
+        {column.text}
       </div>
     );
   };
 
+  const nameHeaderFormatter = (
+    column,
+    colIndex,
+    { sortElement, filterElement }
+  ) => {
+    return (
+      <div className='v-align h-align' style={{ height: '3rem' }}>
+        <span>{column.text}</span>
+        <span>{sortElement}</span>
+        <span className='order-last'>{filterElement}</span>
+      </div>
+    );
+  };
+
+  const dateHeaderFormatter = (
+    column,
+    colIndex,
+    { sortElement, filterElement }
+  ) => {
+    return (
+      <div className='v-align h-align' style={{ height: '3rem' }}>
+        <span>{column.text}</span>
+        <span>{sortElement}</span>
+        <span className='order-last'>{filterElement}</span>
+      </div>
+    );
+  };
+
+  const actionHeaderFormatter = (column, colIndex) => {
+    return (
+      <div className='v-align h-align' style={{ height: '3rem' }}>
+        {column.text}
+      </div>
+    );
+  };
+
+  //Column formatters
   const imageFormatter = (cell, row, rowIndex) => {
     return (
-      <Link to={`/packet/${row.packet._id}`}>
-        <Image
-          src={cell}
-          alt={row.name}
-          title={row.name}
-          fluid
-          rounded
-          style={{ width: '5rem', height: '4rem' }}
-        />
-      </Link>
+      <div className='v-align h-align' style={{ height: '4rem' }}>
+        <Link to={`/packet/${row.packet._id}`}>
+          <Image
+            src={cell}
+            alt={row.name}
+            title={row.name}
+            fluid
+            rounded
+            style={{ width: '5rem', height: '4rem' }}
+          />
+        </Link>
+      </div>
     );
   };
 
   const nameFormatter = (cell, row, rowIndex) => {
     return (
-      <div className='v-align' style={{ height: '4rem' }}>
+      <div className='v-align h-align' style={{ height: '4rem' }}>
         <Link to={`/packet/${row.packet._id}`}>{cell}</Link>
       </div>
     );
@@ -49,20 +82,44 @@ const DataTable = ({ data }) => {
 
   const dateFormatter = (cell, row, rowIndex) => {
     return (
-      <div className='v-align' style={{ height: '4rem' }}>
+      <div className='v-align h-align' style={{ height: '4rem' }}>
         <Moment format='D MMM YYYY hh:mm:ss'>{cell}</Moment>
       </div>
     );
   };
 
+  const actionFormatter = (cell, row, rowIndex) => {
+    return (
+      <div className='v-align h-align' style={{ height: '4rem' }}>
+        <a
+          type='button'
+          variant='primary'
+          title='Download'
+          onClick={() => {
+            console.log(cell);
+          }}
+        >
+          <i
+            className='fas fa-file-download fa-2x'
+            style={{ color: 'black' }}
+          ></i>
+        </a>
+      </div>
+    );
+  };
+
+  //Column Declaration
   const columns = [
     {
       dataField: 'packet.image',
-      text: '',
+      text: 'Image',
       headerStyle: {
         borderStyle: 'none'
       },
-      formatter: imageFormatter
+      classes: 'hide-md',
+      headerClasses: 'hide-md',
+      formatter: imageFormatter,
+      headerFormatter: imageHeaderFormatter
     },
     {
       dataField: 'packet.name',
@@ -77,7 +134,8 @@ const DataTable = ({ data }) => {
         borderLeftStyle: 'solid',
         borderLeftColor: '#fff'
       },
-      formatter: nameFormatter
+      formatter: nameFormatter,
+      headerFormatter: nameHeaderFormatter
     },
     {
       dataField: 'createdAt',
@@ -90,18 +148,21 @@ const DataTable = ({ data }) => {
         borderRightStyle: 'solid',
         borderRightColor: '#fff'
       },
-      formatter: dateFormatter
+      formatter: dateFormatter,
+      headerFormatter: dateHeaderFormatter
     },
     {
       dataField: 'packet._id',
-      text: '',
+      text: 'Action',
       headerStyle: {
         borderStyle: 'none'
       },
-      formatter: downloadFormatter
+      formatter: actionFormatter,
+      headerFormatter: actionHeaderFormatter
     }
   ];
 
+  //Sorting Options
   const defaultSorted = [
     {
       dataField: 'createdAt',
@@ -109,6 +170,7 @@ const DataTable = ({ data }) => {
     }
   ];
 
+  //Pagination Options
   const pagingOptions = {
     paginationSize: 5,
     pageStartIndex: 1,
@@ -129,6 +191,7 @@ const DataTable = ({ data }) => {
     ]
   };
 
+  //DataTable instantiation
   return (
     <BootstrapTable
       bootstrap4
