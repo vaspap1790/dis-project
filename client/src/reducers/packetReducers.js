@@ -25,12 +25,12 @@ export const packetListReducer = (state = { packets: [] }, action) => {
   }
 };
 
-export const packetsUserReducer = (state = { userPackets: [] }, action) => {
+export const packetsUserReducer = (state = { userData: [] }, action) => {
   switch (action.type) {
     case PACKET_USER_REQUEST:
-      return { loading: true, userPackets: [] };
+      return { loading: true, userData: [] };
     case PACKET_USER_SUCCESS:
-      return { loading: false, userPackets: action.payload };
+      return { loading: false, userData: action.payload };
     case PACKET_USER_FAIL:
       return { loading: false, error: action.payload };
     case PACKET_USER_EMPTY_ERROR:

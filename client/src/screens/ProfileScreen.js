@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Packet from '../components/Packet';
+import Rating from '../components/Rating';
 import DataTable from '../components/DataTable';
-import { Form, Button, Row, Col, Alert, Tabs, Tab } from 'react-bootstrap';
+import {
+  Form,
+  Button,
+  Row,
+  Col,
+  Alert,
+  Tabs,
+  Tab,
+  Card
+} from 'react-bootstrap';
 import Loader from '../components/Loader';
 import {
   updateUserProfile,
@@ -55,10 +65,12 @@ const ProfileScreen = ({ match, history }) => {
 
   const packetsUser = useSelector((state) => state.packetsUser);
   const {
-    userPackets,
+    userData,
     loading: loadingUserPackets,
     error: userPacketsError
   } = packetsUser;
+
+  const { packets: userPackets, reviews: userReviews, userRating } = userData;
 
   // Component Variables
   const validForm =
@@ -150,7 +162,26 @@ const ProfileScreen = ({ match, history }) => {
         >
           {/**************** Profile Tab *******************/}
           <Tab eventKey='profile' title='Profile'>
-            <div className='p-2'>Profile</div>
+            {userRating && (
+              <Card className='my-3 p-3 rounded'>
+                <Card.Body style={{ color: 'black' }}>
+                  <Card.Title as='div'>{userRating.username}</Card.Title>
+                  <Card.Text>
+                    <span style={{ display: 'block' }}>
+                      Uploaded{' '}
+                      <span class='badge badge-pill badge-success'>
+                        {userPackets.length}
+                      </span>{' '}
+                      data items
+                    </span>
+                    <Rating
+                      value={userRating.rating}
+                      text={`${userRating.numReviews} reviews`}
+                    />
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            )}
           </Tab>
           {/***************** Update Tab *******************/}
           {!userDetails ? (
@@ -356,23 +387,28 @@ const ProfileScreen = ({ match, history }) => {
             <div className='p-2'>
               {loadingUserPackets ? (
                 <Loader />
-              ) : userPacketsError ? (
+              ) : userPacketsError &&
+                userPacketsError === 'No items uploaded' ? (
+                <Alert variant='info'>{userPacketsError}</Alert>
+              ) : userPacketsError &&
+                userPacketsError !== 'No items uploaded' ? (
                 <Alert
                   variant='danger'
                   onClose={() => {
                     handleUserPacketsErrorOnClose();
                   }}
-                  dismissible
+                  dismissible={userPacketsError === 'No items uploaded'}
                 >
                   {userPacketsError}
                 </Alert>
               ) : (
                 <Row>
-                  {userPackets.map((packet) => (
-                    <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
-                      <Packet packet={packet} />
-                    </Col>
-                  ))}
+                  {userPackets &&
+                    userPackets.map((packet) => (
+                      <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
+                        <Packet packet={packet} />
+                      </Col>
+                    ))}
                 </Row>
               )}
             </div>

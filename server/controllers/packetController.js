@@ -1,5 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Packet from '../models/packetModel.js';
+import Review from '../models/reviewModel.js';
+import User from '../models/userModel.js';
 
 // @desc    Fetch all packets
 // @route   GET /api/packets
@@ -33,9 +35,27 @@ const getPacketById = asyncHandler(async (req, res) => {
 // @access  Public
 const getPacketsByUserId = asyncHandler(async (req, res) => {
   const packets = await Packet.find({ user: req.params.id });
+  const userRating = await User.find({ _id: req.params.id }).select(
+    'username rating numReviews -_id'
+  );
 
   if (packets && packets.length !== 0) {
-    res.json(packets);
+    const reviews = [];
+    var i;
+    for (i = 0; i < packets.length; i++) {
+      const packetReview = await Review.find({ packet: packets[i]._id })
+        .populate('packet', 'name')
+        .populate('user', 'username');
+      reviews.push(packetReview);
+    }
+
+    const data = {
+      packets: packets,
+      reviews: reviews,
+      userRating: userRating[0]
+    };
+
+    res.json(data);
   } else {
     res.status(404);
     throw new Error('No items uploaded');
