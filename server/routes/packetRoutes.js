@@ -2,13 +2,16 @@ import express from 'express';
 import {
   getPackets,
   getPacketById,
-  getPacketsByUserId
+  getPacketsByUserId,
+  updatePacket,
+  createPacket
 } from '../controllers/packetController.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.route('/').get(getPackets);
-router.route('/:id').get(getPacketById);
+router.route('/').get(getPackets).post(protect, createPacket);
 router.route('/user/:id').get(getPacketsByUserId);
+router.route('/:id').get(getPacketById).put(protect, updatePacket);
 
 export default router;

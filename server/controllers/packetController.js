@@ -62,4 +62,50 @@ const getPacketsByUserId = asyncHandler(async (req, res) => {
   }
 });
 
-export { getPackets, getPacketById, getPacketsByUserId };
+// @desc    Create a packet
+// @route   POST /api/packets
+// @access  Private
+const createPacket = asyncHandler(async (req, res) => {
+  const packet = new Packet({
+    name: 'Sample name',
+    price: 0,
+    user: req.user._id,
+    category: 'Sample category',
+    numReviews: 0,
+    description: 'Sample description'
+  });
+
+  const createdPacket = await packet.save();
+  res.status(201).json(createdPacket);
+});
+
+// @desc    Update a packet
+// @route   PUT /api/packets/:id
+// @access  Private
+const updatePacket = asyncHandler(async (req, res) => {
+  const { name, price, description, image, category } = req.body;
+
+  const packet = await Packet.findById(req.params.id);
+
+  if (packet) {
+    packet.name = name;
+    packet.price = price;
+    packet.description = description;
+    packet.image = image;
+    packet.category = category;
+
+    const updatedPacket = await packet.save();
+    res.json(updatedPacket);
+  } else {
+    res.status(404);
+    throw new Error('Packet not found');
+  }
+});
+
+export {
+  getPackets,
+  getPacketById,
+  getPacketsByUserId,
+  createPacket,
+  updatePacket
+};

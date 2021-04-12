@@ -70,13 +70,14 @@ const Rating = ({ value, text, color }) => {
 };
 
 Rating.defaultProps = {
-  color: '#f8e825',
+  value: 0,
+  color: '#f8e825'
 };
 
 Rating.propTypes = {
-  value: PropTypes.number.isRequired,
-  text: PropTypes.string.isRequired,
-  color: PropTypes.string,
+  value: PropTypes.number,
+  text: PropTypes.string,
+  color: PropTypes.string
 };
 
 export default Rating;

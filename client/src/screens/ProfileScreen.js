@@ -169,7 +169,7 @@ const ProfileScreen = ({ match, history }) => {
                   <Card.Text>
                     <span style={{ display: 'block' }}>
                       Uploaded{' '}
-                      <span class='badge badge-pill badge-success'>
+                      <span className='badge badge-pill badge-success'>
                         {userPackets.length}
                       </span>{' '}
                       data items
@@ -389,7 +389,7 @@ const ProfileScreen = ({ match, history }) => {
               title='Upload a data packet'
               style={{ fontSize: '0.82rem' }}
             >
-              Upload <i class='fas fa-upload'></i>
+              Upload <i className='fas fa-upload'></i>
             </Button>
           ) : null}
         </span>
