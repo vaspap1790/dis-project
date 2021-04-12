@@ -31,6 +31,10 @@ h2 {
   text-decoration: underline;
 }
 
+.link-icon:hover {
+  cursor: pointer;
+}
+
 /* Home Screen */
 @media screen and (min-width: 692px) {
   .card-title {
@@ -157,4 +161,9 @@ h2 {
   .btn-Text-Checkout {
     display: none;
   }
+}
+
+/* Packet Form Screen */
+.uploadsTableHeaders {
+  border-color: #fff !important;
 }
