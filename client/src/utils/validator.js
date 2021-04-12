@@ -3,6 +3,33 @@ function validateEmail(email) {
   return regExp.test(email);
 }
 
+const validateName = (name) => {
+  if ((name.length !== 0 && name.length < 5) || name.length > 30) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+const validateDescription = (description) => {
+  if (
+    (description.length !== 0 && description.length < 5) ||
+    description.length > 100
+  ) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+const validateCategory = (category) => {
+  if ((category.length !== 0 && category.length < 5) || category.length > 30) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
 const validateUsername = (username) => {
   if ((username.length !== 0 && username.length < 5) || username.length > 15) {
     return false;
@@ -32,6 +59,9 @@ const validateConfirmPassword = (password, confirmPassword) => {
 };
 
 export {
+  validateName,
+  validateDescription,
+  validateCategory,
   validateUsername,
   validateEmail,
   validatePassword,

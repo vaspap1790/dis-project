@@ -2,11 +2,11 @@ import React from 'react';
 import Moment from 'react-moment';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Card } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
 import Rating from './Rating';
 import { prelistPacketDetails } from '../actions/packetActions';
 
-const Packet = ({ packet }) => {
+const Packet = ({ packet, handler }) => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
@@ -46,6 +46,11 @@ const Packet = ({ packet }) => {
           <i className='fab fa-ethereum'></i>
           {packet.price}
         </Card.Text>
+        {handler && (
+          <Button id={`${packet._id}`} onClick={handler}>
+            Update
+          </Button>
+        )}
       </Card.Body>
     </Card>
   );

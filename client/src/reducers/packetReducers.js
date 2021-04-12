@@ -10,7 +10,11 @@ import {
   PACKET_DETAILS_SUCCESS,
   PACKET_DETAILS_FAIL,
   PRE_PACKET_DETAILS_REQUEST,
-  PACKET_USER_RESET
+  PACKET_USER_RESET,
+  PACKET_CREATE_REQUEST,
+  PACKET_CREATE_SUCCESS,
+  PACKET_CREATE_FAIL,
+  PACKET_CREATE_RESET
 } from '../constants/packetConstants';
 
 export const packetListReducer = (state = { packets: [] }, action) => {
@@ -49,19 +53,34 @@ export const packetsUserReducer = (
   }
 };
 
-export const packetDetailsReducer = (
-  state = { packet: { reviews: [] } },
-  action
-) => {
+export const packetDetailsReducer = (state = {}, action) => {
   switch (action.type) {
     case PACKET_DETAILS_REQUEST:
-      return { loadingDetails: true, ...state };
+      return { loading: true, ...state };
     case PRE_PACKET_DETAILS_REQUEST:
-      return { loadingDetails: true, packet: {} };
+      return {
+        loading: true,
+        packet: { name: '', description: '', category: '' }
+      };
     case PACKET_DETAILS_SUCCESS:
-      return { loadingDetails: false, packet: action.payload };
+      return { loading: false, packet: action.payload };
     case PACKET_DETAILS_FAIL:
-      return { loadingDetails: false, error: action.payload };
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const packetCreateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case PACKET_CREATE_REQUEST:
+      return { loading: true };
+    case PACKET_CREATE_SUCCESS:
+      return { loading: false, success: true, packet: action.payload };
+    case PACKET_CREATE_FAIL:
+      return { loading: false, error: action.payload };
+    case PACKET_CREATE_RESET:
+      return {};
     default:
       return state;
   }

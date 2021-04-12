@@ -21,7 +21,8 @@ import {
 } from '../actions/userActions';
 import {
   getUserPackets,
-  emptyUserPacketsError
+  emptyUserPacketsError,
+  listPacketDetails
 } from '../actions/packetActions';
 import {
   getUserAccess,
@@ -114,6 +115,15 @@ const ProfileScreen = ({ match, history }) => {
       dispatch(emptyProfileError());
       dispatch(emptyProfileSuccess());
     }, 8000);
+  };
+
+  const uploadHandler = () => {
+    history.push('/packets/form');
+  };
+
+  const updateHandler = (e) => {
+    dispatch(listPacketDetails(e.target.id));
+    history.push(`/packets/form/${e.target.id}`);
   };
 
   const handleErrorOnClose = () => {
@@ -387,6 +397,7 @@ const ProfileScreen = ({ match, history }) => {
               variant='success'
               className='btn-sm'
               title='Upload a data packet'
+              onClick={uploadHandler}
               style={{ fontSize: '0.82rem' }}
             >
               Upload <i className='fas fa-upload'></i>
@@ -418,7 +429,7 @@ const ProfileScreen = ({ match, history }) => {
                   {userPackets &&
                     userPackets.map((packet) => (
                       <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
-                        <Packet packet={packet} />
+                        <Packet handler={updateHandler} packet={packet} />
                       </Col>
                     ))}
                 </Row>

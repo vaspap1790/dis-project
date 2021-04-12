@@ -19,7 +19,7 @@ const PacketScreen = ({ history, match }) => {
 
   // App level State
   const packetDetails = useSelector((state) => state.packetDetails);
-  const { loadingDetails, error, packet } = packetDetails;
+  const { loading: loadingDetails, error, packet } = packetDetails;
 
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;

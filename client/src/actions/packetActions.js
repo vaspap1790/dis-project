@@ -10,8 +10,12 @@ import {
   PACKET_DETAILS_REQUEST,
   PACKET_DETAILS_SUCCESS,
   PACKET_DETAILS_FAIL,
-  PRE_PACKET_DETAILS_REQUEST
+  PRE_PACKET_DETAILS_REQUEST,
+  PACKET_CREATE_REQUEST,
+  PACKET_CREATE_SUCCESS,
+  PACKET_CREATE_FAIL
 } from '../constants/packetConstants';
+import { logout } from './userActions';
 
 ///////////////////////////////// List Actions ////////////////////////////////////
 // thunk allows to make async requests here
@@ -98,4 +102,42 @@ export const emptyUserPacketsError = () => async (dispatch) => {
   dispatch({
     type: PACKET_USER_EMPTY_ERROR
   });
+};
+
+//////////////////////////////// Packet Actions ///////////////////////////////////
+export const createPacket = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: PACKET_CREATE_REQUEST
+    });
+
+    const {
+      userLogin: { userInfo }
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    };
+
+    const { data } = await axios.post(`/api/packets`, {}, config);
+
+    dispatch({
+      type: PACKET_CREATE_SUCCESS,
+      payload: data
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === 'Not authorized!') {
+      dispatch(logout());
+    }
+    dispatch({
+      type: PACKET_CREATE_FAIL,
+      payload: message
+    });
+  }
 };

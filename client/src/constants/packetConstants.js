@@ -19,3 +19,9 @@ export const PACKET_DETAILS_FAIL = 'PACKET_DETAILS_FAIL';
 
 // Messages
 export const PRE_PACKET_DETAILS_REQUEST = 'PRE_PACKET_DETAILS_REQUEST';
+
+/////////////////////////////// Update Actions /////////////////////////////////
+export const PACKET_CREATE_REQUEST = 'PACKET_CREATE_REQUEST';
+export const PACKET_CREATE_SUCCESS = 'PACKET_CREATE_SUCCESS';
+export const PACKET_CREATE_FAIL = 'PACKET_CREATE_FAIL';
+export const PACKET_CREATE_RESET = 'PACKET_CREATE_RESET';
