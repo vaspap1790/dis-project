@@ -19,7 +19,13 @@ const Packet = ({ packet, handler }) => {
   return (
     <Card className='my-3 p-3 rounded'>
       <Link to={`/packet/${packet._id}`}>
-        <Card.Img src={packet.image} variant='top' />
+        <Card.Img
+          src={packet.image}
+          variant='top'
+          style={{
+            height: '30vh'
+          }}
+        />
       </Link>
       <Card.Body>
         <Link to={`/packet/${packet._id}`} onClick={clickHandler}>

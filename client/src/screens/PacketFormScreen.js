@@ -88,7 +88,7 @@ const PacketFormScreen = ({ history, match }) => {
       console.log(file);
       await setFiles((files) => [...files, file]);
     } catch (error) {
-      console.log(error);
+      console.err(error);
     }
   };
 
@@ -132,7 +132,7 @@ const PacketFormScreen = ({ history, match }) => {
                         : 'is-invalid'
                     }
                     type='text'
-                    placeholder='Enter name'
+                    placeholder='Enter Name'
                     title='Enter Name'
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -228,11 +228,11 @@ const PacketFormScreen = ({ history, match }) => {
                   </span>
                   <OverlayTrigger
                     trigger='click'
-                    placement='right'
+                    placement='top'
                     overlay={popover}
                   >
                     <i
-                      class='fas fa-search-plus fa-lg link-icon'
+                      className='fas fa-search-plus fa-lg link-icon'
                       style={{ color: 'black' }}
                     ></i>
                   </OverlayTrigger>
