@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { StyledDropZone } from 'react-drop-zone';
 import { FileIcon, defaultStyles } from 'react-file-icon';
-import Moment from 'react-moment';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import 'react-drop-zone/dist/styles.css';
 import {
   Form,
@@ -17,6 +18,7 @@ import {
   Popover
 } from 'react-bootstrap';
 import Loader from '../components/Loader';
+import Moment from 'react-moment';
 import {
   validateName,
   validateDescription,
@@ -36,6 +38,8 @@ const PacketFormScreen = ({ history, match }) => {
 
   const packetDetails = useSelector((state) => state.packetDetails);
   const { loading, error, packet } = packetDetails;
+
+  const [editorValue, setEditorValue] = useState('');
 
   // Component level State
   const [name, setName] = useState('');
@@ -72,6 +76,11 @@ const PacketFormScreen = ({ history, match }) => {
     //TODO:
   };
 
+  const handleSave = () => {
+    console.log(editorValue);
+    //TODO:
+  };
+
   const popover = (
     <Popover id='popover-basic'>
       <Popover.Title as='h3'>Popover right</Popover.Title>
@@ -82,13 +91,51 @@ const PacketFormScreen = ({ history, match }) => {
     </Popover>
   );
 
+  const modules = {
+    toolbar: [
+      [{ header: '1' }, { header: '2' }, { font: [] }],
+      [{ size: [] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [
+        { list: 'ordered' },
+        { list: 'bullet' },
+        { indent: '-1' },
+        { indent: '+1' }
+      ],
+      ['clean']
+    ],
+    clipboard: {
+      // toggle to add extra line breaks when pasting HTML:
+      matchVisual: false
+    }
+  };
+
+  const formats = [
+    'header',
+    'font',
+    'size',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'blockquote',
+    'list',
+    'bullet',
+    'indent'
+  ];
+
   const onDropHandler = async (file, text) => {
     try {
-      file.timestamp = new Date();
-      console.log(file);
+      //file.timestamp = new Date();
+      //console.log(file);
+      var reader = new FileReader();
+      reader.onload = function () {
+        setEditorValue(this.result);
+      };
+      reader.readAsText(file);
       await setFiles((files) => [...files, file]);
     } catch (error) {
-      console.err(error);
+      console.log(error);
     }
   };
 
@@ -306,6 +353,15 @@ const PacketFormScreen = ({ history, match }) => {
               </Col>
             </Row>
           </Form>
+          <ReactQuill
+            theme='snow'
+            modules={modules}
+            formats={formats}
+            value={editorValue}
+            preserveWhitespace
+            onChange={setEditorValue}
+          />
+          <Button onClick={handleSave}>Save</Button>
         </Container>
       )}
     </>
