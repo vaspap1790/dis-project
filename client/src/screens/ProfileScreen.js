@@ -22,8 +22,7 @@ import {
 import {
   getUserPackets,
   emptyUserPacketsError,
-  listPacketDetails,
-  prelistPacketDetails
+  listPacketDetails
 } from '../actions/packetActions';
 import {
   getUserAccess,

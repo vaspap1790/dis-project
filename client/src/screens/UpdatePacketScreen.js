@@ -23,7 +23,6 @@ import {
   validateDescription,
   validateCategory
 } from '../utils/validator';
-import { listPacketDetails } from '../actions/packetActions';
 
 const UpdatePacketScreen = ({ history, match }) => {
   // Hook that enables components to interact with the App State through reducers
@@ -91,7 +90,6 @@ const UpdatePacketScreen = ({ history, match }) => {
     try {
       //file.timestamp = new Date();
       //console.log(file);
-      var reader = new FileReader();
       await setFiles((files) => [...files, file]);
     } catch (error) {
       console.log(error);
