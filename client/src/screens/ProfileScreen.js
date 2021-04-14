@@ -22,7 +22,8 @@ import {
 import {
   getUserPackets,
   emptyUserPacketsError,
-  listPacketDetails
+  listPacketDetails,
+  prelistPacketDetails
 } from '../actions/packetActions';
 import {
   getUserAccess,
@@ -118,12 +119,12 @@ const ProfileScreen = ({ match, history }) => {
   };
 
   const uploadHandler = () => {
-    history.push('/packets/form');
+    history.push('/packets/create');
   };
 
   const updateHandler = (e) => {
     dispatch(listPacketDetails(e.target.id));
-    history.push(`/packets/form/${e.target.id}`);
+    history.push(`/packets/update/${e.target.id}`);
   };
 
   const handleErrorOnClose = () => {

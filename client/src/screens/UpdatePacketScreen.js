@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { StyledDropZone } from 'react-drop-zone';
+import axios from 'axios';
 import { FileIcon, defaultStyles } from 'react-file-icon';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import 'react-drop-zone/dist/styles.css';
 import {
   Form,
@@ -24,8 +23,9 @@ import {
   validateDescription,
   validateCategory
 } from '../utils/validator';
+import { listPacketDetails } from '../actions/packetActions';
 
-const PacketFormScreen = ({ history, match }) => {
+const UpdatePacketScreen = ({ history, match }) => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
@@ -37,33 +37,34 @@ const PacketFormScreen = ({ history, match }) => {
   const { userInfo } = userLogin;
 
   const packetDetails = useSelector((state) => state.packetDetails);
-  const { loading, error, packet } = packetDetails;
-
-  const [editorValue, setEditorValue] = useState('');
+  const { packet } = packetDetails;
 
   // Component level State
+  const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
-  //   const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState(0);
   const [files, setFiles] = useState([]);
 
   // Hook that triggers when component did mount
   useEffect(() => {
-    if (packetId !== undefined) {
-      if (packet !== undefined) {
-        setName(packet.name);
-        setDescription(packet.description);
-        setCategory(packet.category);
-      }
-    } else {
-      setName('');
-      setDescription('');
-      setCategory('');
-    }
-  }, [dispatch, match, packet, packetId]);
+    const fetch = async () => {
+      const { data } = await axios.get(`/api/packets/${packetId}`);
+      setName(data.name);
+      setDescription(data.description);
+      setCategory(data.category);
+      setPrice(data.price);
+      setLoading(false);
+    };
+    fetch();
+  }, [dispatch, packetId]);
 
   // Component Methods
+  const goBack = () => {
+    history.goBack();
+  };
+
   const submitHandler = (e) => {
     e.preventDefault();
   };
@@ -73,11 +74,6 @@ const PacketFormScreen = ({ history, match }) => {
   };
 
   const removeFromUploadsHandler = () => {
-    //TODO:
-  };
-
-  const handleSave = () => {
-    console.log(editorValue);
     //TODO:
   };
 
@@ -91,48 +87,11 @@ const PacketFormScreen = ({ history, match }) => {
     </Popover>
   );
 
-  const modules = {
-    toolbar: [
-      [{ header: '1' }, { header: '2' }, { font: [] }],
-      [{ size: [] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [
-        { list: 'ordered' },
-        { list: 'bullet' },
-        { indent: '-1' },
-        { indent: '+1' }
-      ],
-      ['clean']
-    ],
-    clipboard: {
-      // toggle to add extra line breaks when pasting HTML:
-      matchVisual: false
-    }
-  };
-
-  const formats = [
-    'header',
-    'font',
-    'size',
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'blockquote',
-    'list',
-    'bullet',
-    'indent'
-  ];
-
   const onDropHandler = async (file, text) => {
     try {
       //file.timestamp = new Date();
       //console.log(file);
       var reader = new FileReader();
-      reader.onload = function () {
-        setEditorValue(this.result);
-      };
-      reader.readAsText(file);
       await setFiles((files) => [...files, file]);
     } catch (error) {
       console.log(error);
@@ -143,40 +102,21 @@ const PacketFormScreen = ({ history, match }) => {
     <>
       {loading ? (
         <Loader />
-      ) : error ? (
-        <Alert variant='danger'>{error}</Alert>
       ) : (
         <Container>
-          {packetId === undefined ? (
-            <h1>Upload Data Packet</h1>
-          ) : (
-            <h1>Update Data Packet</h1>
-          )}
-          {error && error !== null && (
-            <Alert
-              variant='danger'
-              onClose={() => {
-                handleErrorOnClose();
-              }}
-              dismissible
-            >
-              {error}
-            </Alert>
-          )}
-          {loading && <Loader />}
-
-          <Form onSubmit={submitHandler}>
+          <h1>Update Data Packet</h1>
+          <Form>
             <Row>
               <Col md={6}>
                 <Form.Group controlId='name'>
                   <Form.Label>Name</Form.Label>
                   <Form.Control
                     className={
-                      name.length === 0
+                      name.length === 0 || !validateName(name)
+                        ? 'is-invalid'
+                        : packet === undefined || name === packet.name
                         ? ''
-                        : validateName(name)
-                        ? 'is-valid'
-                        : 'is-invalid'
+                        : validateName(name) && 'is-valid'
                     }
                     type='text'
                     placeholder='Enter Name'
@@ -184,14 +124,16 @@ const PacketFormScreen = ({ history, match }) => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   ></Form.Control>
-                  {name.length === 0 ? null : validateName(name) ? (
-                    <div className='valid-feedback' display={'none'}>
-                      Correct
-                    </div>
-                  ) : (
+                  {name.length === 0 || !validateName(name) ? (
                     <div className='invalid-feedback'>
-                      Name must be from 5 to 30 characters long
+                      Name must be from 5 to 100 characters long
                     </div>
+                  ) : packet === undefined || name === packet.name ? null : (
+                    validateName(name) && (
+                      <div className='valid-feedback' display={'none'}>
+                        Correct
+                      </div>
+                    )
                   )}
                 </Form.Group>
 
@@ -201,11 +143,13 @@ const PacketFormScreen = ({ history, match }) => {
                     as='textarea'
                     rows={4}
                     className={
-                      description.length === 0
+                      description.length === 0 ||
+                      !validateDescription(description)
+                        ? 'is-invalid'
+                        : packet === undefined ||
+                          description === packet.description
                         ? ''
-                        : validateDescription(description)
-                        ? 'is-valid'
-                        : 'is-invalid'
+                        : validateDescription(description) && 'is-valid'
                     }
                     type='text'
                     placeholder='Enter Description'
@@ -213,16 +157,18 @@ const PacketFormScreen = ({ history, match }) => {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   ></Form.Control>
-                  {description.length === 0 ? null : validateDescription(
-                      description
-                    ) ? (
-                    <div className='valid-feedback' display={'none'}>
-                      Correct
-                    </div>
-                  ) : (
+                  {description.length === 0 ||
+                  !validateDescription(description) ? (
                     <div className='invalid-feedback'>
-                      Description must be from 5 to 100 characters long
+                      Description must be from 5 to 1000 characters long
                     </div>
+                  ) : packet === undefined ||
+                    description === packet.description ? null : (
+                    validateDescription(description) && (
+                      <div className='valid-feedback' display={'none'}>
+                        Correct
+                      </div>
+                    )
                   )}
                 </Form.Group>
 
@@ -230,26 +176,29 @@ const PacketFormScreen = ({ history, match }) => {
                   <Form.Label>Category</Form.Label>
                   <Form.Control
                     className={
-                      category.length === 0
+                      category.length === 0 || !validateCategory(category)
+                        ? 'is-invalid'
+                        : packet === undefined || category === packet.category
                         ? ''
-                        : validateCategory(category)
-                        ? 'is-valid'
-                        : 'is-invalid'
+                        : validateCategory(category) && 'is-valid'
                     }
                     type='text'
                     placeholder='Enter Category'
                     title='Enter Category'
                     value={category}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => setCategory(e.target.value)}
                   ></Form.Control>
-                  {category.length === 0 ? null : validateCategory(category) ? (
-                    <div className='valid-feedback' display={'none'}>
-                      Correct
-                    </div>
-                  ) : (
+                  {category.length === 0 || !validateCategory(category) ? (
                     <div className='invalid-feedback'>
-                      Category must be from 5 to 15 characters long
+                      Category must be from 5 to 50 characters long
                     </div>
+                  ) : packet === undefined ||
+                    category === packet.category ? null : (
+                    validateCategory(category) && (
+                      <div className='valid-feedback' display={'none'}>
+                        Correct
+                      </div>
+                    )
                   )}
                 </Form.Group>
 
@@ -263,7 +212,15 @@ const PacketFormScreen = ({ history, match }) => {
                       ></i>
                     </InputGroup.Text>
                   </InputGroup.Prepend>
-                  <Form.Control id='price' type='number' min='0' step='0.001' />
+                  <Form.Control
+                    id='price'
+                    type='number'
+                    min='0'
+                    step='0.001'
+                    title='Enter Price'
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                  />
                 </InputGroup>
               </Col>
 
@@ -271,7 +228,7 @@ const PacketFormScreen = ({ history, match }) => {
                 <StyledDropZone onDrop={onDropHandler} />
                 <div className='my-3 text-muted'>
                   <span className='small'>
-                    We'll never share your email with anyone else.{' '}
+                    We'll never share your email with anyone else.
                   </span>
                   <OverlayTrigger
                     trigger='click'
@@ -353,19 +310,11 @@ const PacketFormScreen = ({ history, match }) => {
               </Col>
             </Row>
           </Form>
-          <ReactQuill
-            theme='snow'
-            modules={modules}
-            formats={formats}
-            value={editorValue}
-            preserveWhitespace
-            onChange={setEditorValue}
-          />
-          <Button onClick={handleSave}>Save</Button>
+          <Button>Save</Button>
         </Container>
       )}
     </>
   );
 };
 
-export default PacketFormScreen;
+export default UpdatePacketScreen;

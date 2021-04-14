@@ -53,7 +53,10 @@ export const packetsUserReducer = (
   }
 };
 
-export const packetDetailsReducer = (state = {}, action) => {
+export const packetDetailsReducer = (
+  state = { packet: { name: '', description: '', category: '' } },
+  action
+) => {
   switch (action.type) {
     case PACKET_DETAILS_REQUEST:
       return { loading: true, ...state };

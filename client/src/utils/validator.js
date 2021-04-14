@@ -4,7 +4,7 @@ function validateEmail(email) {
 }
 
 const validateName = (name) => {
-  if ((name.length !== 0 && name.length < 5) || name.length > 30) {
+  if ((name.length !== 0 && name.length < 5) || name.length > 100) {
     return false;
   } else {
     return true;
@@ -14,7 +14,7 @@ const validateName = (name) => {
 const validateDescription = (description) => {
   if (
     (description.length !== 0 && description.length < 5) ||
-    description.length > 100
+    description.length > 1000
   ) {
     return false;
   } else {
@@ -23,7 +23,7 @@ const validateDescription = (description) => {
 };
 
 const validateCategory = (category) => {
-  if ((category.length !== 0 && category.length < 5) || category.length > 30) {
+  if ((category.length !== 0 && category.length < 5) || category.length > 50) {
     return false;
   } else {
     return true;
