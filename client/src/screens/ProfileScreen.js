@@ -390,13 +390,14 @@ const ProfileScreen = ({ match, history }) => {
 
       {/************************  Main Profile Screen ****************************/}
       <Col md={9} className='pt-2'>
-        <span className='d-flex justify-content-between'>
+        <span className='d-flex justify-content-between align-items-center'>
           <h2 style={{ display: 'inline' }}>User Data Packets</h2>
           {userInfo && !userDetails ? (
             <Button
               variant='success'
               className='btn-sm'
               title='Upload a data packet'
+              style={{ heigth: '3rem' }}
               onClick={uploadHandler}
               style={{ fontSize: '0.82rem' }}
             >

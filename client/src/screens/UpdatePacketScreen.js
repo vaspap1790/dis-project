@@ -96,13 +96,29 @@ const UpdatePacketScreen = ({ history, match }) => {
     }
   };
 
+  const updateHandler = () => {
+    //TODO:
+  };
+
   return (
     <>
       {loading ? (
         <Loader />
       ) : (
         <Container>
-          <h1>Update Data Packet</h1>
+          <div className='d-flex justify-content-between align-items-center mb-4'>
+            <h1 style={{ display: 'inline' }}>Update Data Packet</h1>
+            <Button
+              variant='info'
+              className='btn-sm'
+              style={{ heigth: '3rem' }}
+              title='Save'
+              onClick={updateHandler}
+              style={{ fontSize: '0.82rem' }}
+            >
+              Save <i className='fas fa-save fa-lg'></i>
+            </Button>
+          </div>
           <Form>
             <Row>
               <Col md={6}>
@@ -308,7 +324,6 @@ const UpdatePacketScreen = ({ history, match }) => {
               </Col>
             </Row>
           </Form>
-          <Button>Save</Button>
         </Container>
       )}
     </>
