@@ -20,7 +20,13 @@ const Header = ({ history }) => {
   // This will be rendered
   return (
     <header>
-      <Navbar bg='primary' variant='dark' expand='lg' collapseOnSelect>
+      <Navbar
+        bg='primary'
+        variant='dark'
+        expand='lg'
+        className='py-3'
+        collapseOnSelect
+      >
         <Container fluid className='px-4'>
           <LinkContainer to='/'>
             <Navbar.Brand>Data Dapp</Navbar.Brand>

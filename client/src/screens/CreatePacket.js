@@ -18,7 +18,6 @@ import {
   Popover
 } from 'react-bootstrap';
 import Loader from '../components/Loader';
-import Moment from 'react-moment';
 import {
   validateName,
   validateDescription,
@@ -75,6 +74,7 @@ const CreatePacket = ({ history, match }) => {
   //This will be rendered
   return (
     <Container>
+      <h1>Upload Data Packet</h1>
       <div className='row'>
         <div className={`col-12 rsw-wrapper`}>
           <StepWizard
@@ -102,28 +102,43 @@ const Stats = ({
   previousStep,
   totalSteps,
   step
-}) => (
-  <div>
-    <hr />
-    <div>Current Step: {currentStep}</div>
-    <div>Total Steps: {totalSteps}</div>
-    <hr />
-    {step > 1 && (
-      <button className='btn btn-default btn-block' onClick={previousStep}>
-        Go Back
-      </button>
-    )}
-    {step < totalSteps ? (
-      <button className='btn btn-primary btn-block' onClick={nextStep}>
-        Continue
-      </button>
-    ) : (
-      <button className='btn btn-success btn-block' onClick={nextStep}>
-        Finish
-      </button>
-    )}
-  </div>
-);
+}) => {
+  const popover = (
+    <Popover id='popover-basic'>
+      <Popover.Title as='h3'>Popover right</Popover.Title>
+      <Popover.Content>
+        And here's some <strong>amazing</strong> content. It's very engaging.
+        right?
+      </Popover.Content>
+    </Popover>
+  );
+
+  return (
+    <div className='d-flex justify-content-end align-items-center'>
+      {step > 1 && (
+        <>
+          <button className='btn btn-info' onClick={previousStep}>
+            <OverlayTrigger trigger='click' placement='top' overlay={popover}>
+              <i className='fas fa-search-plus fa-lg'></i>
+            </OverlayTrigger>
+          </button>
+          <button className='btn btn-warning mx-2' onClick={previousStep}>
+            STEP {currentStep - 1}
+          </button>
+        </>
+      )}
+      {step < totalSteps ? (
+        <button className='btn btn-primary' onClick={nextStep}>
+          Continue
+        </button>
+      ) : (
+        <button className='btn btn-success' onClick={nextStep}>
+          Upload
+        </button>
+      )}
+    </div>
+  );
+};
 
 /** Steps */
 const First = (props) => {
@@ -141,6 +156,9 @@ const First = (props) => {
 
   return (
     <div>
+      <div className='d-flex justify-content-center'>
+        Step 1/3: Enter Packet information
+      </div>
       <Form onSubmit={submitHandler}>
         <Form.Group controlId='name'>
           <Form.Label>Name</Form.Label>
@@ -245,6 +263,11 @@ const Second = (props) => {
   const [price, setPrice] = useState(0);
   const [files, setFiles] = useState([]);
 
+  const removeFromUploadsHandler = (e) => {
+    e.stopPropagation();
+    setFiles([]);
+  };
+
   const onDropHandler = async (file, text) => {
     try {
       //file.timestamp = new Date();
@@ -252,7 +275,12 @@ const Second = (props) => {
       var reader = new FileReader();
       reader.onload = function () {};
       reader.readAsText(file);
-      await setFiles((files) => [...files, file]);
+      if (files.length === 0) {
+        await setFiles((files) => [...files, file]);
+      } else {
+        await setFiles([]);
+        await setFiles((files) => [...files, file]);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -266,7 +294,43 @@ const Second = (props) => {
 
   return (
     <div>
-      <StyledDropZone onDrop={onDropHandler} />
+      <div className='d-flex justify-content-center'>
+        Step 2/3: Upload image and set price
+      </div>
+      <StyledDropZone onDrop={onDropHandler} accept='image/*' className='my-4'>
+        {files.length === 0 ? (
+          'Click or drop your file here'
+        ) : (
+          <div className='d-flex justify-content-center align-items-center'>
+            <span
+              style={{
+                width: '2rem',
+                verticalAlign: 'middle',
+                marginRight: '2rem'
+              }}
+            >
+              <FileIcon
+                extension={files[0].name.substr(
+                  files[0].name.lastIndexOf('.') + 1
+                )}
+                {...defaultStyles[
+                  files[0].name.substr(files[0].name.lastIndexOf('.') + 1)
+                ]}
+              />
+            </span>{' '}
+            <span style={{ verticalAlign: 'middle', marginRight: '2rem' }}>
+              {files[0].name}
+            </span>{' '}
+            <span style={{ verticalAlign: 'middle' }}>
+              <i
+                className='fas fa-trash trash'
+                title='Remove from Uploads'
+                onClick={removeFromUploadsHandler}
+              ></i>
+            </span>
+          </div>
+        )}
+      </StyledDropZone>
       <Form>
         <label htmlFor='price'>Price</label>
         <InputGroup>
@@ -300,24 +364,16 @@ const Last = (props) => {
   const [editorValue, setEditorValue] = useState('');
   const [files, setFiles] = useState([]);
 
-  const removeFromUploadsHandler = () => {
-    //TODO:
+  const removeFromUploadsHandler = (e) => {
+    e.stopPropagation();
+    setFiles([]);
+    setEditorValue('');
   };
 
   const handleSave = () => {
     console.log(editorValue);
     //TODO:
   };
-
-  const popover = (
-    <Popover id='popover-basic'>
-      <Popover.Title as='h3'>Popover right</Popover.Title>
-      <Popover.Content>
-        And here's some <strong>amazing</strong> content. It's very engaging.
-        right?
-      </Popover.Content>
-    </Popover>
-  );
 
   const modules = {
     toolbar: [
@@ -355,13 +411,17 @@ const Last = (props) => {
   const onDropHandler = async (file, text) => {
     try {
       //file.timestamp = new Date();
-      //console.log(file);
       var reader = new FileReader();
       reader.onload = function () {
         setEditorValue(this.result);
       };
       reader.readAsText(file);
-      await setFiles((files) => [...files, file]);
+      if (files.length === 0) {
+        await setFiles((files) => [...files, file]);
+      } else {
+        await setFiles([]);
+        await setFiles((files) => [...files, file]);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -373,80 +433,56 @@ const Last = (props) => {
 
   return (
     <div>
-      <StyledDropZone onDrop={onDropHandler} />
-      <div className='my-3 text-muted'>
-        <span className='small'>
-          We'll never share your email with anyone else.
-        </span>
-        <OverlayTrigger trigger='click' placement='top' overlay={popover}>
-          <i
-            className='fas fa-search-plus fa-lg link-icon'
-            style={{ color: 'black' }}
-          ></i>
-        </OverlayTrigger>
-      </div>
-      <Table id='uploadsTable' bordered responsive size='sm'>
-        <thead>
-          <tr className='table-dark'>
-            <th className='uploadsTableHeaders text-center p-2'>Type</th>
-            <th className='uploadsTableHeaders text-center p-2'>File Name</th>
-            <th className='uploadsTableHeaders text-center p-2'>Date</th>
-            <th className='uploadsTableHeaders text-center p-2'>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {files.map((file) => (
-            <tr key='file.name'>
-              <td
-                style={{ width: '1rem', verticalAlign: 'middle' }}
-                className='p-2 small'
+      <div style={{ height: '60vh' }} className='mb-2'>
+        <div className='d-flex justify-content-center'>
+          Step 3/3: Upload data packet and handle sampling
+        </div>
+        <StyledDropZone onDrop={onDropHandler} className='my-4'>
+          {files.length === 0 ? (
+            'Click or drop your file here'
+          ) : (
+            <div className='d-flex justify-content-center align-items-center'>
+              <span
+                style={{
+                  width: '2rem',
+                  verticalAlign: 'middle',
+                  marginRight: '2rem'
+                }}
               >
                 <FileIcon
-                  extension={file.name.substr(file.name.lastIndexOf('.') + 1)}
+                  extension={files[0].name.substr(
+                    files[0].name.lastIndexOf('.') + 1
+                  )}
                   {...defaultStyles[
-                    file.name.substr(file.name.lastIndexOf('.') + 1)
+                    files[0].name.substr(files[0].name.lastIndexOf('.') + 1)
                   ]}
                 />
-              </td>
-              <td
-                style={{ verticalAlign: 'middle' }}
-                className='text-center small'
-              >
-                {file.name}
-              </td>
-              <td
-                className='text-muted text-center small'
-                style={{ verticalAlign: 'middle' }}
-              >
-                <Moment format='D MMM YYYY hh:mm:ss'>{file.timestamp}</Moment>
-              </td>
-              <td
-                className='text-center small'
-                style={{ verticalAlign: 'middle' }}
-              >
-                {' '}
-                <Button
+              </span>{' '}
+              <span style={{ verticalAlign: 'middle', marginRight: '2rem' }}>
+                {files[0].name}
+              </span>{' '}
+              <span style={{ verticalAlign: 'middle' }}>
+                <i
+                  className='fas fa-trash trash'
                   title='Remove from Uploads'
-                  className='btn-Icon-Remove btn-sm'
-                  type='button'
-                  variant='light'
-                  onClick={() => removeFromUploadsHandler(file.name)}
-                >
-                  <i className='fas fa-trash trash'></i>
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-      <ReactQuill
-        theme='snow'
-        modules={modules}
-        formats={formats}
-        value={editorValue}
-        preserveWhitespace
-        onChange={setEditorValue}
-      />
+                  onClick={removeFromUploadsHandler}
+                ></i>
+              </span>
+            </div>
+          )}
+        </StyledDropZone>
+        <div style={{ height: '30vh' }}>
+          <ReactQuill
+            theme='snow'
+            modules={modules}
+            formats={formats}
+            value={editorValue}
+            preserveWhitespace
+            onChange={setEditorValue}
+            style={{ height: '26vh' }}
+          />
+        </div>
+      </div>
       <Stats step={3} {...props} nextStep={submit} />
     </div>
   );
