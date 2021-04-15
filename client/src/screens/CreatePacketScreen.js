@@ -18,6 +18,7 @@ import {
   Popover
 } from 'react-bootstrap';
 import Loader from '../components/Loader';
+import Wizard from '../components/Wizard';
 import Moment from 'react-moment';
 import {
   validateName,
@@ -125,6 +126,8 @@ const PacketFormScreen = ({ history, match }) => {
   return (
     <Container>
       <h1>Upload Data Packet</h1>
+
+      <Wizard />
 
       {/* {error && error !== null && (
         <Alert
