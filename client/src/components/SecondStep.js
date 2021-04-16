@@ -16,6 +16,10 @@ const SecondStep = (props) => {
     setFiles([]);
   };
 
+  const submitHandler = (e) => {
+    e.preventDefault();
+  };
+
   const update = (e) => {
     props.update(e.target.name, e.target.value);
   };
@@ -45,11 +49,11 @@ const SecondStep = (props) => {
       <div className='d-flex justify-content-center'>
         Step 2/3: Upload image and set price
       </div>
-      <div style={{ height: '55vh' }} className='mb-2'>
+      <div style={{ height: '55vh' }} className='mb-2 pt-4'>
         <StyledDropZone
           onDrop={onDropHandler}
           accept='image/*'
-          className='my-4'
+          className='mb-4'
         >
           {files.length === 0 ? (
             'Click or drop your file here'
@@ -84,7 +88,7 @@ const SecondStep = (props) => {
             </div>
           )}
         </StyledDropZone>
-        <Form>
+        <Form onSubmit={submitHandler}>
           <label htmlFor='price'>Price</label>
           <InputGroup>
             <InputGroup.Prepend>

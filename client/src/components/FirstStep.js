@@ -56,7 +56,7 @@ const FirstStep = (props) => {
               </div>
             ) : (
               <div className='invalid-feedback'>
-                Name must be from 5 to 30 characters long
+                Name must be from 5 to 100 characters long
               </div>
             )}
           </Form.Group>
@@ -91,7 +91,7 @@ const FirstStep = (props) => {
               </div>
             ) : (
               <div className='invalid-feedback'>
-                Description must be from 5 to 100 characters long
+                Description must be from 5 to 1000 characters long
               </div>
             )}
           </Form.Group>
@@ -122,7 +122,7 @@ const FirstStep = (props) => {
               </div>
             ) : (
               <div className='invalid-feedback'>
-                Category must be from 5 to 15 characters long
+                Category must be from 5 to 50 characters long
               </div>
             )}
           </Form.Group>

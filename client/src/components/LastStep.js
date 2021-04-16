@@ -56,7 +56,7 @@ const LastStep = (props) => {
     props.update('editorValue', editorValue);
   };
 
-  const onDropHandler = async (file, text) => {
+  const onDropHandler = async (file) => {
     try {
       file.timestamp = new Date();
       var reader = new FileReader();
@@ -66,11 +66,11 @@ const LastStep = (props) => {
       reader.readAsText(file);
       if (files.length === 0) {
         await setFiles((files) => [...files, file]);
-        props.update('image', file);
+        props.update('data', file);
       } else {
         await setFiles([]);
         await setFiles((files) => [...files, file]);
-        props.update('image', file);
+        props.update('data', file);
       }
     } catch (error) {
       console.log(error);
@@ -83,8 +83,8 @@ const LastStep = (props) => {
       <div className='d-flex justify-content-center'>
         Step 3/3: Upload data packet and handle sampling
       </div>
-      <div style={{ height: '55vh' }} className='mb-2'>
-        <StyledDropZone onDrop={onDropHandler} className='my-4'>
+      <div style={{ height: '55vh' }} className='mb-2 pt-4'>
+        <StyledDropZone onDrop={onDropHandler} className='mb-4'>
           {files.length === 0 ? (
             'Click or drop your file here'
           ) : (
