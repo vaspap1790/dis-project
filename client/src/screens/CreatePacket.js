@@ -38,8 +38,7 @@ const CreatePacket = ({ history, match }) => {
 
   //Wizard
   const [state, updateState] = useState({
-    form: {},
-    transitions: {}
+    form: {}
   });
 
   const updateForm = (key, value) => {
@@ -71,6 +70,16 @@ const CreatePacket = ({ history, match }) => {
     //TODO:
   };
 
+  const uploadHandler = () => {
+    const { form } = state;
+    if (!form.name) {
+      console.log('SORRY');
+    } else {
+      console.log(state);
+    }
+    //TODO:
+  };
+
   //This will be rendered
   return (
     <Container>
@@ -84,8 +93,12 @@ const CreatePacket = ({ history, match }) => {
             instance={setInstance}
           >
             <First hashKey={'step1'} update={updateForm} />
-            <Second hashKey={'step2'} form={state.form} />
-            <Last hashKey={'step3'} />
+            <Second hashKey={'step2'} update={updateForm} form={state.form} />
+            <Last
+              hashKey={'step3'}
+              update={updateForm}
+              uploadHandler={uploadHandler}
+            />
           </StepWizard>
         </div>
       </div>
@@ -101,7 +114,9 @@ const Stats = ({
   nextStep,
   previousStep,
   totalSteps,
-  step
+  step,
+  uploadHandler,
+  handleEditorValue
 }) => {
   const popover = (
     <Popover id='popover-basic'>
@@ -132,7 +147,13 @@ const Stats = ({
           Continue
         </button>
       ) : (
-        <button className='btn btn-success' onClick={nextStep}>
+        <button
+          className='btn btn-success'
+          onClick={() => {
+            uploadHandler();
+            handleEditorValue();
+          }}
+        >
           Upload
         </button>
       )}
@@ -147,9 +168,11 @@ const First = (props) => {
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
 
+  // Component Methods
   const submitHandler = (e) => {
     e.preventDefault();
   };
+
   const update = (e) => {
     props.update(e.target.name, e.target.value);
   };
@@ -159,101 +182,106 @@ const First = (props) => {
       <div className='d-flex justify-content-center'>
         Step 1/3: Enter Packet information
       </div>
-      <Form onSubmit={submitHandler}>
-        <Form.Group controlId='name'>
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            className={
-              name.length === 0
-                ? ''
-                : validateName(name)
-                ? 'is-valid'
-                : 'is-invalid'
-            }
-            type='text'
-            placeholder='Enter Name'
-            title='Enter Name'
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          ></Form.Control>
-          {name.length === 0 ? null : validateName(name) ? (
-            <div className='valid-feedback' display={'none'}>
-              Correct
-            </div>
-          ) : (
-            <div className='invalid-feedback'>
-              Name must be from 5 to 30 characters long
-            </div>
-          )}
-        </Form.Group>
+      <div style={{ height: '55vh' }} className='mb-2'>
+        <Form onSubmit={submitHandler}>
+          <Form.Group controlId='name'>
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              className={
+                name.length === 0
+                  ? ''
+                  : validateName(name)
+                  ? 'is-valid'
+                  : 'is-invalid'
+              }
+              type='text'
+              placeholder='Enter Name'
+              title='Enter Name'
+              name='name'
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                update(e);
+              }}
+            ></Form.Control>
+            {name.length === 0 ? null : validateName(name) ? (
+              <div className='valid-feedback' display={'none'}>
+                Correct
+              </div>
+            ) : (
+              <div className='invalid-feedback'>
+                Name must be from 5 to 30 characters long
+              </div>
+            )}
+          </Form.Group>
 
-        <Form.Group controlId='description'>
-          <Form.Label>Description</Form.Label>
-          <Form.Control
-            as='textarea'
-            rows={4}
-            className={
-              description.length === 0
-                ? ''
-                : validateDescription(description)
-                ? 'is-valid'
-                : 'is-invalid'
-            }
-            type='text'
-            placeholder='Enter Description'
-            title='Enter Description'
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          ></Form.Control>
-          {description.length === 0 ? null : validateDescription(
-              description
-            ) ? (
-            <div className='valid-feedback' display={'none'}>
-              Correct
-            </div>
-          ) : (
-            <div className='invalid-feedback'>
-              Description must be from 5 to 100 characters long
-            </div>
-          )}
-        </Form.Group>
+          <Form.Group controlId='description'>
+            <Form.Label>Description</Form.Label>
+            <Form.Control
+              as='textarea'
+              rows={5}
+              className={
+                description.length === 0
+                  ? ''
+                  : validateDescription(description)
+                  ? 'is-valid'
+                  : 'is-invalid'
+              }
+              type='text'
+              placeholder='Enter Description'
+              title='Enter Description'
+              name='description'
+              value={description}
+              onChange={(e) => {
+                setDescription(e.target.value);
+                update(e);
+              }}
+            ></Form.Control>
+            {description.length === 0 ? null : validateDescription(
+                description
+              ) ? (
+              <div className='valid-feedback' display={'none'}>
+                Correct
+              </div>
+            ) : (
+              <div className='invalid-feedback'>
+                Description must be from 5 to 100 characters long
+              </div>
+            )}
+          </Form.Group>
 
-        <Form.Group controlId='category'>
-          <Form.Label>Category</Form.Label>
-          <Form.Control
-            className={
-              category.length === 0
-                ? ''
-                : validateCategory(category)
-                ? 'is-valid'
-                : 'is-invalid'
-            }
-            type='text'
-            placeholder='Enter Category'
-            title='Enter Category'
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          ></Form.Control>
-          {category.length === 0 ? null : validateCategory(category) ? (
-            <div className='valid-feedback' display={'none'}>
-              Correct
-            </div>
-          ) : (
-            <div className='invalid-feedback'>
-              Category must be from 5 to 15 characters long
-            </div>
-          )}
-        </Form.Group>
-      </Form>
-      <hr />
-      <label>First Name</label>
-      <input
-        type='text'
-        className='form-control'
-        name='firstname'
-        placeholder='First Name'
-        onChange={update}
-      />
+          <Form.Group controlId='category'>
+            <Form.Label>Category</Form.Label>
+            <Form.Control
+              className={
+                category.length === 0
+                  ? ''
+                  : validateCategory(category)
+                  ? 'is-valid'
+                  : 'is-invalid'
+              }
+              type='text'
+              placeholder='Enter Category'
+              title='Enter Category'
+              name='category'
+              value={category}
+              onChange={(e) => {
+                setCategory(e.target.value);
+                update(e);
+              }}
+            ></Form.Control>
+            {category.length === 0 ? null : validateCategory(category) ? (
+              <div className='valid-feedback' display={'none'}>
+                Correct
+              </div>
+            ) : (
+              <div className='invalid-feedback'>
+                Category must be from 5 to 15 characters long
+              </div>
+            )}
+          </Form.Group>
+        </Form>
+      </div>
       <Stats step={1} {...props} />
     </div>
   );
@@ -268,27 +296,26 @@ const Second = (props) => {
     setFiles([]);
   };
 
-  const onDropHandler = async (file, text) => {
+  const update = (e) => {
+    props.update(e.target.name, e.target.value);
+  };
+
+  const onDropHandler = async (file) => {
     try {
-      //file.timestamp = new Date();
-      //console.log(file);
+      file.timestamp = new Date();
       var reader = new FileReader();
       reader.onload = function () {};
       reader.readAsText(file);
       if (files.length === 0) {
         await setFiles((files) => [...files, file]);
+        props.update('image', file);
       } else {
         await setFiles([]);
         await setFiles((files) => [...files, file]);
+        props.update('image', file);
       }
     } catch (error) {
       console.log(error);
-    }
-  };
-  const validate = () => {
-    if (window.confirm('Are you sure you want to go back?')) {
-      // eslint-disable-line
-      props.previousStep();
     }
   };
 
@@ -297,64 +324,73 @@ const Second = (props) => {
       <div className='d-flex justify-content-center'>
         Step 2/3: Upload image and set price
       </div>
-      <StyledDropZone onDrop={onDropHandler} accept='image/*' className='my-4'>
-        {files.length === 0 ? (
-          'Click or drop your file here'
-        ) : (
-          <div className='d-flex justify-content-center align-items-center'>
-            <span
-              style={{
-                width: '2rem',
-                verticalAlign: 'middle',
-                marginRight: '2rem'
+      <div style={{ height: '55vh' }} className='mb-2'>
+        <StyledDropZone
+          onDrop={onDropHandler}
+          accept='image/*'
+          className='my-4'
+        >
+          {files.length === 0 ? (
+            'Click or drop your file here'
+          ) : (
+            <div className='d-flex justify-content-center align-items-center'>
+              <span
+                style={{
+                  width: '2rem',
+                  verticalAlign: 'middle',
+                  marginRight: '2rem'
+                }}
+              >
+                <FileIcon
+                  extension={files[0].name.substr(
+                    files[0].name.lastIndexOf('.') + 1
+                  )}
+                  {...defaultStyles[
+                    files[0].name.substr(files[0].name.lastIndexOf('.') + 1)
+                  ]}
+                />
+              </span>{' '}
+              <span style={{ verticalAlign: 'middle', marginRight: '2rem' }}>
+                {files[0].name}
+              </span>{' '}
+              <span style={{ verticalAlign: 'middle' }}>
+                <i
+                  className='fas fa-trash trash'
+                  title='Remove from Uploads'
+                  onClick={removeFromUploadsHandler}
+                ></i>
+              </span>
+            </div>
+          )}
+        </StyledDropZone>
+        <Form>
+          <label htmlFor='price'>Price</label>
+          <InputGroup>
+            <InputGroup.Prepend>
+              <InputGroup.Text>
+                <i
+                  className='fab fa-ethereum fa-lg'
+                  style={{ color: 'black' }}
+                ></i>
+              </InputGroup.Text>
+            </InputGroup.Prepend>
+            <Form.Control
+              id='price'
+              type='number'
+              min='0'
+              step='0.001'
+              title='Enter Price'
+              name='price'
+              value={price}
+              onChange={(e) => {
+                setPrice(e.target.value);
+                update(e);
               }}
-            >
-              <FileIcon
-                extension={files[0].name.substr(
-                  files[0].name.lastIndexOf('.') + 1
-                )}
-                {...defaultStyles[
-                  files[0].name.substr(files[0].name.lastIndexOf('.') + 1)
-                ]}
-              />
-            </span>{' '}
-            <span style={{ verticalAlign: 'middle', marginRight: '2rem' }}>
-              {files[0].name}
-            </span>{' '}
-            <span style={{ verticalAlign: 'middle' }}>
-              <i
-                className='fas fa-trash trash'
-                title='Remove from Uploads'
-                onClick={removeFromUploadsHandler}
-              ></i>
-            </span>
-          </div>
-        )}
-      </StyledDropZone>
-      <Form>
-        <label htmlFor='price'>Price</label>
-        <InputGroup>
-          <InputGroup.Prepend>
-            <InputGroup.Text>
-              <i
-                className='fab fa-ethereum fa-lg'
-                style={{ color: 'black' }}
-              ></i>
-            </InputGroup.Text>
-          </InputGroup.Prepend>
-          <Form.Control
-            id='price'
-            type='number'
-            min='0'
-            step='0.001'
-            title='Enter Price'
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
-        </InputGroup>
-      </Form>
-      {props.form.firstname && <h3>Hey {props.form.firstname}!</h3>}
-      <Stats step={2} {...props} previousStep={validate} />
+            />
+          </InputGroup>
+        </Form>
+      </div>
+      <Stats step={2} {...props} />
     </div>
   );
 };
@@ -370,9 +406,8 @@ const Last = (props) => {
     setEditorValue('');
   };
 
-  const handleSave = () => {
-    console.log(editorValue);
-    //TODO:
+  const handleEditorValue = () => {
+    props.update('editorValue', editorValue);
   };
 
   const modules = {
@@ -410,7 +445,7 @@ const Last = (props) => {
 
   const onDropHandler = async (file, text) => {
     try {
-      //file.timestamp = new Date();
+      file.timestamp = new Date();
       var reader = new FileReader();
       reader.onload = function () {
         setEditorValue(this.result);
@@ -418,25 +453,23 @@ const Last = (props) => {
       reader.readAsText(file);
       if (files.length === 0) {
         await setFiles((files) => [...files, file]);
+        props.update('image', file);
       } else {
         await setFiles([]);
         await setFiles((files) => [...files, file]);
+        props.update('image', file);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const submit = () => {
-    alert('You did it! Yay!'); // eslint-disable-line
-  };
-
   return (
     <div>
-      <div style={{ height: '60vh' }} className='mb-2'>
-        <div className='d-flex justify-content-center'>
-          Step 3/3: Upload data packet and handle sampling
-        </div>
+      <div className='d-flex justify-content-center'>
+        Step 3/3: Upload data packet and handle sampling
+      </div>
+      <div style={{ height: '55vh' }} className='mb-2'>
         <StyledDropZone onDrop={onDropHandler} className='my-4'>
           {files.length === 0 ? (
             'Click or drop your file here'
@@ -474,6 +507,7 @@ const Last = (props) => {
         <div style={{ height: '30vh' }}>
           <ReactQuill
             theme='snow'
+            name='editor'
             modules={modules}
             formats={formats}
             value={editorValue}
@@ -483,7 +517,7 @@ const Last = (props) => {
           />
         </div>
       </div>
-      <Stats step={3} {...props} nextStep={submit} />
+      <Stats step={3} {...props} handleEditorValue={handleEditorValue} />
     </div>
   );
 };
