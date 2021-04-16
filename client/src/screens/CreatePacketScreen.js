@@ -10,6 +10,11 @@ import SecondStep from '../components/SecondStep';
 import LastStep from '../components/LastStep';
 import ModalComponent from '../components/ModalComponent';
 import '../css/wizard.css';
+import {
+  validateName,
+  validateDescription,
+  validateCategory
+} from '../utils/validator';
 /* eslint react/prop-types: 0 */
 
 const CreatePacketScreen = ({ history, match }) => {
@@ -58,10 +63,21 @@ const CreatePacketScreen = ({ history, match }) => {
 
   const uploadHandler = () => {
     const { form } = state;
-    if (!form.name) {
+    if (
+      !form.name ||
+      !validateName(form.name) ||
+      !form.description ||
+      !validateDescription(form.description) ||
+      !form.category ||
+      !validateCategory(form.category) ||
+      !form.price ||
+      !form.data
+    ) {
       showValidationModal(true);
+      console.log(form);
     } else {
       showConfirmationModal(true);
+      console.log(form);
     }
   };
 
@@ -73,22 +89,6 @@ const CreatePacketScreen = ({ history, match }) => {
   //This will be rendered
   return (
     <Container>
-      <ModalComponent
-        show={confirmationModal}
-        close={closeConfirmationModal}
-        proceed={handleProceed}
-        title='Confirm Upload'
-        body='Are you sure you want to proceed and upload the data packet?'
-        danger={true}
-        success={true}
-      />
-      <ModalComponent
-        show={validationModal}
-        close={closeValidationModal}
-        title='Validation Failed'
-        body='Be sure you uploaded all the necessary information. Only the image is not mandatory.'
-        info={true}
-      />
       <h1>Upload Data Packet</h1>
       <div className='row'>
         <div className={`col-12 rsw-wrapper`}>
@@ -112,6 +112,24 @@ const CreatePacketScreen = ({ history, match }) => {
           </StepWizard>
         </div>
       </div>
+
+      {/* Modals */}
+      <ModalComponent
+        show={confirmationModal}
+        close={closeConfirmationModal}
+        proceed={handleProceed}
+        title='Confirm Upload'
+        body='Are you sure you want to proceed and upload the data packet?'
+        danger={true}
+        success={true}
+      />
+      <ModalComponent
+        show={validationModal}
+        close={closeValidationModal}
+        title='Validation Failed'
+        body='Be sure you uploaded all the necessary information. Image and sampling are not mandatory.'
+        info={true}
+      />
     </Container>
   );
 };
