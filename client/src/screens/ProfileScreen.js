@@ -397,9 +397,8 @@ const ProfileScreen = ({ match, history }) => {
               variant='success'
               className='btn-sm'
               title='Upload a data packet'
-              style={{ heigth: '3rem' }}
+              style={{ heigth: '3rem', fontSize: '0.82rem' }}
               onClick={uploadHandler}
-              style={{ fontSize: '0.82rem' }}
             >
               Upload <i className='fas fa-upload'></i>
             </Button>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import 'react-quill/dist/quill.snow.css';
 import 'react-drop-zone/dist/styles.css';
-import { Container, Button } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import StepWizard from 'react-step-wizard';
 import Nav from '../components/WizardNav';
 import FirstStep from '../components/FirstStep';
