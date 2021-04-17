@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Packet from '../models/packetModel.js';
 import Review from '../models/reviewModel.js';
+import Access from '../models/accessModel.js';
 
 // @desc    Create new review
 // @route   POST /api/reviews
@@ -12,6 +13,11 @@ const createPacketReview = asyncHandler(async (req, res) => {
   const packet = await Packet.findById(packetId);
 
   if (packet) {
+    const accessToThisPacket = await Access.find({ packet: packetId });
+    const usersEligibleToRate = accessToThisPacket.filter(
+      (access) => access.user !== req.user._id
+    );
+
     const pastReviews = await Review.find({
       packet: packetId,
       user: req.user._id
@@ -20,6 +26,11 @@ const createPacketReview = asyncHandler(async (req, res) => {
     if (pastReviews.length > 0) {
       res.status(400);
       throw new Error('Data packet already reviewed');
+    }
+
+    if (packet.user === req.user._id || usersEligibleToRate.length === 0) {
+      res.status(400);
+      throw new Error('Not authorised!');
     }
 
     const packetReviews = await Review.find({ packet: packetId });

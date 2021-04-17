@@ -20,10 +20,18 @@ const getPackets = asyncHandler(async (req, res) => {
 // @route   GET /api/packets/:id
 // @access  Public
 const getPacketById = asyncHandler(async (req, res) => {
-  const packet = await Packet.findById(req.params.id);
+  let packet = await Packet.findById(req.params.id).populate(
+    'user',
+    'username'
+  );
+  const reviews = await Review.find({ packet: req.params.id }).populate(
+    'user',
+    'username'
+  );
 
   if (packet) {
-    res.json(packet);
+    const data = { packet, reviews };
+    res.json(data);
   } else {
     res.status(404);
     throw new Error('Packet not found');

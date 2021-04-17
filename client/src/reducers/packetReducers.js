@@ -49,7 +49,7 @@ export const packetsUserReducer = (
     case PACKET_USER_SUCCESS:
       return { loading: false, userData: action.payload };
     case PACKET_USER_FAIL:
-      return { loading: false, error: action.payload };
+      return { ...state, loading: false, error: action.payload };
     case PACKET_USER_RESET:
       return { userData: { packets: [], reviews: [], userRating: [] } };
     case PACKET_USER_EMPTY_ERROR:
@@ -60,7 +60,7 @@ export const packetsUserReducer = (
 };
 
 export const packetDetailsReducer = (
-  state = { packet: { name: '', description: '', category: '' } },
+  state = { packet: { name: '', description: '', category: '' }, reviews: [] },
   action
 ) => {
   switch (action.type) {
@@ -69,12 +69,18 @@ export const packetDetailsReducer = (
     case PRE_PACKET_DETAILS_REQUEST:
       return {
         loading: true,
-        packet: { name: '', description: '', category: '' }
+        packet: { name: '', description: '', category: '' },
+        reviews: []
       };
     case PACKET_DETAILS_SUCCESS:
-      return { loading: false, packet: action.payload };
+      return {
+        ...state,
+        loading: false,
+        packet: action.payload.packet,
+        reviews: action.payload.reviews
+      };
     case PACKET_DETAILS_FAIL:
-      return { loading: false, error: action.payload };
+      return { ...state, loading: false, error: action.payload };
     default:
       return state;
   }

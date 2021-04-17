@@ -13,6 +13,7 @@ import {
   accessAddReducer,
   accesssUserReducer
 } from './reducers/accessReducers';
+import { reviewCreateReducer } from './reducers/reviewReducers';
 import {
   userLoginReducer,
   userRegisterReducer,
@@ -31,7 +32,8 @@ const reducer = combineReducers({
   userRegister: userRegisterReducer,
   userUpdateProfile: userUpdateProfileReducer,
   accessAdd: accessAddReducer,
-  accessUser: accesssUserReducer
+  accessUser: accesssUserReducer,
+  reviewCreate: reviewCreateReducer
 });
 
 // Get info from browser's local storage

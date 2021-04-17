@@ -22,7 +22,7 @@ const PacketScreen = ({ history, match }) => {
 
   // App level State
   const packetDetails = useSelector((state) => state.packetDetails);
-  const { loading: loadingDetails, error, packet } = packetDetails;
+  const { loading: loadingDetails, error, packet, reviews } = packetDetails;
 
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
@@ -57,90 +57,112 @@ const PacketScreen = ({ history, match }) => {
       ) : error ? (
         <Alert variant='danger'>{error}</Alert>
       ) : (
-        <Row>
-          <Col md={6} className='pr-0'>
-            {packet.sample !== '' ? (
-              <div>
-                <ReactQuill
-                  theme='snow'
-                  name='editor'
-                  modules={modules}
-                  value={packet.sample}
-                  preserveWhitespace
-                  readOnly
+        <>
+          <Row>
+            <Col md={6} className='pr-0'>
+              {packet.sample !== '' ? (
+                <div>
+                  <ReactQuill
+                    theme='snow'
+                    name='editor'
+                    modules={modules}
+                    value={packet.sample}
+                    preserveWhitespace
+                    readOnly
+                  />
+                </div>
+              ) : (
+                <Image
+                  src={
+                    packet.image === '' ? '/images/sample.jpg' : packet.image
+                  }
+                  alt={packet.name}
+                  fluid
                 />
-              </div>
-            ) : (
-              <Image
-                src={packet.image === '' ? '/images/sample.jpg' : packet.image}
-                alt={packet.name}
-                fluid
-              />
-            )}
-          </Col>
-          <Col md={6}>
-            <Row className='d-flex'>
-              <Col
-                md={{ span: 12, order: 'last' }}
-                lg={{ span: 6, order: 'first' }}
-                className='pr-0'
-              >
-                <ListGroup variant='flush'>
-                  <ListGroup.Item>
-                    <h3>{packet.name}</h3>
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <Rating
-                      value={packet.rating}
-                      text={`${packet.numReviews} reviews`}
-                    />
-                  </ListGroup.Item>
-                  <ListGroup.Item>Category: {packet.category}</ListGroup.Item>
-                  <ListGroup.Item>
-                    Description: {packet.description}
-                  </ListGroup.Item>
-                </ListGroup>
-              </Col>
-              <Col
-                md={{ span: 12, order: 'first' }}
-                lg={{ span: 6, order: 'last' }}
-              >
-                <Card>
+              )}
+            </Col>
+            <Col md={6}>
+              <Row className='d-flex'>
+                <Col
+                  md={{ span: 12, order: 'last' }}
+                  lg={{ span: 6, order: 'first' }}
+                  className='pr-0'
+                >
                   <ListGroup variant='flush'>
                     <ListGroup.Item>
-                      <Row>
-                        <Col>Price:</Col>
-                        <Col>
-                          <i className='fab fa-ethereum'></i>
-                          {packet.price}
-                        </Col>
-                      </Row>
+                      <h3>{packet.name}</h3>
                     </ListGroup.Item>
                     <ListGroup.Item>
-                      <Button
-                        onClick={addToCartHandler}
-                        className='btn-block'
-                        type='button'
-                        disabled={cartItems.find(
-                          (cartItem) => cartItem.packet === packet._id
-                        )}
-                        title={
-                          cartItems.find(
-                            (cartItem) => cartItem.packet === packet._id
-                          )
-                            ? 'You have already added this item to your Cart'
-                            : 'Add this item to your Cart'
-                        }
-                      >
-                        Add to Cart
-                      </Button>
+                      <Rating
+                        value={packet.rating}
+                        text={`${packet.numReviews} reviews`}
+                      />
+                    </ListGroup.Item>
+                    <ListGroup.Item>Category: {packet.category}</ListGroup.Item>
+                    <ListGroup.Item>
+                      Description: {packet.description}
                     </ListGroup.Item>
                   </ListGroup>
-                </Card>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+                </Col>
+                <Col
+                  md={{ span: 12, order: 'first' }}
+                  lg={{ span: 6, order: 'last' }}
+                >
+                  <Card>
+                    <ListGroup variant='flush'>
+                      <ListGroup.Item>
+                        <Row>
+                          <Col>Price:</Col>
+                          <Col>
+                            <i className='fab fa-ethereum'></i>
+                            {packet.price}
+                          </Col>
+                        </Row>
+                      </ListGroup.Item>
+                      <ListGroup.Item>
+                        <Button
+                          onClick={addToCartHandler}
+                          className='btn-block'
+                          type='button'
+                          disabled={cartItems.find(
+                            (cartItem) => cartItem.packet === packet._id
+                          )}
+                          title={
+                            cartItems.find(
+                              (cartItem) => cartItem.packet === packet._id
+                            )
+                              ? 'You have already added this item to your Cart'
+                              : 'Add this item to your Cart'
+                          }
+                        >
+                          Add to Cart
+                        </Button>
+                      </ListGroup.Item>
+                    </ListGroup>
+                  </Card>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6}>
+              <h2>Reviews</h2>
+              {reviews.length === 0 && <Alert variant='info'>No Reviews</Alert>}
+              <ListGroup variant='flush'>
+                {reviews.map((review) => (
+                  <ListGroup.Item key={review._id}>
+                    <span style={{ display: 'block', fontWeight: 'bold' }}>
+                      {review.user.username}
+                    </span>
+                    <Rating value={review.rating} />
+                    <p>{review.createdAt.substring(0, 10)}</p>
+                    <p>{review.comment}</p>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </Col>
+          </Row>
+        </>
       )}
     </>
   );
