@@ -14,7 +14,12 @@ import {
   PACKET_CREATE_REQUEST,
   PACKET_CREATE_SUCCESS,
   PACKET_CREATE_FAIL,
-  PACKET_CREATE_RESET
+  PACKET_CREATE_RESET,
+  PACKET_UPDATE_REQUEST,
+  PACKET_UPDATE_SUCCESS,
+  PACKET_UPDATE_FAIL,
+  PACKET_UPDATE_EMPTY_ERROR,
+  PACKET_UPDATE_EMPTY_SUCCESS
 } from '../constants/packetConstants';
 
 export const packetListReducer = (state = { packets: [] }, action) => {
@@ -84,6 +89,30 @@ export const packetCreateReducer = (state = {}, action) => {
       return { loading: false, error: action.payload };
     case PACKET_CREATE_RESET:
       return {};
+    default:
+      return state;
+  }
+};
+
+export const packetUpdateReducer = (
+  state = { packet: {}, loading: false },
+  action
+) => {
+  switch (action.type) {
+    case PACKET_UPDATE_REQUEST:
+      return { loading: true };
+    case PACKET_UPDATE_SUCCESS:
+      return {
+        loading: false,
+        success: 'Packet Updated',
+        packet: action.payload
+      };
+    case PACKET_UPDATE_FAIL:
+      return { loading: false, error: action.payload };
+    case PACKET_UPDATE_EMPTY_ERROR:
+      return { ...state, error: null };
+    case PACKET_UPDATE_EMPTY_SUCCESS:
+      return { ...state, success: null };
     default:
       return state;
   }

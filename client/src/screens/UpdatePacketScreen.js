@@ -12,9 +12,14 @@ import {
   Container,
   InputGroup,
   Image,
-  Popover
+  Spinner
 } from 'react-bootstrap';
 import Loader from '../components/Loader';
+import {
+  updatePacket,
+  emptyUpdatePacketSuccess,
+  emptyUpdatePacketError
+} from '../actions/packetActions';
 import {
   validateName,
   validateDescription,
@@ -28,13 +33,6 @@ const UpdatePacketScreen = ({ history, match }) => {
   // Request Parameters
   const packetId = match.params.id;
 
-  // App level State
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
-
-  const packetDetails = useSelector((state) => state.packetDetails);
-  const { packet } = packetDetails;
-
   // Component level State
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
@@ -43,6 +41,25 @@ const UpdatePacketScreen = ({ history, match }) => {
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState('');
   const [files, setFiles] = useState([]);
+
+  // App level State
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  const packetDetails = useSelector((state) => state.packetDetails);
+  const { packet } = packetDetails;
+
+  const packetUpdate = useSelector((state) => state.packetUpdate);
+  const { loading: loadingUpdate, error, success } = packetUpdate;
+
+  // Component Variables
+  const validForm =
+    name.length !== 0 &&
+    validateName(name) &&
+    description.length !== 0 &&
+    validateDescription(description) &&
+    category.length !== 0 &&
+    validateCategory(category);
 
   // Hook that triggers when component did mount
   useEffect(() => {
@@ -68,23 +85,17 @@ const UpdatePacketScreen = ({ history, match }) => {
   };
 
   const handleErrorOnClose = () => {
-    //TODO:
+    dispatch(emptyUpdatePacketError());
+  };
+
+  const handleSuccessOnClose = () => {
+    dispatch(emptyUpdatePacketSuccess());
   };
 
   const removeFromUploadsHandler = (e) => {
     e.stopPropagation();
     setFiles([]);
   };
-
-  const popover = (
-    <Popover id='popover-basic'>
-      <Popover.Title as='h3'>Popover right</Popover.Title>
-      <Popover.Content>
-        And here's some <strong>amazing</strong> content. It's very engaging.
-        right?
-      </Popover.Content>
-    </Popover>
-  );
 
   const onDropHandler = async (file) => {
     try {
@@ -104,7 +115,14 @@ const UpdatePacketScreen = ({ history, match }) => {
   };
 
   const updateHandler = () => {
-    //TODO:
+    dispatch(
+      updatePacket({ _id: packetId, name, description, category, price, image })
+    );
+
+    setTimeout(function () {
+      dispatch(emptyUpdatePacketError());
+      dispatch(emptyUpdatePacketSuccess());
+    }, 8000);
   };
 
   return (
@@ -119,14 +137,58 @@ const UpdatePacketScreen = ({ history, match }) => {
               variant='info'
               className='btn-sm'
               style={{ heigth: '3rem', fontSize: '0.82rem' }}
-              title='Save'
+              title={validForm ? 'Save' : 'Enter all fields to submit'}
+              disabled={!validForm || loadingUpdate}
               onClick={updateHandler}
             >
-              Save <i className='fas fa-save fa-lg'></i>
+              {loadingUpdate ? (
+                <>
+                  Loading...
+                  <Spinner
+                    as='span'
+                    animation='border'
+                    size='sm'
+                    role='status'
+                    aria-hidden='true'
+                  />
+                </>
+              ) : (
+                <>
+                  Save <i className='fas fa-save fa-lg'></i>
+                </>
+              )}
             </Button>
           </div>
-
-          <div style={{ height: '55vh' }} className='mb-2 pt-4'>
+          {success && success !== null && (
+            <Alert
+              variant='success'
+              onClose={() => {
+                handleSuccessOnClose();
+              }}
+              dismissible
+            >
+              {success}
+            </Alert>
+          )}
+          {error && error !== null && (
+            <Alert
+              variant='danger'
+              onClose={() => {
+                handleErrorOnClose();
+              }}
+              dismissible
+            >
+              {error}
+            </Alert>
+          )}
+          <div
+            style={{ height: '55vh' }}
+            className={
+              (success && success !== null) || (error && error !== null)
+                ? 'mb-2'
+                : 'mb-2 pt-4'
+            }
+          >
             <StyledDropZone
               onDrop={onDropHandler}
               accept='image/*'

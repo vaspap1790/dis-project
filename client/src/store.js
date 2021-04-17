@@ -5,7 +5,8 @@ import {
   packetListReducer,
   packetDetailsReducer,
   packetsUserReducer,
-  packetCreateReducer
+  packetCreateReducer,
+  packetUpdateReducer
 } from './reducers/packetReducers';
 import { cartReducer } from './reducers/cartReducers';
 import {
@@ -24,6 +25,7 @@ const reducer = combineReducers({
   packetDetails: packetDetailsReducer,
   packetsUser: packetsUserReducer,
   packetCreate: packetCreateReducer,
+  packetUpdate: packetUpdateReducer,
   cart: cartReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,

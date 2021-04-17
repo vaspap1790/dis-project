@@ -20,8 +20,16 @@ export const PACKET_DETAILS_FAIL = 'PACKET_DETAILS_FAIL';
 // Messages
 export const PRE_PACKET_DETAILS_REQUEST = 'PRE_PACKET_DETAILS_REQUEST';
 
-/////////////////////////////// Update Actions /////////////////////////////////
+/////////////////////////////// Create Actions /////////////////////////////////
 export const PACKET_CREATE_REQUEST = 'PACKET_CREATE_REQUEST';
 export const PACKET_CREATE_SUCCESS = 'PACKET_CREATE_SUCCESS';
 export const PACKET_CREATE_FAIL = 'PACKET_CREATE_FAIL';
 export const PACKET_CREATE_RESET = 'PACKET_CREATE_RESET';
+
+/////////////////////////////// Update Actions /////////////////////////////////
+export const PACKET_UPDATE_REQUEST = 'PACKET_UPDATE_REQUEST';
+export const PACKET_UPDATE_SUCCESS = 'PACKET_UPDATE_SUCCESS';
+export const PACKET_UPDATE_FAIL = 'PACKET_UPDATE_FAIL';
+
+export const PACKET_UPDATE_EMPTY_SUCCESS = 'PACKET_UPDATE_EMPTY_SUCCESS';
+export const PACKET_UPDATE_EMPTY_ERROR = 'PACKET_UPDATE_EMPTY_ERROR';

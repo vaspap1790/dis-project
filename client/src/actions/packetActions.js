@@ -13,7 +13,12 @@ import {
   PRE_PACKET_DETAILS_REQUEST,
   PACKET_CREATE_REQUEST,
   PACKET_CREATE_SUCCESS,
-  PACKET_CREATE_FAIL
+  PACKET_CREATE_FAIL,
+  PACKET_UPDATE_REQUEST,
+  PACKET_UPDATE_SUCCESS,
+  PACKET_UPDATE_FAIL,
+  PACKET_UPDATE_EMPTY_ERROR,
+  PACKET_UPDATE_EMPTY_SUCCESS
 } from '../constants/packetConstants';
 import { logout } from './userActions';
 
@@ -104,7 +109,7 @@ export const emptyUserPacketsError = () => async (dispatch) => {
   });
 };
 
-//////////////////////////////// Packet Actions ///////////////////////////////////
+//////////////////////////////// Create Packet Actions ///////////////////////////////////
 export const createPacket = () => async (dispatch, getState) => {
   try {
     dispatch({
@@ -140,4 +145,59 @@ export const createPacket = () => async (dispatch, getState) => {
       payload: message
     });
   }
+};
+
+//////////////////////////////// Update Packet Actions ///////////////////////////////////
+export const updatePacket = (packet) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: PACKET_UPDATE_REQUEST
+    });
+
+    const {
+      userLogin: { userInfo }
+    } = getState();
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    };
+
+    const { data } = await axios.put(
+      `/api/packets/${packet._id}`,
+      packet,
+      config
+    );
+
+    dispatch({
+      type: PACKET_UPDATE_SUCCESS,
+      payload: data
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === 'Not authorized!') {
+      dispatch(logout());
+    }
+    dispatch({
+      type: PACKET_UPDATE_FAIL,
+      payload: message
+    });
+  }
+};
+
+export const emptyUpdatePacketError = () => async (dispatch) => {
+  dispatch({
+    type: PACKET_UPDATE_EMPTY_ERROR
+  });
+};
+
+export const emptyUpdatePacketSuccess = () => async (dispatch) => {
+  dispatch({
+    type: PACKET_UPDATE_EMPTY_SUCCESS
+  });
 };
