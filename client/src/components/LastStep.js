@@ -83,7 +83,10 @@ const LastStep = (props) => {
       <div className='d-flex justify-content-center'>
         Step 3/3: Upload data packet and handle sampling
       </div>
-      <div style={{ height: '55vh' }} className='mb-2 pt-4'>
+      <div
+        style={{ height: '55vh' }}
+        className={props.error && props.error !== null ? 'mb-2' : 'mb-2 pt-4'}
+      >
         <StyledDropZone onDrop={onDropHandler} className='mb-4'>
           {files.length === 0 ? (
             'Click or drop your file here'

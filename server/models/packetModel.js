@@ -34,6 +34,11 @@ const packetSchema = mongoose.Schema(
       required: true,
       default: 0
     },
+    sample: {
+      type: String,
+      required: false,
+      default: ''
+    },
     ipfsHash: {
       type: Number,
       required: true,

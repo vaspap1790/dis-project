@@ -1,5 +1,5 @@
 import React from 'react';
-import { OverlayTrigger, Popover } from 'react-bootstrap';
+import { OverlayTrigger, Popover, Spinner } from 'react-bootstrap';
 
 const Stats = ({
   currentStep,
@@ -11,7 +11,8 @@ const Stats = ({
   totalSteps,
   step,
   uploadHandler,
-  handleEditorValue
+  handleEditorValue,
+  loading
 }) => {
   // Component Methods
   const popover = (
@@ -53,12 +54,28 @@ const Stats = ({
       ) : (
         <button
           className='btn btn-success'
+          title='Upload Data Packet'
           onClick={() => {
             uploadHandler();
             handleEditorValue();
           }}
         >
-          Upload
+          {loading ? (
+            <>
+              Loading...
+              <Spinner
+                as='span'
+                animation='border'
+                size='sm'
+                role='status'
+                aria-hidden='true'
+              />
+            </>
+          ) : (
+            <>
+              Upload <i className='fas fa-upload'></i>
+            </>
+          )}
         </button>
       )}
     </div>

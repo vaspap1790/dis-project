@@ -15,6 +15,7 @@ import {
   PACKET_CREATE_SUCCESS,
   PACKET_CREATE_FAIL,
   PACKET_CREATE_RESET,
+  PACKET_CREATE_EMPTY_ERROR,
   PACKET_UPDATE_REQUEST,
   PACKET_UPDATE_SUCCESS,
   PACKET_UPDATE_FAIL,
@@ -89,6 +90,8 @@ export const packetCreateReducer = (state = {}, action) => {
       return { loading: false, error: action.payload };
     case PACKET_CREATE_RESET:
       return {};
+    case PACKET_CREATE_EMPTY_ERROR:
+      return { ...state, error: null };
     default:
       return state;
   }

@@ -66,6 +66,9 @@ const UpdatePacketScreen = ({ history, match }) => {
 
   // Hook that triggers when component did mount
   useEffect(() => {
+    if (!userInfo) {
+      history.push('/login');
+    }
     const fetch = async () => {
       const { data } = await axios.get(`/api/packets/${packetId}`);
       setName(data.name);
@@ -76,7 +79,7 @@ const UpdatePacketScreen = ({ history, match }) => {
       setLoading(false);
     };
     fetch();
-  }, [dispatch, packetId]);
+  }, [dispatch, packetId, userInfo]);
 
   // Component Methods
   const goBack = () => {
@@ -101,9 +104,9 @@ const UpdatePacketScreen = ({ history, match }) => {
   };
 
   const onDropHandler = async (file) => {
+    setUploading(true);
     const formData = new FormData();
     formData.append('image', file);
-    setUploading(true);
 
     try {
       const config = {

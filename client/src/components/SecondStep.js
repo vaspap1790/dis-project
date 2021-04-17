@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { StyledDropZone } from 'react-drop-zone';
-import { FileIcon, defaultStyles } from 'react-file-icon';
-import { Form, InputGroup } from 'react-bootstrap';
+import axios from 'axios';
+import { Form, InputGroup, Image } from 'react-bootstrap';
 import 'react-drop-zone/dist/styles.css';
 import Stats from './Stats';
+import Loader from '../components/Loader';
 
 const SecondStep = (props) => {
   // Component level State
   const [price, setPrice] = useState(0);
-  const [files, setFiles] = useState([]);
+  const [image, setImage] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   // Component Methods
   const removeFromUploadsHandler = (e) => {
     e.stopPropagation();
-    setFiles([]);
+    setImage('');
   };
 
   const submitHandler = (e) => {
@@ -25,21 +27,25 @@ const SecondStep = (props) => {
   };
 
   const onDropHandler = async (file) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    setUploading(true);
+
     try {
-      file.timestamp = new Date();
-      var reader = new FileReader();
-      reader.onload = function () {};
-      reader.readAsText(file);
-      if (files.length === 0) {
-        await setFiles((files) => [...files, file]);
-        props.update('image', file);
-      } else {
-        await setFiles([]);
-        await setFiles((files) => [...files, file]);
-        props.update('image', file);
-      }
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      };
+
+      const { data } = await axios.post('/api/upload', formData, config);
+
+      setImage(data);
+      props.update('image', data);
+      setUploading(false);
     } catch (error) {
       console.log(error);
+      setUploading(false);
     }
   };
 
@@ -55,28 +61,23 @@ const SecondStep = (props) => {
           accept='image/*'
           className='mb-4'
         >
-          {files.length === 0 ? (
+          {uploading ? (
+            <Loader />
+          ) : image.length === 0 ? (
             'Click or drop your file here'
           ) : (
             <div className='d-flex justify-content-center align-items-center'>
               <span
                 style={{
-                  width: '2rem',
+                  width: '4rem',
                   verticalAlign: 'middle',
                   marginRight: '2rem'
                 }}
               >
-                <FileIcon
-                  extension={files[0].name.substr(
-                    files[0].name.lastIndexOf('.') + 1
-                  )}
-                  {...defaultStyles[
-                    files[0].name.substr(files[0].name.lastIndexOf('.') + 1)
-                  ]}
-                />
+                <Image src={image} alt={image} fluid rounded />
               </span>{' '}
               <span style={{ verticalAlign: 'middle', marginRight: '2rem' }}>
-                {files[0].name}
+                {image}
               </span>{' '}
               <span style={{ verticalAlign: 'middle' }}>
                 <i

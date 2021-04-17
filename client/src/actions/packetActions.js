@@ -14,6 +14,7 @@ import {
   PACKET_CREATE_REQUEST,
   PACKET_CREATE_SUCCESS,
   PACKET_CREATE_FAIL,
+  PACKET_CREATE_EMPTY_ERROR,
   PACKET_UPDATE_REQUEST,
   PACKET_UPDATE_SUCCESS,
   PACKET_UPDATE_FAIL,
@@ -110,7 +111,7 @@ export const emptyUserPacketsError = () => async (dispatch) => {
 };
 
 //////////////////////////////// Create Packet Actions ///////////////////////////////////
-export const createPacket = () => async (dispatch, getState) => {
+export const createPacket = (packet) => async (dispatch, getState) => {
   try {
     dispatch({
       type: PACKET_CREATE_REQUEST
@@ -126,7 +127,7 @@ export const createPacket = () => async (dispatch, getState) => {
       }
     };
 
-    const { data } = await axios.post(`/api/packets`, {}, config);
+    const { data } = await axios.post(`/api/packets`, packet, config);
 
     dispatch({
       type: PACKET_CREATE_SUCCESS,
@@ -145,6 +146,12 @@ export const createPacket = () => async (dispatch, getState) => {
       payload: message
     });
   }
+};
+
+export const emptyCreatePacketError = () => async (dispatch) => {
+  dispatch({
+    type: PACKET_CREATE_EMPTY_ERROR
+  });
 };
 
 //////////////////////////////// Update Packet Actions ///////////////////////////////////

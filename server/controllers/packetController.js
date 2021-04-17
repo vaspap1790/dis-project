@@ -66,13 +66,17 @@ const getPacketsByUserId = asyncHandler(async (req, res) => {
 // @route   POST /api/packets
 // @access  Private
 const createPacket = asyncHandler(async (req, res) => {
+  const { name, price, description, image, category, sample } = req.body;
+
   const packet = new Packet({
-    name: 'Sample name',
-    price: 0,
+    name: name,
+    price: price,
     user: req.user._id,
-    category: 'Sample category',
+    category: category,
     numReviews: 0,
-    description: 'Sample description'
+    description: description,
+    image: image,
+    sample: sample
   });
 
   const createdPacket = await packet.save();

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import 'react-quill/dist/quill.snow.css';
 import 'react-drop-zone/dist/styles.css';
@@ -10,6 +10,7 @@ import SecondStep from '../components/SecondStep';
 import LastStep from '../components/LastStep';
 import ModalComponent from '../components/ModalComponent';
 import '../css/wizard.css';
+import { createPacket, emptyCreatePacketError } from '../actions/packetActions';
 import {
   validateName,
   validateDescription,
@@ -25,6 +26,9 @@ const CreatePacketScreen = ({ history, match }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const packetCreate = useSelector((state) => state.packetCreate);
+  const { loading, error, success } = packetCreate;
+
   // Component level State
   const [validationModal, showValidationModal] = useState(false);
   const [confirmationModal, showConfirmationModal] = useState(false);
@@ -32,6 +36,16 @@ const CreatePacketScreen = ({ history, match }) => {
   const [state, updateState] = useState({
     form: {}
   });
+
+  // Hook that triggers when component did mount
+  useEffect(() => {
+    if (!userInfo) {
+      history.push('/login');
+    }
+    if (success) {
+      history.push(`/profile`);
+    }
+  }, [history, userInfo, success]);
 
   // Component Methods
   const closeValidationModal = () => showValidationModal(false);
@@ -58,7 +72,7 @@ const CreatePacketScreen = ({ history, match }) => {
     });
 
   const handleErrorOnClose = () => {
-    //TODO:
+    dispatch(emptyCreatePacketError());
   };
 
   const uploadHandler = () => {
@@ -74,16 +88,28 @@ const CreatePacketScreen = ({ history, match }) => {
       !form.data
     ) {
       showValidationModal(true);
-      console.log(form);
     } else {
       showConfirmationModal(true);
-      console.log(form);
     }
   };
 
   const handleProceed = () => {
+    const { form } = state;
     showConfirmationModal(false);
-    console.log('YOU DID IT');
+    //TODO: IPFS upload with form.data ?
+    dispatch(
+      createPacket({
+        name: form.name,
+        description: form.description,
+        category: form.category,
+        price: form.price,
+        image: form.image,
+        sample: form.editorValue
+      })
+    );
+    setTimeout(function () {
+      dispatch(emptyCreatePacketError());
+    }, 8000);
   };
 
   //This will be rendered
@@ -108,6 +134,8 @@ const CreatePacketScreen = ({ history, match }) => {
               hashKey={'step3'}
               update={updateForm}
               uploadHandler={uploadHandler}
+              error={error}
+              loading={loading}
             />
           </StepWizard>
         </div>
