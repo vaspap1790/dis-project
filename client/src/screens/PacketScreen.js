@@ -11,6 +11,9 @@ import {
 } from 'react-bootstrap';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import 'react-drop-zone/dist/styles.css';
 import { listPacketDetails } from '../actions/packetActions';
 
 const PacketScreen = ({ history, match }) => {
@@ -23,6 +26,11 @@ const PacketScreen = ({ history, match }) => {
 
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
+
+  //Component Variables
+  const modules = {
+    toolbar: false
+  };
 
   // Hook that triggers when component did mount
   useEffect(() => {
@@ -51,7 +59,24 @@ const PacketScreen = ({ history, match }) => {
       ) : (
         <Row>
           <Col md={6} className='pr-0'>
-            <Image src={packet.image} alt={packet.name} fluid />
+            {packet.sample !== '' ? (
+              <div>
+                <ReactQuill
+                  theme='snow'
+                  name='editor'
+                  modules={modules}
+                  value={packet.sample}
+                  preserveWhitespace
+                  readOnly
+                />
+              </div>
+            ) : (
+              <Image
+                src={packet.image === '' ? '/images/sample.jpg' : packet.image}
+                alt={packet.name}
+                fluid
+              />
+            )}
           </Col>
           <Col md={6}>
             <Row className='d-flex'>
