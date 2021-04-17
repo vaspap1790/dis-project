@@ -11,7 +11,8 @@ import {
   Alert,
   Tabs,
   Tab,
-  Card
+  Card,
+  ListGroup
 } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import {
@@ -388,7 +389,24 @@ const ProfileScreen = ({ match, history }) => {
           ) : null}
           {/**************** Reviews Tab *******************/}
           <Tab eventKey='reviews' title='Reviews'>
-            <div className='p-2'>Reviews</div>
+            <div className='p-2' style={{ color: 'black' }}>
+              {userReviews.length === 0 && (
+                <Alert variant='info'>No Reviews</Alert>
+              )}
+              <ListGroup variant='flush'>
+                {userReviews.map((review) => (
+                  <ListGroup.Item key={review[0]._id}>
+                    <span style={{ display: 'block', fontWeight: 'bold' }}>
+                      {review[0].user.username}
+                    </span>
+                    <p>for {review[0].packet.name}</p>
+                    <Rating value={review[0].rating} />
+                    <p>{review[0].createdAt.substring(0, 10)}</p>
+                    <p>{review[0].comment}</p>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </div>
           </Tab>
         </Tabs>
       </Col>
