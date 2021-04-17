@@ -1,14 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
-import { Image } from 'react-bootstrap';
+import { Image, Form, Button } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import ModalComponent from '../components/ModalComponent';
 
 //import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
 const DataTable = ({ data }) => {
+  // Component level State
+  const [ratingModal, showRatingModal] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
+
+  const form = (
+    <Form>
+      <Form.Group controlId='rating'>
+        <Form.Label>Rating</Form.Label>
+        <Form.Control
+          as='select'
+          value={rating}
+          onChange={(e) => setRating(e.target.value)}
+        >
+          <option value=''>Select...</option>
+          <option value='1'>1 - Poor</option>
+          <option value='2'>2 - Fair</option>
+          <option value='3'>3 - Good</option>
+          <option value='4'>4 - Very Good</option>
+          <option value='5'>5 - Excellent</option>
+        </Form.Control>
+      </Form.Group>
+      <Form.Group controlId='comment'>
+        <Form.Label>Comment</Form.Label>
+        <Form.Control
+          as='textarea'
+          row='3'
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        ></Form.Control>
+      </Form.Group>
+      <Button type='submit' variant='primary'>
+        Submit
+      </Button>
+    </Form>
+  );
+
+  // Component Methods
+  const closeRatingModal = () => showRatingModal(false);
+  const openRatingModal = () => showRatingModal(true);
+
   // Header formatters
   const imageHeaderFormatter = (column, colIndex) => {
     return (
@@ -90,12 +132,13 @@ const DataTable = ({ data }) => {
 
   const actionFormatter = (cell, row, rowIndex) => {
     return (
-      <div className='v-align h-align' style={{ height: '4rem' }}>
+      <div className='v-align h-align' style={{ height: '3rem' }}>
         <span
           type='button'
           variant='primary'
           title='Download'
           onClick={() => {
+            //TODO: download data packet
             console.log(cell);
           }}
         >
@@ -103,6 +146,16 @@ const DataTable = ({ data }) => {
             className='fas fa-file-download fa-2x'
             style={{ color: 'black' }}
           ></i>
+        </span>
+        <span
+          type='button'
+          variant='primary'
+          title='Rate'
+          onClick={() => {
+            openRatingModal();
+          }}
+        >
+          <i className='fas fa-star fa-2x' style={{ color: 'black' }}></i>
         </span>
       </div>
     );
@@ -153,7 +206,7 @@ const DataTable = ({ data }) => {
     },
     {
       dataField: 'packet._id',
-      text: 'Action',
+      text: 'Actions',
       headerStyle: {
         borderStyle: 'none'
       },
@@ -193,20 +246,31 @@ const DataTable = ({ data }) => {
 
   //DataTable instantiation
   return (
-    <BootstrapTable
-      bootstrap4
-      keyField='createdAt'
-      data={data}
-      columns={columns}
-      defaultSorted={defaultSorted}
-      striped
-      hover
-      condensed
-      noDataIndication={'No items purchased'}
-      pagination={paginationFactory(pagingOptions)}
-      filter={filterFactory()}
-      headerClasses='table-dark'
-    />
+    <>
+      <BootstrapTable
+        bootstrap4
+        keyField='createdAt'
+        data={data}
+        columns={columns}
+        defaultSorted={defaultSorted}
+        striped
+        hover
+        condensed
+        noDataIndication={'No items purchased'}
+        pagination={paginationFactory(pagingOptions)}
+        filter={filterFactory()}
+        headerClasses='table-dark'
+      />
+
+      {/* Modals */}
+      <ModalComponent
+        show={ratingModal}
+        close={closeRatingModal}
+        title='Leave a rating'
+        body={form}
+        success={true}
+      />
+    </>
   );
 };
 

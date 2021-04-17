@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Packet from '../components/Packet';
 import Rating from '../components/Rating';
+import ModalComponent from '../components/ModalComponent';
 import DataTable from '../components/DataTable';
 import {
   Form,
@@ -48,14 +49,6 @@ const ProfileScreen = ({ match, history }) => {
   // Request Parameters
   const userDetailsId = match.params.id;
 
-  // Component level State
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordType, setPasswordType] = useState('password');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [confirmPasswordType, setConfirmPasswordType] = useState('password');
-
   // App level State
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -78,6 +71,15 @@ const ProfileScreen = ({ match, history }) => {
   } = packetsUser;
 
   const { packets: userPackets, reviews: userReviews, userRating } = userData;
+
+  // Component level State
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordType, setPasswordType] = useState('password');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPasswordType, setConfirmPasswordType] = useState('password');
+  const [confirmationModal, showConfirmationModal] = useState(false);
 
   // Component Variables
   const validForm =
@@ -110,6 +112,9 @@ const ProfileScreen = ({ match, history }) => {
   }, [dispatch, history, userLogin, userInfo, userDetails, userDetailsId]);
 
   // Component Methods
+  const closeConfirmationModal = () => showConfirmationModal(false);
+  const openConfirmationModal = () => showConfirmationModal(true);
+
   const submitHandler = (e) => {
     e.preventDefault();
 
@@ -167,331 +172,344 @@ const ProfileScreen = ({ match, history }) => {
 
   // This will be rendered
   return (
-    <Row>
-      {/************************  Side Profile Screen ****************************/}
-      <Col md={3} className='table-dark p-2' id='sidebarProfile'>
-        <h2 style={{ color: 'white' }}>User Details</h2>
-        <Tabs
-          defaultActiveKey='profile'
-          transition={false}
-          className='profileTabs'
-        >
-          {/**************** Profile Tab *******************/}
-          <Tab eventKey='profile' title='Profile'>
-            {userRating && (
-              <Card className='my-3 p-3 rounded'>
-                <Card.Body style={{ color: 'black' }}>
-                  <Card.Title as='div'>{userRating.username}</Card.Title>
-                  <Card.Text>
-                    <span style={{ display: 'block' }}>
-                      Uploaded{' '}
-                      <span className='badge badge-pill badge-success'>
-                        {userPackets.length}
-                      </span>{' '}
-                      data items
-                    </span>
-                    <Rating
-                      value={userRating.rating}
-                      text={`${userRating.numReviews} reviews`}
-                    />
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            )}
-          </Tab>
-          {/***************** Update Tab *******************/}
-          {!userDetails ? (
-            <Tab eventKey='update' title='Update'>
-              <div className='p-2'>
-                {success && success !== null && (
-                  <Alert
-                    variant='success'
-                    onClose={() => {
-                      handleSuccessOnClose();
-                    }}
-                    dismissible
-                  >
-                    {success}
-                  </Alert>
-                )}
-                {error && error !== null && (
-                  <Alert
-                    variant='danger'
-                    onClose={() => {
-                      handleErrorOnClose();
-                    }}
-                    dismissible
-                  >
-                    {error}
-                  </Alert>
-                )}
-                {loading && <Loader />}
-
-                <Form onSubmit={submitHandler}>
-                  <Form.Group controlId='username'>
-                    <Form.Label>Username</Form.Label>
-                    <Form.Control
-                      className={
-                        username.length === 0 ||
-                        (userInfo && username === userInfo.username)
-                          ? ''
-                          : validateUsername(username)
-                          ? 'is-valid'
-                          : 'is-invalid'
-                      }
-                      type='text'
-                      placeholder='Enter username'
-                      title='Enter username'
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                    ></Form.Control>
-                    {username.length === 0 ? null : validateUsername(
-                        username
-                      ) ? (
-                      <div className='valid-feedback' display={'none'}>
-                        Correct
-                      </div>
-                    ) : (
-                      <div className='invalid-feedback'>
-                        Username should be from 5 to 15 characters long
-                      </div>
-                    )}
-                  </Form.Group>
-
-                  <Form.Group controlId='email'>
-                    <Form.Label>Email Address</Form.Label>
-                    <Form.Control
-                      className={
-                        email.length === 0 ||
-                        (userInfo && email === userInfo.email)
-                          ? ''
-                          : validateEmail(email)
-                          ? 'is-valid'
-                          : 'is-invalid'
-                      }
-                      type='text'
-                      placeholder='Enter email'
-                      title='Enter email'
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    ></Form.Control>
-                    {email.length === 0 ? null : validateEmail(email) ? (
-                      <div className='valid-feedback'>Correct</div>
-                    ) : (
-                      <div className='invalid-feedback'>
-                        Please insert a valid email
-                      </div>
-                    )}
-                  </Form.Group>
-
-                  <Form.Group controlId='password'>
-                    <Form.Label className='d-flex justify-content-between'>
-                      Change Password{' '}
-                      <span
-                        className='link'
-                        onClick={showHidePassword}
-                        title='Show/Hide Password'
-                      >
-                        <i
-                          className={
-                            passwordType === 'text'
-                              ? 'fas fa-eye search-icon'
-                              : 'fas fa-eye-slash search-icon'
-                          }
-                        ></i>
+    <>
+      <Row>
+        {/************************  Side Profile Screen ****************************/}
+        <Col md={3} className='table-dark p-2' id='sidebarProfile'>
+          <h2 style={{ color: 'white' }}>User Details</h2>
+          <Tabs
+            defaultActiveKey='profile'
+            transition={false}
+            className='profileTabs'
+          >
+            {/**************** Profile Tab *******************/}
+            <Tab eventKey='profile' title='Profile'>
+              {userRating && (
+                <Card className='my-3 p-3 rounded'>
+                  <Card.Body style={{ color: 'black' }}>
+                    <Card.Title as='div'>{userRating.username}</Card.Title>
+                    <Card.Text>
+                      <span style={{ display: 'block' }}>
+                        Uploaded{' '}
+                        <span className='badge badge-pill badge-success'>
+                          {userPackets.length}
+                        </span>{' '}
+                        data items
                       </span>
-                    </Form.Label>
-                    <Form.Control
-                      className={
-                        password.length === 0
-                          ? ''
-                          : validatePassword(password)
-                          ? 'is-valid'
-                          : 'is-invalid'
-                      }
-                      type={passwordType}
-                      placeholder='Enter password'
-                      title='Enter password'
-                      value={password}
-                      onChange={(e) => setPasswordHandler(e.target.value)}
-                    ></Form.Control>
-                    {password.length === 0 ? null : validatePassword(
-                        password
-                      ) ? (
-                      <div className='valid-feedback'>Correct</div>
-                    ) : (
-                      <div className='invalid-feedback'>
-                        Password should be from 8 to 15 characters long
-                      </div>
-                    )}
-                  </Form.Group>
+                      <Rating
+                        value={userRating.rating}
+                        text={`${userRating.numReviews} reviews`}
+                      />
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              )}
+            </Tab>
+            {/***************** Update Tab *******************/}
+            {!userDetails ? (
+              <Tab eventKey='update' title='Update'>
+                <div className='p-2'>
+                  {success && success !== null && (
+                    <Alert
+                      variant='success'
+                      onClose={() => {
+                        handleSuccessOnClose();
+                      }}
+                      dismissible
+                    >
+                      {success}
+                    </Alert>
+                  )}
+                  {error && error !== null && (
+                    <Alert
+                      variant='danger'
+                      onClose={() => {
+                        handleErrorOnClose();
+                      }}
+                      dismissible
+                    >
+                      {error}
+                    </Alert>
+                  )}
+                  {loading && <Loader />}
 
-                  <Form.Group controlId='confirmPassword'>
-                    <Form.Label className='d-flex justify-content-between'>
-                      Confirm New Password{' '}
-                      <span
-                        className='link'
-                        onClick={showHideConfirmPassword}
-                        title='Show/Hide Confirm Password'
-                      >
-                        <i
-                          className={
-                            confirmPasswordType === 'text'
-                              ? 'fas fa-eye search-icon'
-                              : 'fas fa-eye-slash search-icon'
-                          }
-                        ></i>
-                      </span>
-                    </Form.Label>
-                    <Form.Control
-                      className={
-                        confirmPassword.length === 0
-                          ? ''
-                          : validateConfirmPassword(password, confirmPassword)
-                          ? 'is-valid'
-                          : 'is-invalid'
+                  <Form onSubmit={submitHandler}>
+                    <Form.Group controlId='username'>
+                      <Form.Label>Username</Form.Label>
+                      <Form.Control
+                        className={
+                          username.length === 0 ||
+                          (userInfo && username === userInfo.username)
+                            ? ''
+                            : validateUsername(username)
+                            ? 'is-valid'
+                            : 'is-invalid'
+                        }
+                        type='text'
+                        placeholder='Enter username'
+                        title='Enter username'
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                      ></Form.Control>
+                      {username.length === 0 ? null : validateUsername(
+                          username
+                        ) ? (
+                        <div className='valid-feedback' display={'none'}>
+                          Correct
+                        </div>
+                      ) : (
+                        <div className='invalid-feedback'>
+                          Username should be from 5 to 15 characters long
+                        </div>
+                      )}
+                    </Form.Group>
+
+                    <Form.Group controlId='email'>
+                      <Form.Label>Email Address</Form.Label>
+                      <Form.Control
+                        className={
+                          email.length === 0 ||
+                          (userInfo && email === userInfo.email)
+                            ? ''
+                            : validateEmail(email)
+                            ? 'is-valid'
+                            : 'is-invalid'
+                        }
+                        type='text'
+                        placeholder='Enter email'
+                        title='Enter email'
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      ></Form.Control>
+                      {email.length === 0 ? null : validateEmail(email) ? (
+                        <div className='valid-feedback'>Correct</div>
+                      ) : (
+                        <div className='invalid-feedback'>
+                          Please insert a valid email
+                        </div>
+                      )}
+                    </Form.Group>
+
+                    <Form.Group controlId='password'>
+                      <Form.Label className='d-flex justify-content-between'>
+                        Change Password{' '}
+                        <span
+                          className='link'
+                          onClick={showHidePassword}
+                          title='Show/Hide Password'
+                        >
+                          <i
+                            className={
+                              passwordType === 'text'
+                                ? 'fas fa-eye search-icon'
+                                : 'fas fa-eye-slash search-icon'
+                            }
+                          ></i>
+                        </span>
+                      </Form.Label>
+                      <Form.Control
+                        className={
+                          password.length === 0
+                            ? ''
+                            : validatePassword(password)
+                            ? 'is-valid'
+                            : 'is-invalid'
+                        }
+                        type={passwordType}
+                        placeholder='Enter password'
+                        title='Enter password'
+                        value={password}
+                        onChange={(e) => setPasswordHandler(e.target.value)}
+                      ></Form.Control>
+                      {password.length === 0 ? null : validatePassword(
+                          password
+                        ) ? (
+                        <div className='valid-feedback'>Correct</div>
+                      ) : (
+                        <div className='invalid-feedback'>
+                          Password should be from 8 to 15 characters long
+                        </div>
+                      )}
+                    </Form.Group>
+
+                    <Form.Group controlId='confirmPassword'>
+                      <Form.Label className='d-flex justify-content-between'>
+                        Confirm New Password{' '}
+                        <span
+                          className='link'
+                          onClick={showHideConfirmPassword}
+                          title='Show/Hide Confirm Password'
+                        >
+                          <i
+                            className={
+                              confirmPasswordType === 'text'
+                                ? 'fas fa-eye search-icon'
+                                : 'fas fa-eye-slash search-icon'
+                            }
+                          ></i>
+                        </span>
+                      </Form.Label>
+                      <Form.Control
+                        className={
+                          confirmPassword.length === 0
+                            ? ''
+                            : validateConfirmPassword(password, confirmPassword)
+                            ? 'is-valid'
+                            : 'is-invalid'
+                        }
+                        type={confirmPasswordType}
+                        placeholder='Confirm password'
+                        title='Confirm password'
+                        disabled={password.length === 0}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                      ></Form.Control>
+                      {confirmPassword.length ===
+                      0 ? null : validateConfirmPassword(
+                          password,
+                          confirmPassword
+                        ) ? (
+                        <div className='valid-feedback'>Correct</div>
+                      ) : (
+                        <div className='invalid-feedback'>
+                          Confrim Password should be much Password
+                        </div>
+                      )}
+                    </Form.Group>
+                    <Button
+                      variant='primary'
+                      disabled={!validForm}
+                      title={
+                        validForm
+                          ? 'Update Profile'
+                          : 'Enter correct values to submit'
                       }
-                      type={confirmPasswordType}
-                      placeholder='Confirm password'
-                      title='Confirm password'
-                      disabled={password.length === 0}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                    ></Form.Control>
-                    {confirmPassword.length ===
-                    0 ? null : validateConfirmPassword(
-                        password,
-                        confirmPassword
-                      ) ? (
-                      <div className='valid-feedback'>Correct</div>
-                    ) : (
-                      <div className='invalid-feedback'>
-                        Confrim Password should be much Password
-                      </div>
-                    )}
-                  </Form.Group>
-                  <Button
-                    variant='primary'
-                    disabled={!validForm}
-                    title={
-                      validForm
-                        ? 'Update Profile'
-                        : 'Enter correct values to submit'
-                    }
-                    className='btn btn-sm btn-block'
-                    type='submit'
-                  >
-                    Update
-                  </Button>
-                </Form>
+                      className='btn btn-sm btn-block'
+                      type='submit'
+                    >
+                      Update
+                    </Button>
+                  </Form>
+                </div>
+              </Tab>
+            ) : null}
+            {/**************** Reviews Tab *******************/}
+            <Tab eventKey='reviews' title='Reviews'>
+              <div className='p-2' style={{ color: 'black' }}>
+                {userReviews.length === 0 && (
+                  <Alert variant='info'>No Reviews</Alert>
+                )}
+                <ListGroup variant='flush'>
+                  {userReviews.map((review) => (
+                    <ListGroup.Item key={review[0]._id}>
+                      <span style={{ display: 'block', fontWeight: 'bold' }}>
+                        {review[0].user.username}
+                      </span>
+                      <p>for {review[0].packet.name}</p>
+                      <Rating value={review[0].rating} />
+                      <p>{review[0].createdAt.substring(0, 10)}</p>
+                      <p>{review[0].comment}</p>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
               </div>
             </Tab>
-          ) : null}
-          {/**************** Reviews Tab *******************/}
-          <Tab eventKey='reviews' title='Reviews'>
-            <div className='p-2' style={{ color: 'black' }}>
-              {userReviews.length === 0 && (
-                <Alert variant='info'>No Reviews</Alert>
-              )}
-              <ListGroup variant='flush'>
-                {userReviews.map((review) => (
-                  <ListGroup.Item key={review[0]._id}>
-                    <span style={{ display: 'block', fontWeight: 'bold' }}>
-                      {review[0].user.username}
-                    </span>
-                    <p>for {review[0].packet.name}</p>
-                    <Rating value={review[0].rating} />
-                    <p>{review[0].createdAt.substring(0, 10)}</p>
-                    <p>{review[0].comment}</p>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            </div>
-          </Tab>
-        </Tabs>
-      </Col>
+          </Tabs>
+        </Col>
 
-      {/************************  Main Profile Screen ****************************/}
-      <Col md={9} className='pt-2'>
-        <span className='d-flex justify-content-between align-items-center'>
-          <h2 style={{ display: 'inline' }}>User Data Packets</h2>
-          {userInfo && !userDetails ? (
-            <Button
-              variant='success'
-              className='btn-sm'
-              title='Upload a data packet'
-              style={{ heigth: '3rem', fontSize: '0.82rem' }}
-              onClick={uploadHandler}
-            >
-              Upload <i className='fas fa-upload'></i>
-            </Button>
-          ) : null}
-        </span>
-        <Tabs defaultActiveKey='uploaded' transition={false}>
-          {/*************** Uploaded Tab *******************/}
-          <Tab eventKey='uploaded' title='Uploaded'>
-            <div className='p-2'>
-              {loadingUserPackets ? (
-                <Loader />
-              ) : userPacketsError &&
-                userPacketsError === 'No items uploaded' ? (
-                <Alert variant='info'>{userPacketsError}</Alert>
-              ) : userPacketsError &&
-                userPacketsError !== 'No items uploaded' ? (
-                <Alert
-                  variant='danger'
-                  onClose={() => {
-                    handleUserPacketsErrorOnClose();
-                  }}
-                  dismissible={userPacketsError === 'No items uploaded'}
-                >
-                  {userPacketsError}
-                </Alert>
-              ) : (
-                <Row>
-                  {userPackets &&
-                    userPackets.map((packet) => (
-                      <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
-                        <Packet handler={updateHandler} packet={packet} />
-                      </Col>
-                    ))}
-                </Row>
-              )}
-            </div>
-          </Tab>
-          {/*************** Purchased Tab ******************/}
-          {!userDetails ? (
-            <Tab eventKey='purchased' title='Purchased'>
+        {/************************  Main Profile Screen ****************************/}
+        <Col md={9} className='pt-2'>
+          <span className='d-flex justify-content-between align-items-center'>
+            <h2 style={{ display: 'inline' }}>User Data Packets</h2>
+            {userInfo && !userDetails ? (
+              <Button
+                variant='success'
+                className='btn-sm'
+                title='Upload a data packet'
+                style={{ heigth: '3rem', fontSize: '0.82rem' }}
+                onClick={uploadHandler}
+              >
+                Upload <i className='fas fa-upload'></i>
+              </Button>
+            ) : null}
+          </span>
+          <Tabs defaultActiveKey='uploaded' transition={false}>
+            {/*************** Uploaded Tab *******************/}
+            <Tab eventKey='uploaded' title='Uploaded'>
               <div className='p-2'>
-                {loadingUserAccess ? (
+                {loadingUserPackets ? (
                   <Loader />
-                ) : userAccessError ? (
+                ) : userPacketsError &&
+                  userPacketsError === 'No items uploaded' ? (
+                  <Alert variant='info'>{userPacketsError}</Alert>
+                ) : userPacketsError &&
+                  userPacketsError !== 'No items uploaded' ? (
                   <Alert
                     variant='danger'
                     onClose={() => {
-                      handleUserAccessErrorOnClose();
+                      handleUserPacketsErrorOnClose();
                     }}
-                    dismissible
+                    dismissible={userPacketsError === 'No items uploaded'}
                   >
-                    {userAccessError}{' '}
-                    {userAccessError === 'Not Authorised!' ? (
-                      <span>
-                        Try to Logout and Login again to refresh your access
-                        token
-                      </span>
-                    ) : (
-                      ''
-                    )}
+                    {userPacketsError}
                   </Alert>
                 ) : (
-                  <DataTable data={userAccess} />
+                  <Row>
+                    {userPackets &&
+                      userPackets.map((packet) => (
+                        <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
+                          <Packet handler={updateHandler} packet={packet} />
+                        </Col>
+                      ))}
+                  </Row>
                 )}
               </div>
             </Tab>
-          ) : null}
-        </Tabs>
-      </Col>
-    </Row>
+            {/*************** Purchased Tab ******************/}
+            {!userDetails ? (
+              <Tab eventKey='purchased' title='Purchased'>
+                <div className='p-2'>
+                  {loadingUserAccess ? (
+                    <Loader />
+                  ) : userAccessError ? (
+                    <Alert
+                      variant='danger'
+                      onClose={() => {
+                        handleUserAccessErrorOnClose();
+                      }}
+                      dismissible
+                    >
+                      {userAccessError}{' '}
+                      {userAccessError === 'Not Authorised!' ? (
+                        <span>
+                          Try to Logout and Login again to refresh your access
+                          token
+                        </span>
+                      ) : (
+                        ''
+                      )}
+                    </Alert>
+                  ) : (
+                    <DataTable data={userAccess} />
+                  )}
+                </div>
+              </Tab>
+            ) : null}
+          </Tabs>
+        </Col>
+      </Row>
+
+      {/* Modals */}
+      <ModalComponent
+        show={confirmationModal}
+        close={closeConfirmationModal}
+        //proceed={handleProceed}
+        title='Confirm Upload'
+        body='Are you sure you want to proceed and update your profile?'
+        danger={true}
+        success={true}
+      />
+    </>
   );
 };
 
