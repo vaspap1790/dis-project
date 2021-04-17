@@ -40,7 +40,7 @@ const UpdatePacketScreen = ({ history, match }) => {
   const [category, setCategory] = useState('');
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState('');
-  const [files, setFiles] = useState([]);
+  const [uploading, setUploading] = useState(false);
 
   // App level State
   const userLogin = useSelector((state) => state.userLogin);
@@ -54,10 +54,13 @@ const UpdatePacketScreen = ({ history, match }) => {
 
   // Component Variables
   const validForm =
+    name !== undefined &&
     name.length !== 0 &&
     validateName(name) &&
+    description !== undefined &&
     description.length !== 0 &&
     validateDescription(description) &&
+    category !== undefined &&
     category.length !== 0 &&
     validateCategory(category);
 
@@ -94,23 +97,28 @@ const UpdatePacketScreen = ({ history, match }) => {
 
   const removeFromUploadsHandler = (e) => {
     e.stopPropagation();
-    setFiles([]);
+    setImage('');
   };
 
   const onDropHandler = async (file) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    setUploading(true);
+
     try {
-      file.timestamp = new Date();
-      var reader = new FileReader();
-      reader.onload = function () {};
-      reader.readAsText(file);
-      if (files.length === 0) {
-        await setFiles((files) => [...files, file]);
-      } else {
-        await setFiles([]);
-        await setFiles((files) => [...files, file]);
-      }
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      };
+
+      const { data } = await axios.post('/api/upload', formData, config);
+
+      setImage(data);
+      setUploading(false);
     } catch (error) {
       console.log(error);
+      setUploading(false);
     }
   };
 
@@ -194,7 +202,9 @@ const UpdatePacketScreen = ({ history, match }) => {
               accept='image/*'
               className='mb-4'
             >
-              {image.length === 0 ? (
+              {uploading ? (
+                <Loader />
+              ) : image.length === 0 ? (
                 'Click or drop your file here'
               ) : (
                 <div className='d-flex justify-content-center align-items-center'>
