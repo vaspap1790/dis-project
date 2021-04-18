@@ -15,6 +15,7 @@ import {
   Spinner
 } from 'react-bootstrap';
 import Loader from '../components/Loader';
+import ModalComponent from '../components/ModalComponent';
 import {
   updatePacket,
   emptyUpdatePacketSuccess,
@@ -33,15 +34,6 @@ const UpdatePacketScreen = ({ history, match }) => {
   // Request Parameters
   const packetId = match.params.id;
 
-  // Component level State
-  const [loading, setLoading] = useState(true);
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('');
-  const [price, setPrice] = useState(0);
-  const [image, setImage] = useState('');
-  const [uploading, setUploading] = useState(false);
-
   // App level State
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -51,6 +43,16 @@ const UpdatePacketScreen = ({ history, match }) => {
 
   const packetUpdate = useSelector((state) => state.packetUpdate);
   const { loading: loadingUpdate, error, success } = packetUpdate;
+
+  // Component level State
+  const [loading, setLoading] = useState(true);
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [category, setCategory] = useState('');
+  const [price, setPrice] = useState(0);
+  const [image, setImage] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [confirmationModal, showConfirmationModal] = useState(false);
 
   // Component Variables
   const validForm =
@@ -126,6 +128,7 @@ const UpdatePacketScreen = ({ history, match }) => {
   };
 
   const updateHandler = () => {
+    showConfirmationModal(false);
     dispatch(
       updatePacket({ _id: packetId, name, description, category, price, image })
     );
@@ -135,6 +138,8 @@ const UpdatePacketScreen = ({ history, match }) => {
       dispatch(emptyUpdatePacketSuccess());
     }, 8000);
   };
+
+  const closeConfirmationModal = () => showConfirmationModal(false);
 
   return (
     <>
@@ -150,7 +155,9 @@ const UpdatePacketScreen = ({ history, match }) => {
               style={{ heigth: '3rem', fontSize: '0.82rem' }}
               title={validForm ? 'Save' : 'Enter all fields to submit'}
               disabled={!validForm || loadingUpdate}
-              onClick={updateHandler}
+              onClick={() => {
+                showConfirmationModal(true);
+              }}
             >
               {loadingUpdate ? (
                 <>
@@ -363,6 +370,17 @@ const UpdatePacketScreen = ({ history, match }) => {
           </div>
         </Container>
       )}
+
+      {/* Modals */}
+      <ModalComponent
+        show={confirmationModal}
+        close={closeConfirmationModal}
+        proceed={updateHandler}
+        title='Update Data Packet'
+        body='Are you sure you want to update the data packet?'
+        success={true}
+        danger={true}
+      />
     </>
   );
 };
