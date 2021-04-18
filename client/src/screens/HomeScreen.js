@@ -5,9 +5,12 @@ import Packet from '../components/Packet';
 import Loader from '../components/Loader';
 import { listPackets } from '../actions/packetActions';
 
-const HomeScreen = () => {
+const HomeScreen = ({ match }) => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
+
+  // Request Parameters
+  const keyword = match.params.keyword;
 
   // App level State
   const packetList = useSelector((state) => state.packetList);
@@ -15,8 +18,8 @@ const HomeScreen = () => {
 
   // Hook that triggers when component did mount
   useEffect(() => {
-    dispatch(listPackets());
-  }, [dispatch]);
+    dispatch(listPackets(keyword));
+  }, [dispatch, keyword]);
 
   // This will be rendered
   return (

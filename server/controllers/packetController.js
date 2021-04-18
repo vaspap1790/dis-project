@@ -7,7 +7,19 @@ import User from '../models/userModel.js';
 // @route   GET /api/packets
 // @access  Public
 const getPackets = asyncHandler(async (req, res) => {
-  const packets = await Packet.find({}).populate('user', 'username');
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword,
+          $options: 'i' //case insensitive
+        }
+      }
+    : {};
+
+  const packets = await Packet.find({ ...keyword }).populate(
+    'user',
+    'username'
+  );
   if (packets && packets.length !== 0) {
     res.json(packets);
   } else {
