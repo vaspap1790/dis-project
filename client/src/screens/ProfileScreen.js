@@ -31,11 +31,6 @@ import {
   emptyAccessProfileError
 } from '../actions/accessActions';
 import {
-  createPacketReview,
-  emptyCreateReviewError,
-  emptyCreateReviewSuccess
-} from '../actions/reviewActions';
-import {
   validateUsername,
   validateEmail,
   validatePassword,
@@ -401,14 +396,14 @@ const ProfileScreen = ({ match, history }) => {
                 )}
                 <ListGroup variant='flush'>
                   {userReviews.map((review) => (
-                    <ListGroup.Item key={review[0]._id}>
+                    <ListGroup.Item key={review._id}>
                       <span style={{ display: 'block', fontWeight: 'bold' }}>
-                        {review[0].user.username}
+                        {review.user.username}
                       </span>
-                      <p>for {review[0].packet.name}</p>
-                      <Rating value={review[0].rating} />
-                      <p>{review[0].createdAt.substring(0, 10)}</p>
-                      <p>{review[0].comment}</p>
+                      <p>for {review.packet.name}</p>
+                      <Rating value={review.rating} />
+                      <p>{review.createdAt.substring(0, 10)}</p>
+                      <p>{review.comment}</p>
                     </ListGroup.Item>
                   ))}
                 </ListGroup>

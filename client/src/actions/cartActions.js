@@ -14,17 +14,17 @@ export const addToCart = (id) => async (dispatch, getState) => {
   const { data } = await axios.get(`/api/packets/${id}`);
 
   const itemExists = getState().cart.cartItems.find(
-    (cartItem) => cartItem.packet === data._id
+    (cartItem) => cartItem.packet === data.packet._id
   );
 
   if (!itemExists) {
     dispatch({
       type: CART_ADD_ITEM,
       payload: {
-        packet: data._id,
-        name: data.name,
-        image: data.image,
-        price: data.price
+        packet: data.packet._id,
+        name: data.packet.name,
+        image: data.packet.image,
+        price: data.packet.price
       }
     });
 

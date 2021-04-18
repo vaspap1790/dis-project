@@ -51,14 +51,22 @@ const getPacketsByUserId = asyncHandler(async (req, res) => {
       const packetReview = await Review.find({ packet: packets[i]._id })
         .populate('packet', 'name')
         .populate('user', 'username');
-      if (packetReview.length > 0) {
-        reviews.push(packetReview);
+      if (packetReview.length === 1) {
+        reviews.push(packetReview[0]);
+      }
+      if (packetReview.length > 1) {
+        for (var j = 0; j < packetReview.length; j++) {
+          reviews.push(packetReview[j]);
+        }
       }
     }
 
+    const packetsWithRatings = packets.filter((packet) => packet.rating !== 0);
+
     userRating.numReviews = reviews.length;
     userRating.rating =
-      reviews.reduce((acc, item) => item[0].rating + acc, 0) / reviews.length;
+      packetsWithRatings.reduce((acc, item) => item.rating + acc, 0) /
+      packetsWithRatings.length;
 
     const data = {
       packets: packets,

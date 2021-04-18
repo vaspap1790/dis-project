@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Alert, Spinner } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
 const ModalComponent = ({
@@ -10,7 +10,11 @@ const ModalComponent = ({
   body,
   success,
   info,
-  danger
+  danger,
+  closeButton,
+  loading,
+  errorMessage,
+  successMessage
 }) => {
   return (
     <Modal
@@ -20,10 +24,43 @@ const ModalComponent = ({
       keyboard={false}
       centered
     >
-      <Modal.Header style={{ backgroundColor: 'black', color: 'white' }}>
-        <Modal.Title style={{ color: 'white' }}>{title}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>{body}</Modal.Body>
+      {closeButton ? (
+        <Modal.Header
+          closeButton
+          style={{ backgroundColor: 'black', color: 'white' }}
+        >
+          <Modal.Title style={{ color: 'white' }}>{title}</Modal.Title>
+        </Modal.Header>
+      ) : (
+        <Modal.Header style={{ backgroundColor: 'black', color: 'white' }}>
+          <Modal.Title style={{ color: 'white' }}>{title}</Modal.Title>
+        </Modal.Header>
+      )}
+      <Modal.Body>
+        {successMessage !== null && (
+          <Alert
+            variant='success'
+            // onClose={() => {
+            //   handleSuccessOnClose();
+            // }}
+            // dismissible
+          >
+            {successMessage}
+          </Alert>
+        )}
+        {errorMessage !== null && (
+          <Alert
+            variant='danger'
+            // onClose={() => {
+            //   handleErrorOnClose();
+            // }}
+            // dismissible
+          >
+            {errorMessage}
+          </Alert>
+        )}
+        <div>{body}</div>
+      </Modal.Body>
       <Modal.Footer>
         {info ? (
           <Button variant='info' onClick={close}>
@@ -37,7 +74,20 @@ const ModalComponent = ({
         ) : null}
         {success ? (
           <Button variant='success' onClick={proceed}>
-            Proceed
+            {loading ? (
+              <>
+                Loading...
+                <Spinner
+                  as='span'
+                  animation='border'
+                  size='sm'
+                  role='status'
+                  aria-hidden='true'
+                />
+              </>
+            ) : (
+              <>Procced</>
+            )}
           </Button>
         ) : null}
       </Modal.Footer>
@@ -51,13 +101,17 @@ ModalComponent.defaultProps = {
   success: false,
   procced: () => {
     console.log('Proceed');
-  }
+  },
+  closeButton: false,
+  errorMessage: null,
+  successMessage: null
 };
 
 ModalComponent.propTypes = {
   info: PropTypes.bool,
   danger: PropTypes.bool,
-  success: PropTypes.bool
+  success: PropTypes.bool,
+  closeButton: PropTypes.bool
 };
 
 export default ModalComponent;

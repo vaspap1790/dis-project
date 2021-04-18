@@ -136,7 +136,16 @@ const CartScreen = ({ match, history }) => {
                   <ListGroup.Item key={item.packet}>
                     <Row>
                       <Col md={1} lg={1} className='v-align h-align'>
-                        <Image src={item.image} alt={item.name} fluid rounded />
+                        <Image
+                          src={
+                            item.image === ''
+                              ? '/images/sample.jpg'
+                              : item.image
+                          }
+                          alt={item.name}
+                          fluid
+                          rounded
+                        />
                       </Col>
                       <Col
                         md={8}

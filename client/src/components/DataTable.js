@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
 import { Image, Form, Button } from 'react-bootstrap';
@@ -6,14 +7,31 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import ModalComponent from '../components/ModalComponent';
+import {
+  createPacketReview,
+  emptyCreateReviewError,
+  emptyCreateReviewSuccess
+} from '../actions/reviewActions';
 
 //import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
 const DataTable = ({ data }) => {
+  // Hook that enables components to interact with the App State through reducers
+  const dispatch = useDispatch();
+
+  // App level State
+  const reviewCreate = useSelector((state) => state.reviewCreate);
+  const {
+    loading: reviewLoading,
+    error: reviewError,
+    success: reviewSuccess
+  } = reviewCreate;
+
   // Component level State
   const [ratingModal, showRatingModal] = useState(false);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [packetId, setPacketId] = useState('');
 
   const form = (
     <Form>
@@ -22,6 +40,7 @@ const DataTable = ({ data }) => {
         <Form.Control
           as='select'
           value={rating}
+          className='link-icon'
           onChange={(e) => setRating(e.target.value)}
         >
           <option value=''>Select...</option>
@@ -36,20 +55,36 @@ const DataTable = ({ data }) => {
         <Form.Label>Comment</Form.Label>
         <Form.Control
           as='textarea'
-          row='3'
+          row='5'
           value={comment}
           onChange={(e) => setComment(e.target.value)}
         ></Form.Control>
       </Form.Group>
-      <Button type='submit' variant='primary'>
-        Submit
-      </Button>
     </Form>
   );
 
   // Component Methods
-  const closeRatingModal = () => showRatingModal(false);
+  const closeRatingModal = () => {
+    showRatingModal(false);
+    setRating(0);
+    setComment('');
+    setPacketId('');
+  };
   const openRatingModal = () => showRatingModal(true);
+
+  const rate = () => {
+    dispatch(
+      createPacketReview(packetId, {
+        rating,
+        comment
+      })
+    );
+
+    setTimeout(function () {
+      dispatch(emptyCreateReviewError());
+      dispatch(emptyCreateReviewSuccess());
+    }, 10000);
+  };
 
   // Header formatters
   const imageHeaderFormatter = (column, colIndex) => {
@@ -152,6 +187,7 @@ const DataTable = ({ data }) => {
           variant='primary'
           title='Rate'
           onClick={() => {
+            setPacketId(cell);
             openRatingModal();
           }}
         >
@@ -266,9 +302,14 @@ const DataTable = ({ data }) => {
       <ModalComponent
         show={ratingModal}
         close={closeRatingModal}
+        proceed={rate}
         title='Leave a rating'
         body={form}
         success={true}
+        closeButton={true}
+        loading={reviewLoading}
+        errorMessage={reviewError}
+        successMessage={reviewSuccess}
       />
     </>
   );

@@ -7,7 +7,10 @@ import {
   REVIEW_CREATE_EMPTY_SUCCESS
 } from '../constants/reviewConstants';
 
-export const reviewCreateReducer = (state = {}, action) => {
+export const reviewCreateReducer = (
+  state = { error: null, success: null, loading: false },
+  action
+) => {
   switch (action.type) {
     case REVIEW_CREATE_REQUEST:
       return { loading: true };
