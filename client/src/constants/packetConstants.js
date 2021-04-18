@@ -37,3 +37,8 @@ export const PACKET_UPDATE_FAIL = 'PACKET_UPDATE_FAIL';
 // Messages
 export const PACKET_UPDATE_EMPTY_SUCCESS = 'PACKET_UPDATE_EMPTY_SUCCESS';
 export const PACKET_UPDATE_EMPTY_ERROR = 'PACKET_UPDATE_EMPTY_ERROR';
+
+///////////////////////////////// Top Actions //////////////////////////////////
+export const PACKET_TOP_REQUEST = 'PACKET_TOP_REQUEST';
+export const PACKET_TOP_SUCCESS = 'PACKET_TOP_SUCCESS';
+export const PACKET_TOP_FAIL = 'PACKET_TOP_FAIL';

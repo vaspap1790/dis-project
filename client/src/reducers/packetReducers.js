@@ -20,7 +20,10 @@ import {
   PACKET_UPDATE_SUCCESS,
   PACKET_UPDATE_FAIL,
   PACKET_UPDATE_EMPTY_ERROR,
-  PACKET_UPDATE_EMPTY_SUCCESS
+  PACKET_UPDATE_EMPTY_SUCCESS,
+  PACKET_TOP_REQUEST,
+  PACKET_TOP_SUCCESS,
+  PACKET_TOP_FAIL
 } from '../constants/packetConstants';
 
 export const packetListReducer = (state = { packets: [] }, action) => {
@@ -127,6 +130,19 @@ export const packetUpdateReducer = (
       return { ...state, error: null };
     case PACKET_UPDATE_EMPTY_SUCCESS:
       return { ...state, success: null };
+    default:
+      return state;
+  }
+};
+
+export const packetTopRatedReducer = (state = { packets: [] }, action) => {
+  switch (action.type) {
+    case PACKET_TOP_REQUEST:
+      return { loading: true, packets: [] };
+    case PACKET_TOP_SUCCESS:
+      return { loading: false, packets: action.payload };
+    case PACKET_TOP_FAIL:
+      return { loading: false, error: action.payload };
     default:
       return state;
   }

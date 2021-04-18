@@ -19,7 +19,10 @@ import {
   PACKET_UPDATE_SUCCESS,
   PACKET_UPDATE_FAIL,
   PACKET_UPDATE_EMPTY_ERROR,
-  PACKET_UPDATE_EMPTY_SUCCESS
+  PACKET_UPDATE_EMPTY_SUCCESS,
+  PACKET_TOP_REQUEST,
+  PACKET_TOP_SUCCESS,
+  PACKET_TOP_FAIL
 } from '../constants/packetConstants';
 import { logout } from './userActions';
 
@@ -211,4 +214,26 @@ export const emptyUpdatePacketSuccess = () => async (dispatch) => {
   dispatch({
     type: PACKET_UPDATE_EMPTY_SUCCESS
   });
+};
+
+//////////////////////////////// Top Actions ///////////////////////////////////
+export const listTopPackets = () => async (dispatch) => {
+  try {
+    dispatch({ type: PACKET_TOP_REQUEST });
+
+    const { data } = await axios.get(`/api/packets/top`);
+
+    dispatch({
+      type: PACKET_TOP_SUCCESS,
+      payload: data
+    });
+  } catch (error) {
+    dispatch({
+      type: PACKET_TOP_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+    });
+  }
 };

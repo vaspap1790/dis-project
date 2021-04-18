@@ -143,10 +143,20 @@ const updatePacket = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Get top rated packets
+// @route   GET /api/packets/top
+// @access  Public
+const getTopPackets = asyncHandler(async (req, res) => {
+  const packets = await Packet.find({}).sort({ rating: -1 }).limit(5);
+
+  res.json(packets);
+});
+
 export {
   getPackets,
   getPacketById,
   getPacketsByUserId,
   createPacket,
-  updatePacket
+  updatePacket,
+  getTopPackets
 };

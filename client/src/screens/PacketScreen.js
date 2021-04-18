@@ -12,6 +12,7 @@ import {
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
 import ReactQuill from 'react-quill';
+import Meta from '../components/Meta';
 import 'react-quill/dist/quill.snow.css';
 import 'react-drop-zone/dist/styles.css';
 import { listPacketDetails } from '../actions/packetActions';
@@ -58,6 +59,7 @@ const PacketScreen = ({ history, match }) => {
         <Alert variant='danger'>{error}</Alert>
       ) : (
         <>
+          <Meta title={packet.name} />
           <Row>
             <Col md={6} className='pr-0'>
               {packet.sample !== '' ? (

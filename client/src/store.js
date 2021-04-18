@@ -6,7 +6,8 @@ import {
   packetDetailsReducer,
   packetsUserReducer,
   packetCreateReducer,
-  packetUpdateReducer
+  packetUpdateReducer,
+  packetTopRatedReducer
 } from './reducers/packetReducers';
 import { cartReducer } from './reducers/cartReducers';
 import {
@@ -33,7 +34,8 @@ const reducer = combineReducers({
   userUpdateProfile: userUpdateProfileReducer,
   accessAdd: accessAddReducer,
   accessUser: accesssUserReducer,
-  reviewCreate: reviewCreateReducer
+  reviewCreate: reviewCreateReducer,
+  packetTopRated: packetTopRatedReducer
 });
 
 // Get info from browser's local storage
