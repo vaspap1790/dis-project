@@ -71,11 +71,11 @@ const UpdatePacketScreen = ({ history, match }) => {
     }
     const fetch = async () => {
       const { data } = await axios.get(`/api/packets/${packetId}`);
-      setName(data.name);
-      setDescription(data.description);
-      setCategory(data.category);
-      setPrice(data.price);
-      setImage(data.image);
+      setName(data.packet.name);
+      setDescription(data.packet.description);
+      setCategory(data.packet.category);
+      setPrice(data.packet.price);
+      setImage(data.packet.image);
       setLoading(false);
     };
     fetch();
