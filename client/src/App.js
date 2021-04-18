@@ -72,7 +72,13 @@ const App = () => {
           <Route path='/packets/create' component={CreatePacketScreen} />
           <Route path='/packets/update/:id' component={UpdatePacketScreen} />
           <Route path='/cart/:id?' component={CartScreen} />
-          <Route path='/search/:keyword' component={HomeScreen} />
+          <Route path='/search/:keyword' component={HomeScreen} exact />
+          <Route path='/page/:pageNumber' component={HomeScreen} exact />
+          <Route
+            path='/search/:keyword/page/:pageNumber'
+            component={HomeScreen}
+            exact
+          />
           <Route path='/' component={HomeScreen} exact />
         </Container>
       </main>

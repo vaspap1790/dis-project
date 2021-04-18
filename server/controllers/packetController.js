@@ -7,6 +7,9 @@ import User from '../models/userModel.js';
 // @route   GET /api/packets
 // @access  Public
 const getPackets = asyncHandler(async (req, res) => {
+  const pageSize = 10;
+  const page = Number(req.query.pageNumber) || 1;
+
   const keyword = req.query.keyword
     ? {
         name: {
@@ -16,12 +19,14 @@ const getPackets = asyncHandler(async (req, res) => {
       }
     : {};
 
-  const packets = await Packet.find({ ...keyword }).populate(
-    'user',
-    'username'
-  );
+  const count = await Packet.countDocuments({ ...keyword });
+  const packets = await Packet.find({ ...keyword })
+    .populate('user', 'username')
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
+
   if (packets && packets.length !== 0) {
-    res.json(packets);
+    res.json({ packets, page, pages: Math.ceil(count / pageSize) });
   } else {
     res.status(404);
     throw new Error('No data Packets uploaded');

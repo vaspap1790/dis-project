@@ -25,11 +25,15 @@ import { logout } from './userActions';
 
 ///////////////////////////////// List Actions ////////////////////////////////////
 // thunk allows to make async requests here
-export const listPackets = (keyword = '') => async (dispatch) => {
+export const listPackets = (keyword = '', pageNumber = '') => async (
+  dispatch
+) => {
   try {
     dispatch({ type: PACKET_LIST_REQUEST });
 
-    const { data } = await axios.get(`/api/packets?keyword=${keyword}`);
+    const { data } = await axios.get(
+      `/api/packets?keyword=${keyword}&pageNumber=${pageNumber}`
+    );
 
     dispatch({
       type: PACKET_LIST_SUCCESS,

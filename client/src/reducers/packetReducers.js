@@ -28,7 +28,12 @@ export const packetListReducer = (state = { packets: [] }, action) => {
     case PACKET_LIST_REQUEST:
       return { loading: true, packets: [] };
     case PACKET_LIST_SUCCESS:
-      return { loading: false, packets: action.payload };
+      return {
+        loading: false,
+        packets: action.payload.packets,
+        pages: action.payload.pages,
+        page: action.payload.page
+      };
     case PACKET_LIST_FAIL:
       return { loading: false, error: action.payload };
     default:

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Alert } from 'react-bootstrap';
 import Packet from '../components/Packet';
 import Loader from '../components/Loader';
+import Paginate from '../components/Paginate';
 import { listPackets } from '../actions/packetActions';
 
 const HomeScreen = ({ match }) => {
@@ -11,15 +12,16 @@ const HomeScreen = ({ match }) => {
 
   // Request Parameters
   const keyword = match.params.keyword;
+  const pageNumber = match.params.pageNumber || 1;
 
   // App level State
   const packetList = useSelector((state) => state.packetList);
-  const { loading, error, packets } = packetList;
+  const { loading, error, packets, pages, page } = packetList;
 
   // Hook that triggers when component did mount
   useEffect(() => {
-    dispatch(listPackets(keyword));
-  }, [dispatch, keyword]);
+    dispatch(listPackets(keyword, pageNumber));
+  }, [dispatch, keyword, pageNumber]);
 
   // This will be rendered
   return (
@@ -30,13 +32,20 @@ const HomeScreen = ({ match }) => {
       ) : error ? (
         <Alert variant='danger'>{error}</Alert>
       ) : (
-        <Row>
-          {packets.map((packet) => (
-            <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
-              <Packet packet={packet} />
-            </Col>
-          ))}
-        </Row>
+        <>
+          <Row>
+            {packets.map((packet) => (
+              <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
+                <Packet packet={packet} />
+              </Col>
+            ))}
+          </Row>
+          <Paginate
+            pages={pages}
+            page={page}
+            keyword={keyword ? keyword : ''}
+          />
+        </>
       )}
     </>
   );
