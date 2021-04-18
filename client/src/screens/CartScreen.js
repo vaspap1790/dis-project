@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -11,6 +11,7 @@ import {
   Spinner
 } from 'react-bootstrap';
 import Loader from '../components/Loader';
+import ModalComponent from '../components/ModalComponent';
 import { addToCart, removeFromCart } from '../actions/cartActions';
 import {
   addNewAccess,
@@ -35,6 +36,11 @@ const CartScreen = ({ match, history }) => {
   const accessAdd = useSelector((state) => state.accessAdd);
   const { success, error, loading: loadingAccess } = accessAdd;
 
+  // Component level State
+  const [purchaseModal, showPurchaseModal] = useState(false);
+  const [removeModal, showRemoveModal] = useState(false);
+  const [itemId, setItemId] = useState('');
+
   // Hook that triggers when component did mount
   useEffect(() => {
     if (packetId) {
@@ -47,13 +53,17 @@ const CartScreen = ({ match, history }) => {
     history.goBack();
   };
 
-  const removeFromCartHandler = (id) => {
-    dispatch(removeFromCart(id));
+  const removeFromCartHandler = () => {
+    dispatch(removeFromCart(itemId));
+    showRemoveModal(false);
+    setItemId('');
     history.push(`/cart`);
   };
 
-  const purchaseHandler = (id) => {
-    dispatch(addNewAccess(id));
+  const purchaseHandler = () => {
+    dispatch(addNewAccess(itemId));
+    showPurchaseModal(false);
+    setItemId('');
     history.push(`/cart`);
 
     setTimeout(function () {
@@ -69,6 +79,9 @@ const CartScreen = ({ match, history }) => {
   const handleSuccessOnClose = () => {
     dispatch(emptyAccessSuccess());
   };
+
+  const closePurchaseModal = () => showPurchaseModal(false);
+  const closeRemoveModal = () => showRemoveModal(false);
 
   // This will be rendered
   return (
@@ -164,7 +177,10 @@ const CartScreen = ({ match, history }) => {
                           className='btn-Icon-Remove'
                           type='button'
                           variant='light'
-                          onClick={() => removeFromCartHandler(item.packet)}
+                          onClick={() => {
+                            showRemoveModal(true);
+                            setItemId(item.packet);
+                          }}
                         >
                           <i className='fas fa-trash trash'></i>
                         </Button>
@@ -173,7 +189,10 @@ const CartScreen = ({ match, history }) => {
                           className='btn-block btn-sm btn-Text-Remove my-2'
                           type='button'
                           variant='danger'
-                          onClick={() => removeFromCartHandler(item.packet)}
+                          onClick={() => {
+                            showRemoveModal(true);
+                            setItemId(item.packet);
+                          }}
                         >
                           Remove <i className='fas fa-trash'></i>
                         </Button>
@@ -206,7 +225,10 @@ const CartScreen = ({ match, history }) => {
                               }
                               type='button'
                               className='btn-block btn-sm btn-Text-Checkout'
-                              onClick={() => purchaseHandler(item.packet)}
+                              onClick={() => {
+                                showPurchaseModal(true);
+                                setItemId(item.packet);
+                              }}
                             >
                               <span className='btn-Text-Checkout'>
                                 Purchase
@@ -223,7 +245,10 @@ const CartScreen = ({ match, history }) => {
                               type='button'
                               variant='primary'
                               className='btn-Icon-Checkout btn-sm'
-                              onClick={() => purchaseHandler(item.packet)}
+                              onClick={() => {
+                                showPurchaseModal(true);
+                                setItemId(item.packet);
+                              }}
                             >
                               <i className='btnIcon fab fa-ethereum fa-lg'></i>
                             </Button>
@@ -238,6 +263,26 @@ const CartScreen = ({ match, history }) => {
           </Col>
         </Row>
       )}
+
+      {/* Modals */}
+      <ModalComponent
+        show={removeModal}
+        close={closeRemoveModal}
+        proceed={removeFromCartHandler}
+        title='Remove from Cart'
+        body='Are you sure you want to remove the data packet from your cart?'
+        success={true}
+        danger={true}
+      />
+      <ModalComponent
+        show={purchaseModal}
+        close={closePurchaseModal}
+        proceed={purchaseHandler}
+        title='Purchase the item'
+        body='Are you sure you want to purchase the data packet?'
+        success={true}
+        danger={true}
+      />
     </>
   );
 };
