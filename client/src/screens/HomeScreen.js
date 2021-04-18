@@ -1,9 +1,12 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Alert } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import Packet from '../components/Packet';
 import Loader from '../components/Loader';
 import Paginate from '../components/Paginate';
+import PacketCarousel from '../components/PacketCarousel';
+
 import { listPackets } from '../actions/packetActions';
 
 const HomeScreen = ({ match }) => {
@@ -26,6 +29,13 @@ const HomeScreen = ({ match }) => {
   // This will be rendered
   return (
     <>
+      {!keyword ? (
+        <PacketCarousel />
+      ) : (
+        <Link to='/' className='btn btn-light'>
+          Go Back
+        </Link>
+      )}
       <h1>Latest Packets</h1>
       {loading ? (
         <Loader />
