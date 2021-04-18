@@ -35,6 +35,16 @@ h2 {
   cursor: pointer;
 }
 
+.favourite {
+  z-index: 2;
+  position: absolute;
+  top: 5%;
+  left: 93%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background-color: white;
+}
+
 /* Carousel */
 .carousel-item-next,
 .carousel-item-prev,

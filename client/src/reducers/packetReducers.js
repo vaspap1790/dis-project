@@ -23,7 +23,9 @@ import {
   PACKET_UPDATE_EMPTY_SUCCESS,
   PACKET_TOP_REQUEST,
   PACKET_TOP_SUCCESS,
-  PACKET_TOP_FAIL
+  PACKET_TOP_FAIL,
+  ADD_TO_WATCHLIST,
+  REMOVE_FROM_WATCHLIST
 } from '../constants/packetConstants';
 
 export const packetListReducer = (state = { packets: [] }, action) => {
@@ -143,6 +145,21 @@ export const packetTopRatedReducer = (state = { packets: [] }, action) => {
       return { loading: false, packets: action.payload };
     case PACKET_TOP_FAIL:
       return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const watchlistReducer = (state = { favourites: [] }, action) => {
+  switch (action.type) {
+    case ADD_TO_WATCHLIST:
+      return { favourites: [...state.favourites, action.payload] };
+    case REMOVE_FROM_WATCHLIST:
+      return {
+        favourites: state.favourites.filter(
+          (favourite) => favourite._id !== action.payload._id
+        )
+      };
     default:
       return state;
   }

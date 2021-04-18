@@ -453,7 +453,11 @@ const ProfileScreen = ({ match, history }) => {
                     {userPackets &&
                       userPackets.map((packet) => (
                         <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
-                          <Packet handler={updateHandler} packet={packet} />
+                          <Packet
+                            handler={updateHandler}
+                            packet={packet}
+                            isProfile={false}
+                          />
                         </Col>
                       ))}
                   </Row>

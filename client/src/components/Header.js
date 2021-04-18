@@ -2,9 +2,19 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import {
+  Navbar,
+  Nav,
+  Container,
+  NavDropdown,
+  Alert,
+  Button,
+  Image
+} from 'react-bootstrap';
 import SearchBox from './SearchBox';
 import { logout } from '../actions/userActions';
+import { removeFromWatchlist } from '../actions/packetActions';
 
 const Header = () => {
   // Hook that enables components to interact with the App State through reducers
@@ -14,9 +24,16 @@ const Header = () => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const watchlist = useSelector((state) => state.watchlist);
+  const { favourites } = watchlist;
+
   // Component Methods
   const logoutHandler = () => {
     dispatch(logout());
+  };
+
+  const removeFromWatchlistHandler = (packet) => {
+    dispatch(removeFromWatchlist(packet));
   };
 
   // This will be rendered
@@ -37,6 +54,56 @@ const Header = () => {
           <Navbar.Collapse id='basic-navbar-nav'>
             <Route render={({ history }) => <SearchBox history={history} />} />
             <Nav className='ml-auto'>
+              <NavDropdown title='Watchlist' alignRight id='watchlist'>
+                {favourites.length === 0 ? (
+                  <NavDropdown.Item as='div' className='p-0'>
+                    <Alert variant='info' className='m-0'>
+                      Watchlist is empty
+                    </Alert>
+                  </NavDropdown.Item>
+                ) : (
+                  <>
+                    {favourites.map((item) => (
+                      <NavDropdown.Item
+                        as='div'
+                        key={item._id}
+                        className='d-flex justify-content-between align-items-center mx-1 px-1'
+                        style={{ overflow: 'hidden', width: '30vw' }}
+                      >
+                        <Image
+                          src={
+                            item.image === ''
+                              ? '/images/sample.jpg'
+                              : item.image
+                          }
+                          alt={item.name}
+                          className='v-align h-align mx-1 px-1'
+                          style={{ overflow: 'hidden', width: '4rem' }}
+                          fluid
+                          rounded
+                        />
+                        <Link
+                          className='v-align h-align mx-1 px-1'
+                          style={{ overflow: 'hidden', width: 'fit-content' }}
+                          to={`/packet/${item._id}`}
+                        >
+                          {item.name}
+                        </Link>
+                        <Button
+                          title='Remove from Watchlist'
+                          className='btn-Icon-Remove v-align h-align mx-1 px-3'
+                          // style={{ overflow: 'hidden', width: 'fit-content' }}
+                          type='button'
+                          variant='light'
+                          onClick={() => removeFromWatchlistHandler(item)}
+                        >
+                          <i className='fas fa-trash trash'></i>
+                        </Button>
+                      </NavDropdown.Item>
+                    ))}
+                  </>
+                )}
+              </NavDropdown>
               <LinkContainer to='/cart'>
                 <Nav.Link>
                   <i className='fas fa-shopping-cart'></i> Cart

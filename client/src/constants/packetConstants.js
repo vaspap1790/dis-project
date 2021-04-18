@@ -42,3 +42,7 @@ export const PACKET_UPDATE_EMPTY_ERROR = 'PACKET_UPDATE_EMPTY_ERROR';
 export const PACKET_TOP_REQUEST = 'PACKET_TOP_REQUEST';
 export const PACKET_TOP_SUCCESS = 'PACKET_TOP_SUCCESS';
 export const PACKET_TOP_FAIL = 'PACKET_TOP_FAIL';
+
+////////////////////////////// Watclist Actions ///////////////////////////////
+export const ADD_TO_WATCHLIST = 'ADD_TO_WATCHLIST';
+export const REMOVE_FROM_WATCHLIST = 'REMOVE_FROM_WATCHLIST';

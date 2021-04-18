@@ -22,7 +22,9 @@ import {
   PACKET_UPDATE_EMPTY_SUCCESS,
   PACKET_TOP_REQUEST,
   PACKET_TOP_SUCCESS,
-  PACKET_TOP_FAIL
+  PACKET_TOP_FAIL,
+  ADD_TO_WATCHLIST,
+  REMOVE_FROM_WATCHLIST
 } from '../constants/packetConstants';
 import { logout } from './userActions';
 
@@ -236,4 +238,29 @@ export const listTopPackets = () => async (dispatch) => {
           : error.message
     });
   }
+};
+
+//////////////////////////////// Top Actions ///////////////////////////////////
+export const addToWatchlist = (packet) => async (dispatch, getState) => {
+  dispatch({
+    type: ADD_TO_WATCHLIST,
+    payload: packet
+  });
+
+  localStorage.setItem(
+    'favourites',
+    JSON.stringify(getState().watchlist.favourites)
+  );
+};
+
+export const removeFromWatchlist = (packet) => async (dispatch, getState) => {
+  dispatch({
+    type: REMOVE_FROM_WATCHLIST,
+    payload: packet
+  });
+
+  localStorage.setItem(
+    'favourites',
+    JSON.stringify(getState().watchlist.favourites)
+  );
 };

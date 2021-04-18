@@ -7,7 +7,8 @@ import {
   packetsUserReducer,
   packetCreateReducer,
   packetUpdateReducer,
-  packetTopRatedReducer
+  packetTopRatedReducer,
+  watchlistReducer
 } from './reducers/packetReducers';
 import { cartReducer } from './reducers/cartReducers';
 import {
@@ -35,7 +36,8 @@ const reducer = combineReducers({
   accessAdd: accessAddReducer,
   accessUser: accesssUserReducer,
   reviewCreate: reviewCreateReducer,
-  packetTopRated: packetTopRatedReducer
+  packetTopRated: packetTopRatedReducer,
+  watchlist: watchlistReducer
 });
 
 // Get info from browser's local storage
@@ -47,10 +49,15 @@ const userInfoFromStorage = localStorage.getItem('userInfo')
   ? JSON.parse(localStorage.getItem('userInfo'))
   : null;
 
+const watchlistFromStorage = localStorage.getItem('favourites')
+  ? JSON.parse(localStorage.getItem('favourites'))
+  : [];
+
 // Initialise App State
 const initialState = {
   cart: { cartItems: cartItemsFromStorage },
-  userLogin: { userInfo: userInfoFromStorage }
+  userLogin: { userInfo: userInfoFromStorage },
+  watchlist: { favourites: watchlistFromStorage }
 };
 
 // Initialise middleware
