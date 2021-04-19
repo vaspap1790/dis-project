@@ -13,6 +13,7 @@ export const USER_LOGOUT = 'USER_LOGOUT';
 export const USER_LOGIN_EMPTY_ERROR = 'USER_LOGIN_EMPTY_ERROR';
 
 export const USER_REGISTER_EMPTY_ERROR = 'USER_REGISTER_EMPTY_ERROR';
+export const USER_REGISTER_EMPTY_SUCCESS = 'USER_REGISTER_EMPTY_SUCCESS';
 
 /////////////////////////// User Profile Actions ///////////////////////////////
 export const USER_UPDATE_PROFILE_REQUEST = 'USER_UPDATE_PROFILE_REQUEST';

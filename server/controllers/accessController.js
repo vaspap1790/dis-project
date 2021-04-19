@@ -27,12 +27,7 @@ const getAccessesByUserId = asyncHandler(async (req, res) => {
     'name image'
   );
 
-  if (accesses && accesses.length !== 0) {
-    res.json(accesses);
-  } else {
-    res.status(404);
-    throw new Error('No items purchased');
-  }
+  res.json(accesses);
 });
 
 export { addNewAccess, getAccessesByUserId };

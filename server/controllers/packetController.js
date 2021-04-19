@@ -61,6 +61,7 @@ const getPacketById = asyncHandler(async (req, res) => {
 const getPacketsByUserId = asyncHandler(async (req, res) => {
   const packets = await Packet.find({ user: req.params.id });
   const userRating = await User.findById(req.params.id);
+  let data = {};
 
   if (packets && packets.length !== 0) {
     const reviews = [];
@@ -79,24 +80,30 @@ const getPacketsByUserId = asyncHandler(async (req, res) => {
     }
 
     const packetsWithRatings = packets.filter((packet) => packet.rating !== 0);
+    console.log(packetsWithRatings);
 
     userRating.numReviews = reviews.length;
-    userRating.rating =
-      packetsWithRatings.reduce((acc, item) => item.rating + acc, 0) /
-      packetsWithRatings.length;
+    if (packetsWithRatings.length !== 0) {
+      userRating.rating =
+        packetsWithRatings.reduce((acc, item) => item.rating + acc, 0) /
+        packetsWithRatings.length;
+    }
 
-    const data = {
+    data = {
       packets: packets,
       reviews: reviews,
       userRating: userRating
     };
 
     await userRating.save();
-    res.json(data);
   } else {
-    res.status(404);
-    throw new Error('No items uploaded');
+    data = {
+      packets: [],
+      reviews: [],
+      userRating: userRating
+    };
   }
+  res.json(data);
 });
 
 // @desc    Create a packet

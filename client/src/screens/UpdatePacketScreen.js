@@ -82,7 +82,7 @@ const UpdatePacketScreen = ({ history, match }) => {
       setLoading(false);
     };
     fetch();
-  }, [dispatch, packetId, userInfo]);
+  }, [dispatch, packetId, userInfo, history]);
 
   // Component Methods
   const submitHandler = (e) => {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyledDropZone } from 'react-drop-zone';
 import { FileIcon, defaultStyles } from 'react-file-icon';
 import ReactQuill from 'react-quill';
+import { Alert } from 'react-bootstrap';
 import 'react-quill/dist/quill.snow.css';
 import 'react-drop-zone/dist/styles.css';
 import Stats from './Stats';
@@ -83,6 +84,9 @@ const LastStep = (props) => {
       <div className='d-flex justify-content-center'>
         Step 3/3: Upload data packet and handle sampling
       </div>
+      {props.error && props.error !== null && (
+        <Alert variant='danger'>{props.error}</Alert>
+      )}
       <div
         style={{ height: '55vh' }}
         className={props.error && props.error !== null ? 'mb-2' : 'mb-2 pt-4'}

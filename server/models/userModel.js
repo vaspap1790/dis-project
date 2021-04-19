@@ -30,6 +30,10 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       required: true,
       default: false
+    },
+    description: {
+      type: String,
+      required: false
     }
   },
   {

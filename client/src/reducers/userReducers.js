@@ -7,6 +7,7 @@ import {
   USER_REGISTER_SUCCESS,
   USER_REGISTER_FAIL,
   USER_REGISTER_EMPTY_ERROR,
+  USER_REGISTER_EMPTY_SUCCESS,
   USER_LOGOUT,
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
@@ -37,11 +38,13 @@ export const userRegisterReducer = (state = {}, action) => {
     case USER_REGISTER_REQUEST:
       return { loading: true };
     case USER_REGISTER_SUCCESS:
-      return { loading: false, userInfo: action.payload };
+      return { loading: false, success: true, userInfo: action.payload };
     case USER_REGISTER_FAIL:
       return { loading: false, error: action.payload };
     case USER_REGISTER_EMPTY_ERROR:
       return { ...state, error: null };
+    case USER_REGISTER_EMPTY_SUCCESS:
+      return { ...state, success: null };
     case USER_LOGOUT:
       return {};
     default:

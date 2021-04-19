@@ -68,6 +68,7 @@ const App = () => {
         <Container fluid className='px-5'>
           <Route path='/login' component={LoginScreen} />
           <Route path='/register' component={RegisterScreen} />
+          <Route path='/editDetails' component={RegisterScreen} />
           <Route path='/aboutUs' component={AboutUsScreen} />
           <Route path='/profile/:id?' component={ProfileScreen} />
           <Route path='/packet/:id' component={PacketScreen} />

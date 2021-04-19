@@ -79,7 +79,9 @@ const HomeScreen = ({ match, history }) => {
       {loading ? (
         <Loader />
       ) : error ? (
-        <Alert variant='danger'>{error}</Alert>
+        <Alert variant='danger' style={{ width: '30vw' }}>
+          {error}
+        </Alert>
       ) : (
         <>
           <Row>

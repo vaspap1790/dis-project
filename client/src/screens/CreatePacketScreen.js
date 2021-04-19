@@ -72,10 +72,6 @@ const CreatePacketScreen = ({ history }) => {
       SW
     });
 
-  const handleErrorOnClose = () => {
-    dispatch(emptyCreatePacketError());
-  };
-
   const uploadHandler = () => {
     const { form } = state;
     if (
