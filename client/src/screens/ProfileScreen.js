@@ -4,40 +4,16 @@ import Packet from '../components/Packet';
 import Rating from '../components/Rating';
 import ModalComponent from '../components/ModalComponent';
 import DataTable from '../components/DataTable';
-import Moment from 'react-moment';
-import { Link } from 'react-router-dom';
 import Meta from '../components/Meta';
 import ReviewsContainer from '../components/ReviewsContainer';
 import {
   ProSidebar,
-  Menu,
-  MenuItem,
-  SubMenu,
   SidebarHeader,
   SidebarFooter,
   SidebarContent
 } from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
-import {
-  FaTachometerAlt,
-  FaGem,
-  FaList,
-  FaGithub,
-  FaRegLaughWink,
-  FaHeart
-} from 'react-icons/fa';
-import {
-  Form,
-  Button,
-  Row,
-  Col,
-  Alert,
-  Tabs,
-  Tab,
-  Card,
-  ListGroup,
-  Container
-} from 'react-bootstrap';
+import { Form, Button, Row, Col, Alert, Tabs, Tab } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import {
   updateUserProfile,
@@ -383,7 +359,7 @@ const ProfileScreen = ({ match, history }) => {
         </Button>
         {userInfo && !userDetails ? (
           <>
-            <Meta title='Profile' />
+            <Meta title='Data Dapp | Profile' />
             <Button
               className='btn btn-success mr-1'
               title='Upload a data packet'

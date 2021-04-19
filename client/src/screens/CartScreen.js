@@ -11,6 +11,7 @@ import {
   Spinner
 } from 'react-bootstrap';
 import Loader from '../components/Loader';
+import Meta from '../components/Meta';
 import ModalComponent from '../components/ModalComponent';
 import { addToCart, removeFromCart } from '../actions/cartActions';
 import {
@@ -86,13 +87,22 @@ const CartScreen = ({ match, history }) => {
   // This will be rendered
   return (
     <>
-      {cartLoading ? (
-        <Loader />
-      ) : (
-        <Row>
-          <Col>
-            <h1>
-              Shopping Cart{' '}
+      {/************************************** Nav&Title ****************************************/}
+      <Row className='d-flex justify-content-start align-items-center mb-3'>
+        <Meta title='Data Dapp | Cart' />
+        <Button
+          className='btn btn-primary mr-1'
+          title='Go Back'
+          onClick={goBack}
+        >
+          Go Back
+        </Button>
+        <h1 className='my-auto ml-2' style={{ display: 'inline' }}>
+          Shopping Cart{' '}
+          {cartLoading ? (
+            <Loader />
+          ) : (
+            <>
               {cartItems.length !== 0 ? (
                 <span className='text-muted small'>
                   Subtotal ({cartItems.length}) items{' '}
@@ -102,7 +112,17 @@ const CartScreen = ({ match, history }) => {
                     .toFixed(2)}
                 </span>
               ) : null}
-            </h1>
+            </>
+          )}
+        </h1>
+      </Row>
+
+      {/************************************** Main Screen ****************************************/}
+      {cartLoading ? (
+        <Loader />
+      ) : (
+        <Row>
+          <Col>
             {error && error !== null && (
               <Alert
                 variant='danger'

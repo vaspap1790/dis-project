@@ -64,6 +64,9 @@ const Header = () => {
                 render={({ history }) => <SearchBox history={history} />}
               />
               <Nav className='ml-auto'>
+                <LinkContainer to='/aboutUs'>
+                  <Nav.Link>About Us</Nav.Link>
+                </LinkContainer>
                 <NavDropdown title='Watchlist' alignRight id='watchlist'>
                   {favourites.length === 0 ? (
                     <NavDropdown.Item as='div' className='p-0'>

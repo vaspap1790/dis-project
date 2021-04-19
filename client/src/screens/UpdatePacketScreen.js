@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { StyledDropZone } from 'react-drop-zone';
 import axios from 'axios';
+import Meta from '../components/Meta';
 import 'react-drop-zone/dist/styles.css';
 import {
   Form,
@@ -84,10 +85,6 @@ const UpdatePacketScreen = ({ history, match }) => {
   }, [dispatch, packetId, userInfo]);
 
   // Component Methods
-  const goBack = () => {
-    history.goBack();
-  };
-
   const submitHandler = (e) => {
     e.preventDefault();
   };
@@ -139,44 +136,59 @@ const UpdatePacketScreen = ({ history, match }) => {
     }, 8000);
   };
 
+  const goBack = () => {
+    history.goBack();
+  };
+
   const closeConfirmationModal = () => showConfirmationModal(false);
 
   return (
     <>
+      {/************************************** Nav&Title ****************************************/}
+      <Row className='d-flex justify-content-start align-items-center mb-3'>
+        <Meta title='Data Dapp | Update Item' />
+        <Button
+          className='btn btn-primary mr-1'
+          title='Go Back'
+          onClick={goBack}
+        >
+          Go Back
+        </Button>
+        <Button
+          className='btn btn-info mr-1'
+          title={validForm ? 'Save' : 'Enter all fields to submit'}
+          disabled={!validForm || loadingUpdate}
+          onClick={() => {
+            showConfirmationModal(true);
+          }}
+        >
+          {loadingUpdate ? (
+            <>
+              Loading...
+              <Spinner
+                as='span'
+                animation='border'
+                size='sm'
+                role='status'
+                aria-hidden='true'
+              />
+            </>
+          ) : (
+            <>
+              Save <i className='fas fa-save'></i>
+            </>
+          )}
+        </Button>
+        <h1 className='my-auto ml-2' style={{ display: 'inline' }}>
+          Update Data Packet
+        </h1>
+      </Row>
+
+      {/************************************** Main Screen ****************************************/}
       {loading ? (
         <Loader />
       ) : (
         <Container>
-          <div className='d-flex justify-content-between align-items-center'>
-            <h1 style={{ display: 'inline' }}>Update Data Packet</h1>
-            <Button
-              variant='info'
-              className='btn-sm'
-              style={{ heigth: '3rem', fontSize: '0.82rem' }}
-              title={validForm ? 'Save' : 'Enter all fields to submit'}
-              disabled={!validForm || loadingUpdate}
-              onClick={() => {
-                showConfirmationModal(true);
-              }}
-            >
-              {loadingUpdate ? (
-                <>
-                  Loading...
-                  <Spinner
-                    as='span'
-                    animation='border'
-                    size='sm'
-                    role='status'
-                    aria-hidden='true'
-                  />
-                </>
-              ) : (
-                <>
-                  Save <i className='fas fa-save fa-lg'></i>
-                </>
-              )}
-            </Button>
-          </div>
           {success && success !== null && (
             <Alert
               variant='success'

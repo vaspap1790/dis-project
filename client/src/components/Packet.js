@@ -34,7 +34,6 @@ const Packet = ({ packet, handler, isProfile }) => {
           <span className='favourite p-2'>
             <i
               className='fas fa-eye fa-lg link-icon'
-              style={{ color: 'black' }}
               title='Add to Watchlist'
               onClick={() => addToWatclistHandler(packet)}
             ></i>

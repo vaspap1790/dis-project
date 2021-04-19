@@ -45,14 +45,22 @@ h2 {
   background-color: white;
 }
 
+.favourite:hover {
+  color: #1f9bcf !important;
+}
+
 .search-rating {
   z-index: 2;
   position: absolute;
-  top: 93%;
-  left: 96%;
+  top: 89%;
+  left: 94%;
   transform: translate(-50%, -50%);
   border-radius: 50%;
   background-color: white;
+}
+
+.search-rating:hover {
+  color: #1f9bcf;
 }
 
 /* Carousel */

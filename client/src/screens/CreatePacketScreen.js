@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import 'react-quill/dist/quill.snow.css';
 import 'react-drop-zone/dist/styles.css';
-import { Container } from 'react-bootstrap';
 import StepWizard from 'react-step-wizard';
 import Nav from '../components/WizardNav';
 import FirstStep from '../components/FirstStep';
 import SecondStep from '../components/SecondStep';
 import LastStep from '../components/LastStep';
 import ModalComponent from '../components/ModalComponent';
+import Meta from '../components/Meta';
 import '../css/wizard.css';
+import { Button, Row, Container } from 'react-bootstrap';
 import { createPacket, emptyCreatePacketError } from '../actions/packetActions';
 import {
   validateName,
@@ -18,7 +19,7 @@ import {
 } from '../utils/validator';
 /* eslint react/prop-types: 0 */
 
-const CreatePacketScreen = ({ history, match }) => {
+const CreatePacketScreen = ({ history }) => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
@@ -112,53 +113,74 @@ const CreatePacketScreen = ({ history, match }) => {
     }, 8000);
   };
 
+  const goBack = () => {
+    history.goBack();
+  };
+
   //This will be rendered
   return (
-    <Container>
-      <h1>Upload Data Packet</h1>
-      <div className='row'>
-        <div className={`col-12 rsw-wrapper`}>
-          <StepWizard
-            onStepChange={onStepChange}
-            isHashEnabled
-            nav={<Nav />}
-            instance={setInstance}
-          >
-            <FirstStep hashKey={'step1'} update={updateForm} />
-            <SecondStep
-              hashKey={'step2'}
-              update={updateForm}
-              form={state.form}
-            />
-            <LastStep
-              hashKey={'step3'}
-              update={updateForm}
-              uploadHandler={uploadHandler}
-              error={error}
-              loading={loading}
-            />
-          </StepWizard>
-        </div>
-      </div>
+    <>
+      {/************************************** Nav&Title ****************************************/}
+      <Row className='d-flex justify-content-start align-items-center mb-3'>
+        <Meta title='Data Dapp | Upload Item' />
+        <Button
+          className='btn btn-primary mr-1'
+          title='Go Back'
+          onClick={goBack}
+        >
+          Go Back
+        </Button>
+        <h1 className='my-auto ml-2' style={{ display: 'inline' }}>
+          Upload Data Packet
+        </h1>
+      </Row>
 
-      {/* Modals */}
-      <ModalComponent
-        show={confirmationModal}
-        close={closeConfirmationModal}
-        proceed={handleProceed}
-        title='Confirm Upload'
-        body='Are you sure you want to proceed and upload the data packet?'
-        danger={true}
-        success={true}
-      />
-      <ModalComponent
-        show={validationModal}
-        close={closeValidationModal}
-        title='Validation Failed'
-        body='Be sure you uploaded all the necessary information. Image and sampling are not mandatory.'
-        info={true}
-      />
-    </Container>
+      {/************************************** Main Screen ****************************************/}
+      <Container>
+        <div className='row'>
+          <div className={`col-12 rsw-wrapper`}>
+            <StepWizard
+              onStepChange={onStepChange}
+              isHashEnabled
+              nav={<Nav />}
+              instance={setInstance}
+            >
+              <FirstStep hashKey={'step1'} update={updateForm} />
+              <SecondStep
+                hashKey={'step2'}
+                update={updateForm}
+                form={state.form}
+              />
+              <LastStep
+                hashKey={'step3'}
+                update={updateForm}
+                uploadHandler={uploadHandler}
+                error={error}
+                loading={loading}
+              />
+            </StepWizard>
+          </div>
+        </div>
+
+        {/* Modals */}
+        <ModalComponent
+          show={confirmationModal}
+          close={closeConfirmationModal}
+          proceed={handleProceed}
+          title='Confirm Upload'
+          body='Are you sure you want to proceed and upload the data packet?'
+          danger={true}
+          success={true}
+        />
+        <ModalComponent
+          show={validationModal}
+          close={closeValidationModal}
+          title='Validation Failed'
+          body='Be sure you uploaded all the necessary information. Image and sampling are not mandatory.'
+          info={true}
+        />
+      </Container>
+    </>
   );
 };
 

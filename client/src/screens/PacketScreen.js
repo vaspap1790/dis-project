@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Row,
@@ -11,12 +11,13 @@ import {
 } from 'react-bootstrap';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
+import ModalComponent from '../components/ModalComponent';
 import ReviewsContainer from '../components/ReviewsContainer';
 import ReactQuill from 'react-quill';
 import Meta from '../components/Meta';
 import 'react-quill/dist/quill.snow.css';
 import 'react-drop-zone/dist/styles.css';
-import { listPacketDetails } from '../actions/packetActions';
+import { listPacketDetails, addToWatchlist } from '../actions/packetActions';
 
 const PacketScreen = ({ history, match }) => {
   // Hook that enables components to interact with the App State through reducers
@@ -28,6 +29,9 @@ const PacketScreen = ({ history, match }) => {
 
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
+
+  // Component level State
+  const [watchlistModal, showWatchlistModal] = useState(false);
 
   //Component Variables
   const modules = {
@@ -48,19 +52,47 @@ const PacketScreen = ({ history, match }) => {
     history.goBack();
   };
 
+  const addToWatclistHandler = (packet) => {
+    dispatch(addToWatchlist(packet));
+    showWatchlistModal(true);
+  };
+
+  const closeWatchlistModal = () => showWatchlistModal(false);
+
   // This will be rendered
   return (
     <>
-      <Button className='btn btn-primary my-3' onClick={goBack}>
-        Go Back
-      </Button>
+      {/************************************** Nav&Title ****************************************/}
+      <Row className='d-flex justify-content-start align-items-center mb-3'>
+        <Button
+          className='btn btn-primary mr-1'
+          title='Go Back'
+          onClick={goBack}
+        >
+          Go Back
+        </Button>
+        {loadingDetails ? (
+          <Loader />
+        ) : error ? null : (
+          <>
+            <Button
+              className='btn btn-info mr-1'
+              title='Add to Watchlist'
+              onClick={() => addToWatclistHandler(packet)}
+            >
+              Watch <i className='fas fa-eye'></i>
+            </Button>
+            <Meta title={packet.name} />
+          </>
+        )}
+      </Row>
+      {/************************************* Main screen ***************************************/}
       {loadingDetails ? (
         <Loader />
       ) : error ? (
         <Alert variant='danger'>{error}</Alert>
       ) : (
         <>
-          <Meta title={packet.name} />
           <Row>
             <Col md={6} className='pr-0'>
               {packet.sample !== '' ? (
@@ -155,6 +187,14 @@ const PacketScreen = ({ history, match }) => {
           </Row>
         </>
       )}
+      {/* Modals */}
+      <ModalComponent
+        show={watchlistModal}
+        close={closeWatchlistModal}
+        title='Add to Watchlist'
+        body='You successfully added the data packet to the Watchlist'
+        info={true}
+      />
     </>
   );
 };
