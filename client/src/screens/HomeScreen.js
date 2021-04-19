@@ -1,13 +1,31 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Alert, Button, Jumbotron } from 'react-bootstrap';
+import { Row, Col, Alert, Button, Jumbotron, Form } from 'react-bootstrap';
 import Packet from '../components/Packet';
 import Loader from '../components/Loader';
 import Paginate from '../components/Paginate';
 import Meta from '../components/Meta';
 import PacketCarousel from '../components/PacketCarousel';
-
+import {
+  ProSidebar,
+  Menu,
+  MenuItem,
+  SubMenu,
+  SidebarHeader,
+  SidebarFooter,
+  SidebarContent
+} from 'react-pro-sidebar';
+import {
+  FaTachometerAlt,
+  FaGem,
+  FaList,
+  FaGithub,
+  FaRegLaughWink,
+  FaHeart
+} from 'react-icons/fa';
+import 'react-pro-sidebar/dist/css/styles.css';
 import { listPackets } from '../actions/packetActions';
+import Rating from '../components/Rating';
 
 const HomeScreen = ({ match, history }) => {
   // Hook that enables components to interact with the App State through reducers
@@ -85,6 +103,60 @@ const HomeScreen = ({ match, history }) => {
       ) : (
         <>
           <Row>
+            <ProSidebar className='mt-3'>
+              <SidebarHeader>
+                <div
+                  style={{
+                    padding: '24px',
+                    textTransform: 'uppercase',
+                    fontWeight: 'bold',
+                    fontSize: 14,
+                    letterSpacing: '1px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  Filters
+                </div>
+              </SidebarHeader>
+              <SidebarContent className='mt-3'>
+                <Menu iconShape='square'>
+                  <MenuItem icon={<FaGem />}>Dashboard</MenuItem>
+                  <MenuItem icon={<FaGem />}>
+                    <Rating value='1' />
+                  </MenuItem>
+                  <MenuItem icon={<FaGem />}>
+                    <Rating value='2' />
+                  </MenuItem>
+                  <MenuItem icon={<FaGem />}>
+                    <Rating value='3' />
+                  </MenuItem>
+                  <MenuItem icon={<FaGem />}>
+                    <Rating value='4' />
+                  </MenuItem>
+                  <MenuItem icon={<FaGem />}>
+                    <Rating value='5' />
+                  </MenuItem>
+                  <MenuItem>
+                    <Form>
+                      <Form.Group>
+                        <Form.Label>Range</Form.Label>
+                        <Form.Control
+                          type='range'
+                          className='custom-range'
+                          style={{ backgroundColor: 'white' }}
+                        />
+                      </Form.Group>
+                    </Form>
+                  </MenuItem>
+                  <SubMenu title='Components' icon={<FaHeart />}>
+                    <MenuItem>Component 1</MenuItem>
+                    <MenuItem>Component 2</MenuItem>
+                  </SubMenu>
+                </Menu>
+              </SidebarContent>
+            </ProSidebar>
             {packets.map((packet) => (
               <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
                 <Packet packet={packet} isProfile={true} />
