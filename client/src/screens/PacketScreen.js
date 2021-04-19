@@ -11,6 +11,7 @@ import {
 } from 'react-bootstrap';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
+import ReviewsContainer from '../components/ReviewsContainer';
 import ReactQuill from 'react-quill';
 import Meta from '../components/Meta';
 import 'react-quill/dist/quill.snow.css';
@@ -149,19 +150,7 @@ const PacketScreen = ({ history, match }) => {
           <Row>
             <Col md={6}>
               <h2>Reviews</h2>
-              {reviews.length === 0 && <Alert variant='info'>No Reviews</Alert>}
-              <ListGroup variant='flush'>
-                {reviews.map((review) => (
-                  <ListGroup.Item key={review._id}>
-                    <span style={{ display: 'block', fontWeight: 'bold' }}>
-                      {review.user.username}
-                    </span>
-                    <Rating value={review.rating} />
-                    <p>{review.createdAt.substring(0, 10)}</p>
-                    <p>{review.comment}</p>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
+              <ReviewsContainer reviews={reviews} />
             </Col>
           </Row>
         </>

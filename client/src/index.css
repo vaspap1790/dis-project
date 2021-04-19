@@ -45,6 +45,16 @@ h2 {
   background-color: white;
 }
 
+.search-rating {
+  z-index: 2;
+  position: absolute;
+  top: 93%;
+  left: 96%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background-color: white;
+}
+
 /* Carousel */
 .carousel-item-next,
 .carousel-item-prev,

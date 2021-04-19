@@ -7,6 +7,7 @@ import DataTable from '../components/DataTable';
 import Moment from 'react-moment';
 import { Link } from 'react-router-dom';
 import Meta from '../components/Meta';
+import ReviewsContainer from '../components/ReviewsContainer';
 import {
   ProSidebar,
   Menu,
@@ -436,59 +437,9 @@ const ProfileScreen = ({ match, history }) => {
               )}
             </div>
           </SidebarHeader>
-          <SidebarContent>
-            {/* TODO: user description
-            <div
-              className='p-3'
-              style={{ textAlign: 'justify', fontStyle: 'italic' }}
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore aliqua.
-            </div> */}
+          <SidebarContent className='mt-3'>
             {/**************** Reviews Tab *******************/}
-            <div className='px-2 py-1' style={{ color: 'black' }}>
-              {userReviews.length === 0 && (
-                <Alert variant='info'>No Reviews</Alert>
-              )}
-              <ListGroup
-                variant='flush'
-                style={{
-                  maxHeight: '80vh',
-                  minHeight: '80vh',
-                  overflowY: 'auto'
-                }}
-              >
-                {userReviews.map((review) => (
-                  <ListGroup.Item key={review._id} className='m-1'>
-                    From:{' '}
-                    <Link
-                      to={`/profile/${review.user._id}`}
-                      style={{ fontWeight: 'bold' }}
-                    >
-                      {review.user.username}
-                    </Link>
-                    <div>
-                      For:{' '}
-                      <Link
-                        to={`/packet/${review.packet._id}`}
-                        style={{ fontWeight: 'bold' }}
-                      >
-                        {review.packet.name}
-                      </Link>
-                    </div>
-                    <div className='text-muted'>
-                      <Moment format='D MMM YYYY hh:mm:ss'>
-                        {review.createdAt}
-                      </Moment>
-                    </div>
-                    <Rating value={review.rating} />
-                    <div style={{ fontStyle: 'italic' }}>
-                      "{review.comment}"
-                    </div>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            </div>
+            <ReviewsContainer reviews={userReviews} isProfile={true} />
           </SidebarContent>
         </ProSidebar>
 
