@@ -30,10 +30,10 @@ const PacketCarousel = () => {
           <Link to={`/packet/${packet._id}`}>
             <Image src={packet.image} alt={packet.name} fluid />
             <Carousel.Caption className='carousel-caption'>
-              <h2>
+              <h4>
                 {packet.name} (<i className='fab fa-ethereum'></i>
                 {packet.price})
-              </h2>
+              </h4>
             </Carousel.Caption>
           </Link>
         </Carousel.Item>

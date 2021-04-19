@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Alert, Button } from 'react-bootstrap';
+import { Row, Col, Alert, Button, Jumbotron } from 'react-bootstrap';
 import Packet from '../components/Packet';
 import Loader from '../components/Loader';
 import Paginate from '../components/Paginate';
@@ -36,13 +36,46 @@ const HomeScreen = ({ match, history }) => {
     <>
       <Meta />
       {!keyword ? (
-        <PacketCarousel />
+        <Row>
+          <Col sm={7}>
+            <PacketCarousel />
+          </Col>
+          <Col sm={5}>
+            <Jumbotron style={{ marginBottom: '-10rem' }} className='py-4'>
+              <h1 style={{ zIndex: 5, position: 'relative' }}>
+                Welcome to Data Dapp, people of Ethereum{' '}
+                <i className='fab fa-ethereum jm fa-10x'></i>
+              </h1>
+              <p
+                style={{
+                  zIndex: 5,
+                  position: 'relative',
+                  textAlign: 'justify'
+                }}
+                className='mb-4'
+              >
+                This is a Decentralised Ethereum based Data Marketplace. Lorem
+                ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis
+                aute irure dolor in reprehenderit.
+              </p>
+              <p>
+                <Button
+                  className='btn-primary'
+                  onClick={() => history.push('/aboutUs')}
+                >
+                  Learn more
+                </Button>
+              </p>
+            </Jumbotron>
+          </Col>
+        </Row>
       ) : (
         <Button className='btn btn-primary my-3' onClick={goBack}>
           Go Back
         </Button>
       )}
-      <h1>Latest Packets</h1>
+      <h1 className='mb-0 pt-4 pb-0'>Explore Data Packets</h1>
       {loading ? (
         <Loader />
       ) : error ? (

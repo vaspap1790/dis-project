@@ -49,6 +49,21 @@ h2 {
   color: #1f9bcf !important;
 }
 
+.jm {
+  z-index: 1;
+  position: absolute;
+  top: 10%;
+  left: 68%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  -webkit-transform: rotate(22deg);
+  -moz-transform: rotate(22deg);
+  -ms-transform: rotate(22deg);
+  -o-transform: rotate(22deg);
+  transform: rotate(22deg);
+  color: #c6c8ca !important;
+}
+
 .search-rating {
   z-index: 2;
   position: absolute;
@@ -69,17 +84,18 @@ h2 {
 .carousel-item.active {
   display: flex;
 }
+
 .carousel-caption {
   position: absolute;
   top: 0;
 }
 
-.carousel-caption h2 {
+.carousel-caption h4 {
   color: #fff;
 }
 
 .carousel img {
-  height: 300px;
+  height: 200px;
   padding: 30px;
   margin: 40px;
   /* border-radius: 50%; */
@@ -90,7 +106,7 @@ h2 {
   margin: 0 auto;
 }
 @media (max-width: 900px) {
-  .carousel-caption h2 {
+  .carousel-caption h4 {
     font-size: 2.5vw;
   }
 }
@@ -119,10 +135,6 @@ h2 {
 
 .profileTabs > .nav-link.active {
   color: black !important;
-}
-
-#sidebarProfile {
-  background-color: #c6c8ca !important;
 }
 
 .order-4:hover,
