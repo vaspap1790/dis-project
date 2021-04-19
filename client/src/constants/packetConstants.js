@@ -17,8 +17,12 @@ export const PACKET_DETAILS_REQUEST = 'PACKET_DETAILS_REQUEST';
 export const PACKET_DETAILS_SUCCESS = 'PACKET_DETAILS_SUCCESS';
 export const PACKET_DETAILS_FAIL = 'PACKET_DETAILS_FAIL';
 
-// Messages
 export const PRE_PACKET_DETAILS_REQUEST = 'PRE_PACKET_DETAILS_REQUEST';
+
+/////////////////////////////// Data Actions /////////////////////////////////
+export const PACKET_DATA_REQUEST = 'PACKET_DATA_REQUEST';
+export const PACKET_DATA_SUCCESS = 'PACKET_DATA_SUCCESS';
+export const PACKET_DATA_FAIL = 'PACKET_DATA_FAIL';
 
 /////////////////////////////// Create Actions /////////////////////////////////
 export const PACKET_CREATE_REQUEST = 'PACKET_CREATE_REQUEST';

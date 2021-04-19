@@ -4,6 +4,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import {
   packetListReducer,
   packetDetailsReducer,
+  packetDataReducer,
   packetsUserReducer,
   packetCreateReducer,
   packetUpdateReducer,
@@ -26,6 +27,7 @@ import {
 const reducer = combineReducers({
   packetList: packetListReducer,
   packetDetails: packetDetailsReducer,
+  packetData: packetDataReducer,
   packetsUser: packetsUserReducer,
   packetCreate: packetCreateReducer,
   packetUpdate: packetUpdateReducer,

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Form, Button, Row, Col, Alert } from 'react-bootstrap';
+import { Form, Button, Row, Col, Alert, Spinner } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
+import Meta from '../components/Meta';
 import { login, emptyLoginError } from '../actions/userActions';
 
 const LoginScreen = ({ location, history }) => {
@@ -33,7 +34,9 @@ const LoginScreen = ({ location, history }) => {
   // Component Methods
   const submitHandler = (e) => {
     e.preventDefault();
+  };
 
+  const logIn = () => {
     if (validForm) {
       dispatch(login(email, password));
 
@@ -52,82 +55,116 @@ const LoginScreen = ({ location, history }) => {
     setPasswordType(type);
   };
 
+  const goBack = () => {
+    history.goBack();
+  };
+
   // This will be rendered
   return (
-    <FormContainer>
-      <h1>Sign In</h1>
-      {error && error !== null && (
-        <Alert
-          variant='danger'
-          onClose={() => {
-            handleErrorOnClose();
-          }}
-          dismissible
-        >
-          {error}
-        </Alert>
-      )}
-      {loading && <Loader />}
-
-      <Form onSubmit={submitHandler}>
-        <Form.Group controlId='email'>
-          <Form.Label>Email Address</Form.Label>
-          <Form.Control
-            type='text'
-            placeholder='Enter email'
-            title='Enter email'
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-
-        <Form.Group controlId='password'>
-          <Form.Label className='d-flex justify-content-between'>
-            Password{' '}
-            <span
-              className='link'
-              onClick={showHidePassword}
-              title='Show/Hide Password'
-            >
-              <i
-                className={
-                  passwordType === 'text'
-                    ? 'fas fa-eye search-icon'
-                    : 'fas fa-eye-slash search-icon'
-                }
-              ></i>
-            </span>
-          </Form.Label>
-          <Form.Control
-            type={passwordType}
-            placeholder='Enter password'
-            title='Enter password'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+    <>
+      {/************************************** Nav&Title ****************************************/}
+      <Row className='d-flex justify-content-start align-items-center mb-3'>
+        <Meta title='Data Dapp | Sign In' />
         <Button
-          variant='primary'
-          type='submit'
-          disabled={!validForm}
-          title={validForm ? 'Sign In' : 'Enter all fields to submit'}
+          className='btn btn-primary mr-1'
+          title='Go Back'
+          onClick={goBack}
         >
-          Sign In
+          Go Back
         </Button>
-      </Form>
-
-      <Row className='py-3'>
-        <Col>
-          New to DataDapp?{' '}
-          <Link
-            to={redirect ? `/register?redirect=${redirect}` : '/register'}
-            style={{ fontWeight: 'bold' }}
-          >
-            Register
-          </Link>
-        </Col>
+        <Button
+          className='btn btn-success mr-1'
+          disabled={!validForm || loading}
+          title={validForm ? 'Sign In' : 'Enter all fields to submit'}
+          onClick={() => logIn()}
+        >
+          {loading ? (
+            <>
+              Loading...
+              <Spinner
+                as='span'
+                animation='border'
+                size='sm'
+                role='status'
+                aria-hidden='true'
+              />
+            </>
+          ) : (
+            <>Sign in</>
+          )}
+        </Button>
+        <h1 className='my-auto ml-2' style={{ display: 'inline' }}>
+          Sign In
+        </h1>
       </Row>
-    </FormContainer>
+
+      {/************************************** Main Screen ****************************************/}
+      <FormContainer>
+        {error && error !== null && (
+          <Alert
+            variant='danger'
+            onClose={() => {
+              handleErrorOnClose();
+            }}
+            dismissible
+          >
+            {error}
+          </Alert>
+        )}
+        {loading && <Loader />}
+
+        <Form onSubmit={submitHandler}>
+          <Form.Group controlId='email'>
+            <Form.Label>Email Address</Form.Label>
+            <Form.Control
+              type='text'
+              placeholder='Enter email'
+              title='Enter email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+
+          <Form.Group controlId='password'>
+            <Form.Label className='d-flex justify-content-between'>
+              Password{' '}
+              <span
+                className='link'
+                onClick={showHidePassword}
+                title='Show/Hide Password'
+              >
+                <i
+                  className={
+                    passwordType === 'text'
+                      ? 'fas fa-eye search-icon'
+                      : 'fas fa-eye-slash search-icon'
+                  }
+                ></i>
+              </span>
+            </Form.Label>
+            <Form.Control
+              type={passwordType}
+              placeholder='Enter password'
+              title='Enter password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+        </Form>
+
+        <Row className='py-3'>
+          <Col>
+            New to DataDapp?{' '}
+            <Link
+              to={redirect ? `/register?redirect=${redirect}` : '/register'}
+              style={{ fontWeight: 'bold' }}
+            >
+              Register
+            </Link>
+          </Col>
+        </Row>
+      </FormContainer>
+    </>
   );
 };
 

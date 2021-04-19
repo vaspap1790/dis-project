@@ -12,7 +12,7 @@ import Loader from '../components/Loader';
 import {
   getUserPackets,
   emptyUserPacketsError,
-  listPacketDetails
+  listPacketData
 } from '../actions/packetActions';
 import {
   getUserAccess,
@@ -69,7 +69,7 @@ const ProfileScreen = ({ match, history }) => {
   };
 
   const updateHandler = (e) => {
-    dispatch(listPacketDetails(e.target.id));
+    dispatch(listPacketData(e.target.id));
     history.push(`/packets/update/${e.target.id}`);
   };
 

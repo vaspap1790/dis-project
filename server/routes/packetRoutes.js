@@ -5,7 +5,8 @@ import {
   getPacketsByUserId,
   updatePacket,
   createPacket,
-  getTopPackets
+  getTopPackets,
+  getPacketDataById
 } from '../controllers/packetController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
@@ -15,5 +16,6 @@ router.route('/').get(getPackets).post(protect, createPacket);
 router.route('/top').get(getTopPackets);
 router.route('/user/:id').get(getPacketsByUserId);
 router.route('/:id').get(getPacketById).put(protect, updatePacket);
+router.route('/data/:id').get(getPacketDataById);
 
 export default router;

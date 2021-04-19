@@ -55,6 +55,23 @@ const getPacketById = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Fetch single packet
+// @route   GET /api/packets/data/:id
+// @access  Public
+const getPacketDataById = asyncHandler(async (req, res) => {
+  let packet = await Packet.findById(req.params.id).populate(
+    'user',
+    'username'
+  );
+
+  if (packet) {
+    res.json(packet);
+  } else {
+    res.status(404);
+    throw new Error('Packet not found');
+  }
+});
+
 // @desc    Fetch all user packets
 // @route   GET /api/packets/user/:id
 // @access  Public
@@ -80,7 +97,6 @@ const getPacketsByUserId = asyncHandler(async (req, res) => {
     }
 
     const packetsWithRatings = packets.filter((packet) => packet.rating !== 0);
-    console.log(packetsWithRatings);
 
     userRating.numReviews = reviews.length;
     if (packetsWithRatings.length !== 0) {
@@ -165,5 +181,6 @@ export {
   getPacketsByUserId,
   createPacket,
   updatePacket,
-  getTopPackets
+  getTopPackets,
+  getPacketDataById
 };

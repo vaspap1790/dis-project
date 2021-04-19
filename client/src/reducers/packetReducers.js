@@ -9,6 +9,9 @@ import {
   PACKET_DETAILS_REQUEST,
   PACKET_DETAILS_SUCCESS,
   PACKET_DETAILS_FAIL,
+  PACKET_DATA_REQUEST,
+  PACKET_DATA_SUCCESS,
+  PACKET_DATA_FAIL,
   PRE_PACKET_DETAILS_REQUEST,
   PACKET_USER_RESET,
   PACKET_CREATE_REQUEST,
@@ -93,6 +96,28 @@ export const packetDetailsReducer = (
         reviews: action.payload.reviews
       };
     case PACKET_DETAILS_FAIL:
+      return { ...state, loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const packetDataReducer = (
+  state = {
+    packet: { name: '', description: '', category: '', image: '' }
+  },
+  action
+) => {
+  switch (action.type) {
+    case PACKET_DATA_REQUEST:
+      return { loading: true, ...state };
+    case PACKET_DATA_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        packet: action.payload
+      };
+    case PACKET_DATA_FAIL:
       return { ...state, loading: false, error: action.payload };
     default:
       return state;

@@ -39,8 +39,8 @@ const UpdatePacketScreen = ({ history, match }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const packetDetails = useSelector((state) => state.packetDetails);
-  const { packet } = packetDetails;
+  const packetData = useSelector((state) => state.packetData);
+  const { packet } = packetData;
 
   const packetUpdate = useSelector((state) => state.packetUpdate);
   const { loading: loadingUpdate, error, success } = packetUpdate;
@@ -73,12 +73,12 @@ const UpdatePacketScreen = ({ history, match }) => {
       history.push('/login');
     }
     const fetch = async () => {
-      const { data } = await axios.get(`/api/packets/${packetId}`);
-      setName(data.packet.name);
-      setDescription(data.packet.description);
-      setCategory(data.packet.category);
-      setPrice(data.packet.price);
-      setImage(data.packet.image);
+      const { data } = await axios.get(`/api/packets/data/${packetId}`);
+      setName(data.name);
+      setDescription(data.description);
+      setCategory(data.category);
+      setPrice(data.price);
+      setImage(data.image);
       setLoading(false);
     };
     fetch();

@@ -10,6 +10,9 @@ import {
   PACKET_DETAILS_REQUEST,
   PACKET_DETAILS_SUCCESS,
   PACKET_DETAILS_FAIL,
+  PACKET_DATA_REQUEST,
+  PACKET_DATA_SUCCESS,
+  PACKET_DATA_FAIL,
   PRE_PACKET_DETAILS_REQUEST,
   PACKET_CREATE_REQUEST,
   PACKET_CREATE_SUCCESS,
@@ -83,6 +86,28 @@ export const prelistPacketDetails = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: PACKET_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+    });
+  }
+};
+
+/////////////////////////////// Data Actions ///////////////////////////////////
+export const listPacketData = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: PACKET_DATA_REQUEST });
+
+    const { data } = await axios.get(`/api/packets/data/${id}`);
+
+    dispatch({
+      type: PACKET_DATA_SUCCESS,
+      payload: data
+    });
+  } catch (error) {
+    dispatch({
+      type: PACKET_DATA_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
