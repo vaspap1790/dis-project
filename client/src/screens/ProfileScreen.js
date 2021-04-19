@@ -4,6 +4,27 @@ import Packet from '../components/Packet';
 import Rating from '../components/Rating';
 import ModalComponent from '../components/ModalComponent';
 import DataTable from '../components/DataTable';
+import Moment from 'react-moment';
+import { Link } from 'react-router-dom';
+import Meta from '../components/Meta';
+import {
+  ProSidebar,
+  Menu,
+  MenuItem,
+  SubMenu,
+  SidebarHeader,
+  SidebarFooter,
+  SidebarContent
+} from 'react-pro-sidebar';
+import 'react-pro-sidebar/dist/css/styles.css';
+import {
+  FaTachometerAlt,
+  FaGem,
+  FaList,
+  FaGithub,
+  FaRegLaughWink,
+  FaHeart
+} from 'react-icons/fa';
 import {
   Form,
   Button,
@@ -13,7 +34,8 @@ import {
   Tabs,
   Tab,
   Card,
-  ListGroup
+  ListGroup,
+  Container
 } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import {
@@ -165,269 +187,313 @@ const ProfileScreen = ({ match, history }) => {
     }
   };
 
+  const goBack = () => {
+    history.goBack();
+  };
+
+  //!userDetails ?
+  const form = (
+    <div className='p-2'>
+      {success && success !== null && (
+        <Alert
+          variant='success'
+          onClose={() => {
+            handleSuccessOnClose();
+          }}
+          dismissible
+        >
+          {success}
+        </Alert>
+      )}
+      {error && error !== null && (
+        <Alert
+          variant='danger'
+          onClose={() => {
+            handleErrorOnClose();
+          }}
+          dismissible
+        >
+          {error}
+        </Alert>
+      )}
+      {loading && <Loader />}
+
+      <Form onSubmit={submitHandler}>
+        <Form.Group controlId='username'>
+          <Form.Label>Username</Form.Label>
+          <Form.Control
+            className={
+              username.length === 0 ||
+              (userInfo && username === userInfo.username)
+                ? ''
+                : validateUsername(username)
+                ? 'is-valid'
+                : 'is-invalid'
+            }
+            type='text'
+            placeholder='Enter username'
+            title='Enter username'
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          ></Form.Control>
+          {username.length === 0 ? null : validateUsername(username) ? (
+            <div className='valid-feedback' display={'none'}>
+              Correct
+            </div>
+          ) : (
+            <div className='invalid-feedback'>
+              Username should be from 5 to 15 characters long
+            </div>
+          )}
+        </Form.Group>
+
+        <Form.Group controlId='email'>
+          <Form.Label>Email Address</Form.Label>
+          <Form.Control
+            className={
+              email.length === 0 || (userInfo && email === userInfo.email)
+                ? ''
+                : validateEmail(email)
+                ? 'is-valid'
+                : 'is-invalid'
+            }
+            type='text'
+            placeholder='Enter email'
+            title='Enter email'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          ></Form.Control>
+          {email.length === 0 ? null : validateEmail(email) ? (
+            <div className='valid-feedback'>Correct</div>
+          ) : (
+            <div className='invalid-feedback'>Please insert a valid email</div>
+          )}
+        </Form.Group>
+
+        <Form.Group controlId='password'>
+          <Form.Label className='d-flex justify-content-between'>
+            Change Password{' '}
+            <span
+              className='link'
+              onClick={showHidePassword}
+              title='Show/Hide Password'
+            >
+              <i
+                className={
+                  passwordType === 'text'
+                    ? 'fas fa-eye search-icon'
+                    : 'fas fa-eye-slash search-icon'
+                }
+              ></i>
+            </span>
+          </Form.Label>
+          <Form.Control
+            className={
+              password.length === 0
+                ? ''
+                : validatePassword(password)
+                ? 'is-valid'
+                : 'is-invalid'
+            }
+            type={passwordType}
+            placeholder='Enter password'
+            title='Enter password'
+            value={password}
+            onChange={(e) => setPasswordHandler(e.target.value)}
+          ></Form.Control>
+          {password.length === 0 ? null : validatePassword(password) ? (
+            <div className='valid-feedback'>Correct</div>
+          ) : (
+            <div className='invalid-feedback'>
+              Password should be from 8 to 15 characters long
+            </div>
+          )}
+        </Form.Group>
+
+        <Form.Group controlId='confirmPassword'>
+          <Form.Label className='d-flex justify-content-between'>
+            Confirm New Password{' '}
+            <span
+              className='link'
+              onClick={showHideConfirmPassword}
+              title='Show/Hide Confirm Password'
+            >
+              <i
+                className={
+                  confirmPasswordType === 'text'
+                    ? 'fas fa-eye search-icon'
+                    : 'fas fa-eye-slash search-icon'
+                }
+              ></i>
+            </span>
+          </Form.Label>
+          <Form.Control
+            className={
+              confirmPassword.length === 0
+                ? ''
+                : validateConfirmPassword(password, confirmPassword)
+                ? 'is-valid'
+                : 'is-invalid'
+            }
+            type={confirmPasswordType}
+            placeholder='Confirm password'
+            title='Confirm password'
+            disabled={password.length === 0}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          ></Form.Control>
+          {confirmPassword.length === 0 ? null : validateConfirmPassword(
+              password,
+              confirmPassword
+            ) ? (
+            <div className='valid-feedback'>Correct</div>
+          ) : (
+            <div className='invalid-feedback'>
+              Confrim Password should be much Password
+            </div>
+          )}
+        </Form.Group>
+        <Button
+          variant='primary'
+          disabled={!validForm}
+          title={
+            validForm ? 'Update Profile' : 'Enter correct values to submit'
+          }
+          className='btn btn-sm btn-block'
+          type='submit'
+        >
+          Update
+        </Button>
+      </Form>
+    </div>
+  );
+
   // This will be rendered
   return (
     <>
+      {/************************************** Nav&Title ****************************************/}
+      <Row className='d-flex justify-content-start align-items-center mb-3'>
+        <Button
+          className='btn btn-primary mr-1'
+          title='Go Back'
+          onClick={goBack}
+        >
+          Go Back
+        </Button>
+        {userInfo && !userDetails ? (
+          <>
+            <Meta title='Profile' />
+            <Button
+              className='btn btn-success mr-1'
+              title='Upload a data packet'
+              onClick={uploadHandler}
+            >
+              Upload <i className='fas fa-upload'></i>
+            </Button>
+          </>
+        ) : (
+          <Meta title={userRating.username} />
+        )}
+        <h1 className='my-auto ml-2' style={{ display: 'inline' }}>
+          User Profile
+        </h1>
+      </Row>
       <Row>
-        {/************************  Side Profile Screen ****************************/}
-        <Col md={3} className='table-dark p-2' id='sidebarProfile'>
-          <h2 style={{ color: 'white' }}>User Details</h2>
-          <Tabs
-            defaultActiveKey='profile'
-            transition={false}
-            className='profileTabs'
-          >
-            {/**************** Profile Tab *******************/}
-            <Tab eventKey='profile' title='Profile'>
+        {/************************************** Sidebar *****************************************/}
+        <ProSidebar>
+          <SidebarHeader>
+            <div
+              style={{
+                padding: '24px',
+                textTransform: 'uppercase',
+                fontWeight: 'bold',
+                fontSize: 14,
+                letterSpacing: '1px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              }}
+            >
               {userRating && (
-                <Card className='my-3 p-3 rounded'>
-                  <Card.Body style={{ color: 'black' }}>
-                    <Card.Title as='div'>{userRating.username}</Card.Title>
-                    <Card.Text>
-                      <span style={{ display: 'block' }}>
-                        Uploaded{' '}
-                        <span className='badge badge-pill badge-success'>
-                          {userPackets.length}
-                        </span>{' '}
-                        data items
-                      </span>
-                      <Rating
-                        value={userRating.rating}
-                        text={`${userRating.numReviews} reviews`}
-                      />
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              )}
-            </Tab>
-            {/***************** Update Tab *******************/}
-            {!userDetails ? (
-              <Tab eventKey='update' title='Update'>
-                <div className='p-2'>
-                  {success && success !== null && (
-                    <Alert
-                      variant='success'
-                      onClose={() => {
-                        handleSuccessOnClose();
-                      }}
-                      dismissible
-                    >
-                      {success}
-                    </Alert>
-                  )}
-                  {error && error !== null && (
-                    <Alert
-                      variant='danger'
-                      onClose={() => {
-                        handleErrorOnClose();
-                      }}
-                      dismissible
-                    >
-                      {error}
-                    </Alert>
-                  )}
-                  {loading && <Loader />}
-
-                  <Form onSubmit={submitHandler}>
-                    <Form.Group controlId='username'>
-                      <Form.Label>Username</Form.Label>
-                      <Form.Control
-                        className={
-                          username.length === 0 ||
-                          (userInfo && username === userInfo.username)
-                            ? ''
-                            : validateUsername(username)
-                            ? 'is-valid'
-                            : 'is-invalid'
-                        }
-                        type='text'
-                        placeholder='Enter username'
-                        title='Enter username'
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                      ></Form.Control>
-                      {username.length === 0 ? null : validateUsername(
-                          username
-                        ) ? (
-                        <div className='valid-feedback' display={'none'}>
-                          Correct
-                        </div>
-                      ) : (
-                        <div className='invalid-feedback'>
-                          Username should be from 5 to 15 characters long
-                        </div>
-                      )}
-                    </Form.Group>
-
-                    <Form.Group controlId='email'>
-                      <Form.Label>Email Address</Form.Label>
-                      <Form.Control
-                        className={
-                          email.length === 0 ||
-                          (userInfo && email === userInfo.email)
-                            ? ''
-                            : validateEmail(email)
-                            ? 'is-valid'
-                            : 'is-invalid'
-                        }
-                        type='text'
-                        placeholder='Enter email'
-                        title='Enter email'
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                      ></Form.Control>
-                      {email.length === 0 ? null : validateEmail(email) ? (
-                        <div className='valid-feedback'>Correct</div>
-                      ) : (
-                        <div className='invalid-feedback'>
-                          Please insert a valid email
-                        </div>
-                      )}
-                    </Form.Group>
-
-                    <Form.Group controlId='password'>
-                      <Form.Label className='d-flex justify-content-between'>
-                        Change Password{' '}
-                        <span
-                          className='link'
-                          onClick={showHidePassword}
-                          title='Show/Hide Password'
-                        >
-                          <i
-                            className={
-                              passwordType === 'text'
-                                ? 'fas fa-eye search-icon'
-                                : 'fas fa-eye-slash search-icon'
-                            }
-                          ></i>
-                        </span>
-                      </Form.Label>
-                      <Form.Control
-                        className={
-                          password.length === 0
-                            ? ''
-                            : validatePassword(password)
-                            ? 'is-valid'
-                            : 'is-invalid'
-                        }
-                        type={passwordType}
-                        placeholder='Enter password'
-                        title='Enter password'
-                        value={password}
-                        onChange={(e) => setPasswordHandler(e.target.value)}
-                      ></Form.Control>
-                      {password.length === 0 ? null : validatePassword(
-                          password
-                        ) ? (
-                        <div className='valid-feedback'>Correct</div>
-                      ) : (
-                        <div className='invalid-feedback'>
-                          Password should be from 8 to 15 characters long
-                        </div>
-                      )}
-                    </Form.Group>
-
-                    <Form.Group controlId='confirmPassword'>
-                      <Form.Label className='d-flex justify-content-between'>
-                        Confirm New Password{' '}
-                        <span
-                          className='link'
-                          onClick={showHideConfirmPassword}
-                          title='Show/Hide Confirm Password'
-                        >
-                          <i
-                            className={
-                              confirmPasswordType === 'text'
-                                ? 'fas fa-eye search-icon'
-                                : 'fas fa-eye-slash search-icon'
-                            }
-                          ></i>
-                        </span>
-                      </Form.Label>
-                      <Form.Control
-                        className={
-                          confirmPassword.length === 0
-                            ? ''
-                            : validateConfirmPassword(password, confirmPassword)
-                            ? 'is-valid'
-                            : 'is-invalid'
-                        }
-                        type={confirmPasswordType}
-                        placeholder='Confirm password'
-                        title='Confirm password'
-                        disabled={password.length === 0}
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                      ></Form.Control>
-                      {confirmPassword.length ===
-                      0 ? null : validateConfirmPassword(
-                          password,
-                          confirmPassword
-                        ) ? (
-                        <div className='valid-feedback'>Correct</div>
-                      ) : (
-                        <div className='invalid-feedback'>
-                          Confrim Password should be much Password
-                        </div>
-                      )}
-                    </Form.Group>
-                    <Button
-                      variant='primary'
-                      disabled={!validForm}
-                      title={
-                        validForm
-                          ? 'Update Profile'
-                          : 'Enter correct values to submit'
-                      }
-                      className='btn btn-sm btn-block'
-                      type='submit'
-                    >
-                      Update
-                    </Button>
-                  </Form>
+                <div>
+                  <div className='mx-auto' style={{ textAlign: 'center' }}>
+                    {userRating.username}
+                  </div>
+                  <div className='mx-auto' style={{ textAlign: 'center' }}>
+                    Uploaded{' '}
+                    <span className='badge badge-pill badge-success'>
+                      {userPackets.length}
+                    </span>{' '}
+                    items
+                  </div>
+                  <div className='mx-auto' style={{ textAlign: 'center' }}>
+                    <Rating
+                      value={userRating.rating}
+                      text={`${userRating.numReviews} reviews`}
+                    />
+                  </div>
                 </div>
-              </Tab>
-            ) : null}
+              )}
+            </div>
+          </SidebarHeader>
+          <SidebarContent>
+            {/* TODO: user description
+            <div
+              className='p-3'
+              style={{ textAlign: 'justify', fontStyle: 'italic' }}
+            >
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore aliqua.
+            </div> */}
             {/**************** Reviews Tab *******************/}
-            <Tab eventKey='reviews' title='Reviews'>
-              <div className='p-2' style={{ color: 'black' }}>
-                {userReviews.length === 0 && (
-                  <Alert variant='info'>No Reviews</Alert>
-                )}
-                <ListGroup variant='flush'>
-                  {userReviews.map((review) => (
-                    <ListGroup.Item key={review._id}>
-                      <span style={{ display: 'block', fontWeight: 'bold' }}>
-                        {review.user.username}
-                      </span>
-                      <p>for {review.packet.name}</p>
-                      <Rating value={review.rating} />
-                      <p>{review.createdAt.substring(0, 10)}</p>
-                      <p>{review.comment}</p>
-                    </ListGroup.Item>
-                  ))}
-                </ListGroup>
-              </div>
-            </Tab>
-          </Tabs>
-        </Col>
-
-        {/************************  Main Profile Screen ****************************/}
-        <Col md={9} className='pt-2'>
-          <span className='d-flex justify-content-between align-items-center'>
-            <h2 style={{ display: 'inline' }}>User Data Packets</h2>
-            {userInfo && !userDetails ? (
-              <Button
-                variant='success'
-                className='btn-sm'
-                title='Upload a data packet'
-                style={{ heigth: '3rem', fontSize: '0.82rem' }}
-                onClick={uploadHandler}
+            <div className='px-2 py-1' style={{ color: 'black' }}>
+              {userReviews.length === 0 && (
+                <Alert variant='info'>No Reviews</Alert>
+              )}
+              <ListGroup
+                variant='flush'
+                style={{
+                  maxHeight: '80vh',
+                  minHeight: '80vh',
+                  overflowY: 'auto'
+                }}
               >
-                Upload <i className='fas fa-upload'></i>
-              </Button>
-            ) : null}
-          </span>
+                {userReviews.map((review) => (
+                  <ListGroup.Item key={review._id} className='m-1'>
+                    From:{' '}
+                    <Link
+                      to={`/profile/${review.user._id}`}
+                      style={{ fontWeight: 'bold' }}
+                    >
+                      {review.user.username}
+                    </Link>
+                    <div>
+                      For:{' '}
+                      <Link
+                        to={`/packet/${review.packet._id}`}
+                        style={{ fontWeight: 'bold' }}
+                      >
+                        {review.packet.name}
+                      </Link>
+                    </div>
+                    <div className='text-muted'>
+                      <Moment format='D MMM YYYY hh:mm:ss'>
+                        {review.createdAt}
+                      </Moment>
+                    </div>
+                    <Rating value={review.rating} />
+                    <div style={{ fontStyle: 'italic' }}>
+                      "{review.comment}"
+                    </div>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </div>
+          </SidebarContent>
+        </ProSidebar>
+
+        {/************************************* Main screen ***************************************/}
+        <Col md={9} className='pt-2'>
           <Tabs defaultActiveKey='uploaded' transition={false}>
             {/*************** Uploaded Tab *******************/}
             <Tab eventKey='uploaded' title='Uploaded'>
@@ -497,7 +563,6 @@ const ProfileScreen = ({ match, history }) => {
           </Tabs>
         </Col>
       </Row>
-
       {/* Modals */}
       <ModalComponent
         show={confirmationModal}
