@@ -9,7 +9,7 @@ const Review = ({ review, isProfile, openModal }) => {
     <>
       <ListGroup.Item className='m-1'>
         <i
-          className='fas fa-search-plus fa-lg search-rating link-icon'
+          className='fas fa-search-plus fa-lg search-review blue-hover link-icon'
           title='See the Review'
           onClick={() => openModal(review)}
         ></i>

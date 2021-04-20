@@ -134,7 +134,7 @@ const DataTable = ({ data }) => {
   //Column formatters
   const imageFormatter = (cell, row, rowIndex) => {
     return (
-      <div className='v-align h-align' style={{ height: '4rem' }}>
+      <div className='v-align h-align' style={{ height: '3rem' }}>
         <Link to={`/packet/${row.packet._id}`}>
           <Image
             src={cell}
@@ -142,7 +142,7 @@ const DataTable = ({ data }) => {
             title={row.name}
             fluid
             rounded
-            style={{ width: '5rem', height: '4rem' }}
+            style={{ width: '4rem', height: '3rem' }}
           />
         </Link>
       </div>
@@ -151,7 +151,7 @@ const DataTable = ({ data }) => {
 
   const nameFormatter = (cell, row, rowIndex) => {
     return (
-      <div className='v-align h-align' style={{ height: '4rem' }}>
+      <div className='v-align h-align' style={{ height: '3rem' }}>
         <Link to={`/packet/${row.packet._id}`}>{cell}</Link>
       </div>
     );
@@ -159,7 +159,7 @@ const DataTable = ({ data }) => {
 
   const dateFormatter = (cell, row, rowIndex) => {
     return (
-      <div className='v-align h-align' style={{ height: '4rem' }}>
+      <div className='v-align h-align' style={{ height: '3rem' }}>
         <Moment format='D MMM YYYY hh:mm:ss'>{cell}</Moment>
       </div>
     );
@@ -172,26 +172,25 @@ const DataTable = ({ data }) => {
           type='button'
           variant='primary'
           title='Download'
+          className='blue-hover'
           onClick={() => {
             //TODO: download data packet
             console.log(cell);
           }}
         >
-          <i
-            className='fas fa-file-download fa-2x'
-            style={{ color: 'black' }}
-          ></i>
+          <i className='fas fa-arrow-down'></i>
         </span>
         <span
           type='button'
           variant='primary'
           title='Rate'
+          className='blue-hover'
           onClick={() => {
             setPacketId(cell);
             openRatingModal();
           }}
         >
-          <i className='fas fa-star fa-2x' style={{ color: 'black' }}></i>
+          <i className='fas fa-star'></i>
         </span>
       </div>
     );

@@ -35,6 +35,10 @@ h2 {
   cursor: pointer;
 }
 
+.blue-hover:hover {
+  color: #1f9bcf !important;
+}
+
 input[type='checkbox']:hover {
   cursor: pointer;
 }
@@ -42,15 +46,10 @@ input[type='checkbox']:hover {
 .favourite {
   z-index: 2;
   position: absolute;
-  top: 5%;
-  left: 93%;
+  top: 3%;
+  left: 95%;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background-color: white;
-}
-
-.favourite:hover {
-  color: #1f9bcf !important;
 }
 
 .eth-jumbo {
@@ -68,7 +67,7 @@ input[type='checkbox']:hover {
   color: #c6c8ca !important;
 }
 
-.search-rating {
+.search-review {
   z-index: 2;
   position: absolute;
   top: 89%;
@@ -76,10 +75,6 @@ input[type='checkbox']:hover {
   transform: translate(-50%, -50%);
   border-radius: 50%;
   background-color: white;
-}
-
-.search-rating:hover {
-  color: #1f9bcf;
 }
 
 /* Carousel */
@@ -106,9 +101,11 @@ input[type='checkbox']:hover {
   margin-left: auto;
   margin-right: auto;
 }
+
 .carousel a {
   margin: 0 auto;
 }
+
 @media (max-width: 900px) {
   .carousel-caption h4 {
     font-size: 2.5vw;
@@ -119,13 +116,22 @@ input[type='checkbox']:hover {
 @media screen and (min-width: 692px) {
   .card-title {
     position: relative;
-    /* overflow: hidden; */
+    overflow: hidden;
     max-height: 50px;
     min-height: 50px;
-    line-height: 22px;
-    /* overflow-wrap: break-word; */
+    line-height: 20px;
+    overflow-wrap: break-word;
     width: 100%;
+    font-size: 0.82rem !important;
   }
+}
+
+.card-text {
+  font-size: 0.8rem !important;
+}
+
+.pro-sidebar-inner {
+  background-color: white !important;
 }
 
 .sliderArea {
@@ -249,6 +255,7 @@ input[type='checkbox']:hover {
 .trash {
   color: #d9534f !important;
 }
+
 .trash:hover {
   color: #d23430 !important;
 }

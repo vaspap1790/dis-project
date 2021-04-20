@@ -457,7 +457,7 @@ const HomeScreen = ({ match, history }) => {
               <Row>
                 {packets.map((packet) => (
                   <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
-                    <Packet packet={packet} isProfile={true} />
+                    <Packet packet={packet} />
                   </Col>
                 ))}
               </Row>

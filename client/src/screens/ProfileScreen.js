@@ -115,134 +115,145 @@ const ProfileScreen = ({ match, history }) => {
           User Profile
         </h1>
       </Row>
+
       <Row>
         {/************************************** Sidebar *****************************************/}
-        <ProSidebar breakPoint='md'>
-          <SidebarHeader>
-            <div
-              style={{
-                padding: '24px',
-                textTransform: 'uppercase',
-                fontWeight: 'bold',
-                fontSize: 14,
-                letterSpacing: '1px',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
-              }}
-            >
+        <Col xs={3}>
+          <ProSidebar
+            breakPoint='md'
+            style={{ height: '100%', width: 'inherit' }}
+          >
+            <SidebarHeader>
+              <div
+                style={{
+                  padding: '24px',
+                  textTransform: 'uppercase',
+                  fontWeight: 'bold',
+                  fontSize: 14,
+                  letterSpacing: '1px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                {loadingUserPackets ? (
+                  <Loader />
+                ) : userPacketsError ? null : (
+                  userRating && (
+                    <div>
+                      <div className='mx-auto' style={{ textAlign: 'center' }}>
+                        {userRating.username}
+                      </div>
+                      <div className='mx-auto' style={{ textAlign: 'center' }}>
+                        Uploaded{' '}
+                        <span className='badge badge-pill badge-success'>
+                          {userPackets.length}
+                        </span>{' '}
+                        items
+                      </div>
+                      <div className='mx-auto' style={{ textAlign: 'center' }}>
+                        <Rating
+                          value={userRating.rating}
+                          text={`${userRating.numReviews} reviews`}
+                        />
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            </SidebarHeader>
+            <SidebarContent className='mt-3'>
+              {/**************** Reviews Tab *******************/}
               {loadingUserPackets ? (
                 <Loader />
-              ) : userPacketsError ? null : (
-                userRating && (
-                  <div>
-                    <div className='mx-auto' style={{ textAlign: 'center' }}>
-                      {userRating.username}
-                    </div>
-                    <div className='mx-auto' style={{ textAlign: 'center' }}>
-                      Uploaded{' '}
-                      <span className='badge badge-pill badge-success'>
-                        {userPackets.length}
-                      </span>{' '}
-                      items
-                    </div>
-                    <div className='mx-auto' style={{ textAlign: 'center' }}>
-                      <Rating
-                        value={userRating.rating}
-                        text={`${userRating.numReviews} reviews`}
-                      />
-                    </div>
-                  </div>
-                )
+              ) : (
+                <ReviewsContainer reviews={userReviews} isProfile={true} />
               )}
-            </div>
-          </SidebarHeader>
-          <SidebarContent className='mt-3'>
-            {/**************** Reviews Tab *******************/}
+            </SidebarContent>
+          </ProSidebar>
+        </Col>
+        {/************************************* Main screen ***************************************/}
+        <Col xs={9}>
+          <Row>
             {loadingUserPackets ? (
               <Loader />
             ) : (
-              <ReviewsContainer reviews={userReviews} isProfile={true} />
-            )}
-          </SidebarContent>
-        </ProSidebar>
-
-        {/************************************* Main screen ***************************************/}
-        <Col className='pt-2'>
-          <Tabs defaultActiveKey='uploaded' transition={false}>
-            {/*************** Uploaded Tab *******************/}
-            <Tab eventKey='uploaded' title='Uploaded'>
-              <div className='p-2'>
-                {loadingUserPackets ? (
-                  <Loader />
-                ) : userPacketsError &&
-                  userPacketsError === 'No items uploaded' ? (
-                  <Alert variant='info'>{userPacketsError}</Alert>
-                ) : userPacketsError &&
-                  userPacketsError !== 'No items uploaded' ? (
-                  <Alert
-                    variant='danger'
-                    onClose={() => {
-                      handleUserPacketsErrorOnClose();
-                    }}
-                    dismissible={userPacketsError === 'No items uploaded'}
-                  >
-                    {userPacketsError}
-                  </Alert>
-                ) : (
-                  <Row>
-                    {userPackets && userPackets.length === 0 ? (
-                      <Col>
-                        <Alert variant='info'>No data packets uploaded</Alert>
-                      </Col>
-                    ) : null}
-                    {userPackets &&
-                      userPackets.map((packet) => (
-                        <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
-                          <Packet
-                            handler={updateHandler}
-                            packet={packet}
-                            isProfile={false}
-                          />
-                        </Col>
-                      ))}
-                  </Row>
-                )}
-              </div>
-            </Tab>
-            {/*************** Purchased Tab ******************/}
-            {!userDetails ? (
-              <Tab eventKey='purchased' title='Purchased'>
-                <div className='p-2'>
-                  {loadingUserAccess ? (
-                    <Loader />
-                  ) : userAccessError ? (
-                    <Alert
-                      variant='danger'
-                      onClose={() => {
-                        handleUserAccessErrorOnClose();
-                      }}
-                      dismissible
-                    >
-                      {userAccessError}{' '}
-                      {userAccessError === 'Not Authorised!' ? (
-                        <span>
-                          Try to Logout and Login again to refresh your access
-                          token
-                        </span>
+              <Tabs defaultActiveKey='uploaded' transition={false}>
+                {/*************** Uploaded Tab *******************/}
+                <Tab eventKey='uploaded' title='Uploaded'>
+                  <div className='p-2'>
+                    {userPacketsError &&
+                    userPacketsError === 'No items uploaded' ? (
+                      <Alert variant='info'>{userPacketsError}</Alert>
+                    ) : userPacketsError &&
+                      userPacketsError !== 'No items uploaded' ? (
+                      <Alert
+                        variant='danger'
+                        onClose={() => {
+                          handleUserPacketsErrorOnClose();
+                        }}
+                        dismissible={userPacketsError === 'No items uploaded'}
+                      >
+                        {userPacketsError}
+                      </Alert>
+                    ) : (
+                      <Row>
+                        {userPackets && userPackets.length === 0 ? (
+                          <Col>
+                            <Alert variant='info'>
+                              No data packets uploaded
+                            </Alert>
+                          </Col>
+                        ) : null}
+                        {userPackets &&
+                          userPackets.map((packet) => (
+                            <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
+                              <Packet
+                                handler={updateHandler}
+                                packet={packet}
+                                isProfile={true}
+                              />
+                            </Col>
+                          ))}
+                      </Row>
+                    )}
+                  </div>
+                </Tab>
+                {/*************** Purchased Tab ******************/}
+                {!userDetails ? (
+                  <Tab eventKey='purchased' title='Purchased'>
+                    <div className='p-2'>
+                      {loadingUserAccess ? (
+                        <Loader />
+                      ) : userAccessError ? (
+                        <Alert
+                          variant='danger'
+                          onClose={() => {
+                            handleUserAccessErrorOnClose();
+                          }}
+                          dismissible
+                        >
+                          {userAccessError}{' '}
+                          {userAccessError === 'Not Authorised!' ? (
+                            <span>
+                              Try to Logout and Login again to refresh your
+                              access token
+                            </span>
+                          ) : (
+                            ''
+                          )}
+                        </Alert>
                       ) : (
-                        ''
+                        <>
+                          <DataTable data={userAccess} />
+                        </>
                       )}
-                    </Alert>
-                  ) : (
-                    <>
-                      <DataTable data={userAccess} />
-                    </>
-                  )}
-                </div>
-              </Tab>
-            ) : null}
-          </Tabs>
+                    </div>
+                  </Tab>
+                ) : null}
+              </Tabs>
+            )}
+          </Row>
         </Col>
       </Row>
     </>
