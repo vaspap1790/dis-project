@@ -179,6 +179,9 @@ input[type='checkbox']:hover {
 
 #applyFilter > div > span {
   background-color: #1f9bcf !important;
+}
+
+.pro-inner-item {
   color: white !important;
 }
 

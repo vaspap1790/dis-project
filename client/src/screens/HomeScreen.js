@@ -93,6 +93,7 @@ const HomeScreen = ({ match, history }) => {
               <p>
                 <Button
                   className='btn-primary'
+                  title='Learn more about Data Dapp'
                   onClick={() => history.push('/aboutUs')}
                 >
                   Learn more
@@ -149,7 +150,7 @@ const HomeScreen = ({ match, history }) => {
                       }}
                     >
                       {!collapsed ? <span>Filters</span> : null}
-                      <span>
+                      <span title='Collapse Sidebar'>
                         <Switch
                           height={16}
                           width={30}
@@ -176,7 +177,7 @@ const HomeScreen = ({ match, history }) => {
                     {collapsed ? (
                       <Menu iconShape='circle'>
                         <SubMenu icon={<FaStar />}>
-                          <MenuItem>
+                          <MenuItem title='Packets rated with 1 star'>
                             <Form.Check
                               type='checkbox'
                               className='link-icon'
@@ -188,7 +189,7 @@ const HomeScreen = ({ match, history }) => {
                               }
                             />
                           </MenuItem>
-                          <MenuItem>
+                          <MenuItem title='Packets rated with 2 stars'>
                             <Form.Check
                               type='checkbox'
                               className='link-icon'
@@ -196,7 +197,7 @@ const HomeScreen = ({ match, history }) => {
                               label={<Rating value={2} />}
                             />
                           </MenuItem>
-                          <MenuItem>
+                          <MenuItem title='Packets rated with 3 stars'>
                             <Form.Check
                               type='checkbox'
                               className='link-icon'
@@ -204,7 +205,7 @@ const HomeScreen = ({ match, history }) => {
                               label={<Rating value={3} />}
                             />
                           </MenuItem>
-                          <MenuItem>
+                          <MenuItem title='Packets rated with 4 stars'>
                             <Form.Check
                               type='checkbox'
                               className='link-icon'
@@ -212,7 +213,7 @@ const HomeScreen = ({ match, history }) => {
                               label={<Rating value={4} />}
                             />
                           </MenuItem>
-                          <MenuItem>
+                          <MenuItem title='Packets rated with 5 stars'>
                             <Form.Check
                               type='checkbox'
                               className='link-icon'
@@ -226,7 +227,7 @@ const HomeScreen = ({ match, history }) => {
                       <Menu>
                         <MenuItem>
                           <div className='d-flex align-items-center justify-content-between'>
-                            <span>Ratings</span>
+                            <span style={{ color: '#adadad' }}>Ratings</span>
                             <Button
                               variant='info'
                               className='btn-sm'
@@ -236,7 +237,7 @@ const HomeScreen = ({ match, history }) => {
                             </Button>
                           </div>
                         </MenuItem>
-                        <MenuItem>
+                        <MenuItem title='Packets rated with 1 star'>
                           <Form.Check
                             type='checkbox'
                             className='link-icon'
@@ -254,7 +255,7 @@ const HomeScreen = ({ match, history }) => {
                             }
                           />
                         </MenuItem>
-                        <MenuItem>
+                        <MenuItem title='Packets rated with 2 stars'>
                           <Form.Check
                             type='checkbox'
                             className='link-icon'
@@ -272,7 +273,7 @@ const HomeScreen = ({ match, history }) => {
                             }
                           />
                         </MenuItem>
-                        <MenuItem>
+                        <MenuItem title='Packets rated with 3 stars'>
                           <Form.Check
                             type='checkbox'
                             className='link-icon'
@@ -290,7 +291,7 @@ const HomeScreen = ({ match, history }) => {
                             }
                           />
                         </MenuItem>
-                        <MenuItem>
+                        <MenuItem title='Packets rated with 4 stars'>
                           <Form.Check
                             type='checkbox'
                             className='link-icon'
@@ -308,7 +309,7 @@ const HomeScreen = ({ match, history }) => {
                             }
                           />
                         </MenuItem>
-                        <MenuItem>
+                        <MenuItem title='Packets rated with 5 stars'>
                           <Form.Check
                             type='checkbox'
                             className='link-icon'
@@ -391,7 +392,9 @@ const HomeScreen = ({ match, history }) => {
                       </Menu>
                     ) : (
                       <Menu>
-                        <MenuItem>Price Range</MenuItem>
+                        <MenuItem>
+                          <span style={{ color: '#adadad' }}>Price Range</span>
+                        </MenuItem>
                         <MenuItem>
                           <Row className='d-flex align-items-center'>
                             <Col xs={2}>From:</Col>

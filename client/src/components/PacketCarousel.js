@@ -26,7 +26,7 @@ const PacketCarousel = () => {
   ) : (
     <Carousel pause='hover' className='bg-dark'>
       {packets.map((packet) => (
-        <Carousel.Item key={packet._id}>
+        <Carousel.Item key={packet._id} title={packet.name}>
           <Link to={`/packet/${packet._id}`}>
             <Image src={packet.image} alt={packet.name} fluid />
             <Carousel.Caption className='carousel-caption'>

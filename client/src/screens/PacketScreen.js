@@ -82,6 +82,20 @@ const PacketScreen = ({ history, match }) => {
             >
               Watch <i className='fas fa-eye'></i>
             </Button>
+            <Button
+              onClick={addToCartHandler}
+              className='btn btn-success mr-1'
+              disabled={cartItems.find(
+                (cartItem) => cartItem.packet === packet._id
+              )}
+              title={
+                cartItems.find((cartItem) => cartItem.packet === packet._id)
+                  ? 'You have already added this item to your Cart'
+                  : 'Add this item to your Cart'
+              }
+            >
+              Cart <i className='fas fa-shopping-cart'></i>
+            </Button>
             <Meta title={packet.name} />
           </>
         )}
@@ -94,7 +108,7 @@ const PacketScreen = ({ history, match }) => {
       ) : (
         <>
           <Row>
-            <Col md={6} className='pr-0'>
+            <Col md={6} className='px-0'>
               {packet.sample !== '' ? (
                 <div>
                   <ReactQuill
@@ -116,73 +130,32 @@ const PacketScreen = ({ history, match }) => {
                 />
               )}
             </Col>
-            <Col md={6}>
+            <Col md={6} className='px-0'>
               <Row className='d-flex'>
-                <Col
-                  md={{ span: 12, order: 'last' }}
-                  lg={{ span: 6, order: 'first' }}
-                  className='pr-0'
-                >
-                  <ListGroup variant='flush'>
-                    <ListGroup.Item>
-                      <h3>{packet.name}</h3>
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      <Rating
-                        value={packet.rating}
-                        text={`${packet.numReviews} reviews`}
-                      />
-                    </ListGroup.Item>
-                    <ListGroup.Item>Category: {packet.category}</ListGroup.Item>
-                    <ListGroup.Item>
-                      Description: {packet.description}
-                    </ListGroup.Item>
-                  </ListGroup>
-                </Col>
-                <Col
-                  md={{ span: 12, order: 'first' }}
-                  lg={{ span: 6, order: 'last' }}
-                >
-                  <Card>
-                    <ListGroup variant='flush'>
-                      <ListGroup.Item>
-                        <Row>
-                          <Col>Price:</Col>
-                          <Col>
-                            <i className='fab fa-ethereum'></i>
-                            {packet.price}
-                          </Col>
-                        </Row>
-                      </ListGroup.Item>
-                      <ListGroup.Item>
-                        <Button
-                          onClick={addToCartHandler}
-                          className='btn-block'
-                          type='button'
-                          disabled={cartItems.find(
-                            (cartItem) => cartItem.packet === packet._id
-                          )}
-                          title={
-                            cartItems.find(
-                              (cartItem) => cartItem.packet === packet._id
-                            )
-                              ? 'You have already added this item to your Cart'
-                              : 'Add this item to your Cart'
-                          }
-                        >
-                          Add to Cart
-                        </Button>
-                      </ListGroup.Item>
-                    </ListGroup>
-                  </Card>
-                </Col>
+                <ListGroup variant='flush'>
+                  <ListGroup.Item>
+                    <h3>{packet.name}</h3>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    Price: <i className='fab fa-ethereum'></i>
+                    {packet.price}
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <Rating
+                      value={packet.rating}
+                      text={`${packet.numReviews} reviews`}
+                    />
+                  </ListGroup.Item>
+                  <ListGroup.Item>Category: {packet.category}</ListGroup.Item>
+                  <ListGroup.Item>
+                    Description: {packet.description}
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <h2>Reviews</h2>
+                    <ReviewsContainer reviews={reviews} />
+                  </ListGroup.Item>
+                </ListGroup>
               </Row>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={6}>
-              <h2>Reviews</h2>
-              <ReviewsContainer reviews={reviews} />
             </Col>
           </Row>
         </>
