@@ -1,16 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Row,
-  Col,
-  Alert,
-  Button,
-  Jumbotron,
-  Form,
-  OverlayTrigger,
-  Tooltip,
-  Container
-} from 'react-bootstrap';
+import { Row, Col, Alert, Button, Jumbotron, Form } from 'react-bootstrap';
 import Switch from 'react-switch';
 import Packet from '../components/Packet';
 import Loader from '../components/Loader';
@@ -23,10 +13,9 @@ import {
   MenuItem,
   SubMenu,
   SidebarHeader,
-  SidebarFooter,
   SidebarContent
 } from 'react-pro-sidebar';
-import { FaTachometerAlt, FaGem, FaEthereum, FaStar } from 'react-icons/fa';
+import { FaEthereum, FaStar } from 'react-icons/fa';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { listPackets } from '../actions/packetActions';
 import Rating from '../components/Rating';
@@ -48,7 +37,8 @@ const HomeScreen = ({ match, history }) => {
   const { loading, error, packets, pages, page } = packetList;
 
   // Component level state
-  const [priceRange, setPriceRange] = useState({ min: 2, max: 10 });
+  const [priceFrom, setPriceFrom] = useState(0);
+  const [priceTo, setPriceTo] = useState(500);
   const [collapsed, setCollapsed] = useState(false);
   const [toggled, setToggled] = useState(false);
 
@@ -75,12 +65,14 @@ const HomeScreen = ({ match, history }) => {
     <>
       <Meta />
       {!keyword ? (
-        <Row>
+        <Row className='mb-1'>
+          {/********************************** Carousel *************************************/}
           <Col sm={7}>
             <PacketCarousel />
           </Col>
+          {/********************************** Jumbotron ************************************/}
           <Col sm={5}>
-            <Jumbotron style={{ marginBottom: '-10rem' }} className='py-4'>
+            <Jumbotron className='py-4 mb-n5'>
               <h1 style={{ zIndex: 5, position: 'relative' }}>
                 Welcome to Data Dapp, people of Ethereum{' '}
                 <i className='fab fa-ethereum eth-jumbo fa-10x'></i>
@@ -114,7 +106,7 @@ const HomeScreen = ({ match, history }) => {
           Go Back
         </Button>
       )}
-      <h1 className='mb-0 pt-4 pb-0'>Explore Data Packets</h1>
+      <h1 className='mb-1 pt-4 pb-0'>Explore Data Packets</h1>
       {loading ? (
         <Loader />
       ) : error ? (
@@ -124,61 +116,121 @@ const HomeScreen = ({ match, history }) => {
       ) : (
         <>
           <Row>
-            <div className={`app ${toggled ? 'toggled' : ''}`}>
-              <ProSidebar
-                className='mt-3'
-                style={{ height: '100vh' }}
-                collapsed={collapsed}
-                toggled={toggled}
-                breakPoint='md'
-                onToggle={handleToggleSidebar}
+            {/********************************** Sidebar *************************************/}
+            <Col sm={collapsed ? 1 : 3}>
+              <div
+                className={`app ${toggled ? 'toggled' : ''}`}
+                style={{ height: '100%' }}
               >
-                <SidebarHeader>
-                  <div
-                    className={`d-flex align-items-center ${
-                      collapsed
-                        ? 'justify-content-start'
-                        : 'justify-content-between'
-                    }`}
-                    style={{
-                      padding: '24px',
-                      textTransform: 'uppercase',
-                      fontWeight: 'bold',
-                      fontSize: 14,
-                      letterSpacing: '1px',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    {!collapsed ? <span>Filters</span> : null}
-                    <span>
-                      <Switch
-                        height={16}
-                        width={30}
-                        checkedIcon={false}
-                        uncheckedIcon={false}
-                        onChange={handleCollapsedChange}
-                        checked={collapsed}
-                        onColor='#219de9'
-                        offColor='#bbbbbb'
-                      />
-                    </span>
-                  </div>
-                </SidebarHeader>
-                <SidebarContent className='my-3'>
-                  {collapsed ? (
-                    <Menu iconShape='circle'>
-                      <SubMenu icon={<FaStar />}>
+                <ProSidebar
+                  className='mt-3'
+                  collapsed={collapsed}
+                  toggled={toggled}
+                  breakPoint='md'
+                  onToggle={handleToggleSidebar}
+                  style={collapsed ? null : { width: 'inherit' }}
+                >
+                  <SidebarHeader>
+                    <div
+                      className={`d-flex align-items-center ${
+                        collapsed
+                          ? 'justify-content-start'
+                          : 'justify-content-between'
+                      }`}
+                      style={{
+                        padding: '24px',
+                        textTransform: 'uppercase',
+                        fontWeight: 'bold',
+                        fontSize: 14,
+                        letterSpacing: '1px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      {!collapsed ? <span>Filters</span> : null}
+                      <span>
+                        <Switch
+                          height={16}
+                          width={30}
+                          checkedIcon={false}
+                          uncheckedIcon={false}
+                          onChange={handleCollapsedChange}
+                          checked={collapsed}
+                          onColor='#219de9'
+                          offColor='#bbbbbb'
+                        />
+                      </span>
+                    </div>
+                  </SidebarHeader>
+                  <SidebarContent className='my-3'>
+                    {collapsed ? (
+                      <Menu iconShape='circle'>
+                        <SubMenu icon={<FaStar />}>
+                          <MenuItem>
+                            <Form.Check
+                              type='checkbox'
+                              className='link-icon'
+                              id='1'
+                              label={
+                                <span>
+                                  <Rating value={1} />
+                                </span>
+                              }
+                            />
+                          </MenuItem>
+                          <MenuItem>
+                            <Form.Check
+                              type='checkbox'
+                              className='link-icon'
+                              id='2'
+                              label={<Rating value={2} />}
+                            />
+                          </MenuItem>
+                          <MenuItem>
+                            <Form.Check
+                              type='checkbox'
+                              className='link-icon'
+                              id='3'
+                              label={<Rating value={3} />}
+                            />
+                          </MenuItem>
+                          <MenuItem>
+                            <Form.Check
+                              type='checkbox'
+                              className='link-icon'
+                              id='4'
+                              label={<Rating value={4} />}
+                            />
+                          </MenuItem>
+                          <MenuItem>
+                            <Form.Check
+                              type='checkbox'
+                              className='link-icon'
+                              id='5'
+                              label={<Rating value={5} />}
+                            />
+                          </MenuItem>
+                        </SubMenu>
+                      </Menu>
+                    ) : (
+                      <Menu>
+                        <MenuItem>Ratings</MenuItem>
                         <MenuItem>
                           <Form.Check
                             type='checkbox'
                             className='link-icon'
                             id='1'
                             label={
-                              <span>
+                              <>
+                                <span
+                                  style={{
+                                    width: '2rem',
+                                    display: 'inline-block'
+                                  }}
+                                ></span>
                                 <Rating value={1} />
-                              </span>
+                              </>
                             }
                           />
                         </MenuItem>
@@ -187,7 +239,17 @@ const HomeScreen = ({ match, history }) => {
                             type='checkbox'
                             className='link-icon'
                             id='2'
-                            label={<Rating value={2} />}
+                            label={
+                              <>
+                                <span
+                                  style={{
+                                    width: '2rem',
+                                    display: 'inline-block'
+                                  }}
+                                ></span>
+                                <Rating value={2} />
+                              </>
+                            }
                           />
                         </MenuItem>
                         <MenuItem>
@@ -195,7 +257,17 @@ const HomeScreen = ({ match, history }) => {
                             type='checkbox'
                             className='link-icon'
                             id='3'
-                            label={<Rating value={3} />}
+                            label={
+                              <>
+                                <span
+                                  style={{
+                                    width: '2rem',
+                                    display: 'inline-block'
+                                  }}
+                                ></span>
+                                <Rating value={3} />
+                              </>
+                            }
                           />
                         </MenuItem>
                         <MenuItem>
@@ -203,7 +275,17 @@ const HomeScreen = ({ match, history }) => {
                             type='checkbox'
                             className='link-icon'
                             id='4'
-                            label={<Rating value={4} />}
+                            label={
+                              <>
+                                <span
+                                  style={{
+                                    width: '2rem',
+                                    display: 'inline-block'
+                                  }}
+                                ></span>
+                                <Rating value={4} />
+                              </>
+                            }
                           />
                         </MenuItem>
                         <MenuItem>
@@ -211,193 +293,158 @@ const HomeScreen = ({ match, history }) => {
                             type='checkbox'
                             className='link-icon'
                             id='5'
-                            label={<Rating value={5} />}
+                            label={
+                              <>
+                                <span
+                                  style={{
+                                    width: '2rem',
+                                    display: 'inline-block'
+                                  }}
+                                ></span>
+                                <Rating value={5} />
+                              </>
+                            }
                           />
                         </MenuItem>
-                      </SubMenu>
-                    </Menu>
-                  ) : (
-                    <Menu>
-                      <MenuItem>Ratings</MenuItem>
-                      <MenuItem>
-                        <Form.Check
-                          type='checkbox'
-                          className='link-icon'
-                          id='1'
-                          label={
-                            <>
-                              <span
-                                style={{
-                                  width: '2rem',
-                                  display: 'inline-block'
-                                }}
-                              ></span>
-                              <Rating value={1} />
-                            </>
-                          }
-                        />
-                      </MenuItem>
-                      <MenuItem>
-                        <Form.Check
-                          type='checkbox'
-                          className='link-icon'
-                          id='2'
-                          label={
-                            <>
-                              <span
-                                style={{
-                                  width: '2rem',
-                                  display: 'inline-block'
-                                }}
-                              ></span>
-                              <Rating value={2} />
-                            </>
-                          }
-                        />
-                      </MenuItem>
-                      <MenuItem>
-                        <Form.Check
-                          type='checkbox'
-                          className='link-icon'
-                          id='3'
-                          label={
-                            <>
-                              <span
-                                style={{
-                                  width: '2rem',
-                                  display: 'inline-block'
-                                }}
-                              ></span>
-                              <Rating value={3} />
-                            </>
-                          }
-                        />
-                      </MenuItem>
-                      <MenuItem>
-                        <Form.Check
-                          type='checkbox'
-                          className='link-icon'
-                          id='4'
-                          label={
-                            <>
-                              <span
-                                style={{
-                                  width: '2rem',
-                                  display: 'inline-block'
-                                }}
-                              ></span>
-                              <Rating value={4} />
-                            </>
-                          }
-                        />
-                      </MenuItem>
-                      <MenuItem>
-                        <Form.Check
-                          type='checkbox'
-                          className='link-icon'
-                          id='5'
-                          label={
-                            <>
-                              <span
-                                style={{
-                                  width: '2rem',
-                                  display: 'inline-block'
-                                }}
-                              ></span>
-                              <Rating value={5} />
-                            </>
-                          }
-                        />
-                      </MenuItem>
-                    </Menu>
-                  )}
+                      </Menu>
+                    )}
 
-                  {collapsed ? (
-                    <Menu iconShape='circle'>
-                      <SubMenu icon={<FaEthereum />}>
+                    {collapsed ? (
+                      <Menu iconShape='circle'>
+                        <SubMenu icon={<FaEthereum />}>
+                          <MenuItem>
+                            <Row className='d-flex align-items-center'>
+                              <Col xs={2}>From:</Col>
+                              <Col xs={4}>
+                                <Form.Control
+                                  readOnly
+                                  title='From'
+                                  value={priceFrom}
+                                  className='p-1'
+                                  style={{ height: '2rem' }}
+                                />
+                              </Col>
+                              <Col xs={1}>To:</Col>
+                              <Col xs={4}>
+                                <Form.Control
+                                  readOnly
+                                  title='To'
+                                  value={priceTo}
+                                  className='p-1'
+                                  style={{ height: '2rem' }}
+                                />
+                              </Col>
+                              <Col xs={1}></Col>
+                            </Row>
+                            <Row>
+                              <div className='sliderArea-collapsed mt-5'>
+                                <Range
+                                  marks={{
+                                    100: (
+                                      <>
+                                        <i className='fab fa-ethereum'></i>100
+                                      </>
+                                    ),
+                                    500: (
+                                      <>
+                                        <i className='fab fa-ethereum'></i>500
+                                      </>
+                                    )
+                                  }}
+                                  min={100}
+                                  max={500}
+                                  defaultValue={[200, 300]}
+                                  tipProps={{
+                                    placement: 'top',
+                                    visible: false
+                                  }}
+                                />
+                              </div>
+                            </Row>
+                          </MenuItem>
+                        </SubMenu>
+                      </Menu>
+                    ) : (
+                      <Menu>
+                        <MenuItem>Price Range</MenuItem>
                         <MenuItem>
-                          <div className='sliderArea-collapsed mt-5'>
+                          <Row className='d-flex align-items-center'>
+                            <Col xs={2}>From:</Col>
+                            <Col xs={4}>
+                              <Form.Control
+                                readOnly
+                                title='From'
+                                value={priceFrom}
+                                className='p-1'
+                                style={{ height: '2rem' }}
+                              />
+                            </Col>
+                            <Col xs={1}>To:</Col>
+                            <Col xs={4}>
+                              <Form.Control
+                                readOnly
+                                title='To'
+                                value={priceTo}
+                                className='p-1'
+                                style={{ height: '2rem' }}
+                              />
+                            </Col>
+                            <Col xs={1}></Col>
+                          </Row>
+                        </MenuItem>
+                        <MenuItem>
+                          <div className='sliderArea mt-2'>
                             <Range
                               marks={{
                                 100: (
-                                  <>
+                                  <span style={{ textAlign: 'right' }}>
                                     <i className='fab fa-ethereum'></i>100
-                                  </>
+                                  </span>
                                 ),
                                 500: (
-                                  <>
+                                  <span style={{ textAlign: 'left' }}>
                                     <i className='fab fa-ethereum'></i>500
-                                  </>
+                                  </span>
                                 )
                               }}
                               min={100}
                               max={500}
-                              defaultValue={[200, 300]}
-                              tipFormatter={(value) => (
-                                <>
-                                  <i className='fab fa-ethereum'></i>
-                                  {value}
-                                </>
-                              )}
+                              defaultValue={[0, 0]}
                               tipProps={{
                                 placement: 'top',
-                                visible: true
+                                visible: false
+                              }}
+                              onChange={(value) => {
+                                setPriceFrom(value[0]);
+                                setPriceTo(value[1]);
                               }}
                             />
                           </div>
                         </MenuItem>
-                      </SubMenu>
-                    </Menu>
-                  ) : (
-                    <Menu>
-                      <MenuItem>Price Range</MenuItem>
-                      <MenuItem>
-                        <div className='sliderArea mt-5'>
-                          <Range
-                            marks={{
-                              100: (
-                                <span style={{ textAlign: 'right' }}>
-                                  <i className='fab fa-ethereum'></i>100
-                                </span>
-                              ),
-                              500: (
-                                <span style={{ textAlign: 'left' }}>
-                                  <i className='fab fa-ethereum'></i>500
-                                </span>
-                              )
-                            }}
-                            min={100}
-                            max={500}
-                            defaultValue={[200, 300]}
-                            tipFormatter={(value) => (
-                              <>
-                                <i className='fab fa-ethereum'></i>
-                                {value}
-                              </>
-                            )}
-                            tipProps={{
-                              placement: 'top',
-                              visible: true
-                            }}
-                          />
-                        </div>
-                      </MenuItem>
-                    </Menu>
-                  )}
-                </SidebarContent>
-              </ProSidebar>
-            </div>
-            {packets.map((packet) => (
-              <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
-                <Packet packet={packet} isProfile={true} />
-              </Col>
-            ))}
+                      </Menu>
+                    )}
+                  </SidebarContent>
+                </ProSidebar>
+              </div>
+            </Col>
+            {/********************************** Packets *************************************/}
+            <Col sm={collapsed ? 11 : 9}>
+              <Row>
+                {packets.map((packet) => (
+                  <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
+                    <Packet packet={packet} isProfile={true} />
+                  </Col>
+                ))}
+              </Row>
+            </Col>
           </Row>
-          <Paginate
-            pages={pages}
-            page={page}
-            keyword={keyword ? keyword : ''}
-          />
+          <Row className='mt-5'>
+            <Paginate
+              pages={pages}
+              page={page}
+              keyword={keyword ? keyword : ''}
+            />
+          </Row>
         </>
       )}
     </>

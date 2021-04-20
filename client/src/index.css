@@ -128,6 +128,26 @@ input[type='checkbox']:hover {
   }
 }
 
+.sliderArea {
+  width: 240px;
+  height: 30px;
+  margin: 0 auto;
+}
+
+.sliderArea-collapsed {
+  width: 160px;
+  height: 30px;
+  margin: 0 auto;
+}
+
+.rc-slider-mark-text {
+  width: fit-content !important;
+}
+
+.rc-slider-tooltip {
+  visibility: hidden !important;
+}
+
 /* Profile Screen */
 .nav-item {
   margin: 0rem;
@@ -242,26 +262,6 @@ input[type='checkbox']:hover {
 /* Packet Form Screen */
 .uploadsTableHeaders {
   border-color: #fff !important;
-}
-
-.sliderArea {
-  width: 180px;
-  height: 30px;
-  margin: 0 auto;
-}
-
-.sliderArea-collapsed {
-  width: 100px;
-  height: 30px;
-  margin: 0 auto;
-}
-
-.rc-slider-mark-text {
-  width: fit-content !important;
-}
-
-.rc-slider-tooltip-inner {
-  width: fit-content !important;
 }
 
 /* Slider */
