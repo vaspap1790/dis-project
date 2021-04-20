@@ -15,7 +15,7 @@ import {
   SidebarHeader,
   SidebarContent
 } from 'react-pro-sidebar';
-import { FaEthereum, FaStar } from 'react-icons/fa';
+import { FaEthereum, FaStar, FaFilter } from 'react-icons/fa';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { listPackets } from '../actions/packetActions';
 import Rating from '../components/Rating';
@@ -117,7 +117,7 @@ const HomeScreen = ({ match, history }) => {
         <>
           <Row>
             {/********************************** Sidebar *************************************/}
-            <Col sm={collapsed ? 1 : 3}>
+            <Col sm={collapsed ? 1 : 3} style={{ overflow: 'hidden' }}>
               <div
                 className={`app ${toggled ? 'toggled' : ''}`}
                 style={{ height: '100%' }}
@@ -163,7 +163,16 @@ const HomeScreen = ({ match, history }) => {
                       </span>
                     </div>
                   </SidebarHeader>
-                  <SidebarContent className='my-3'>
+                  <SidebarContent className='mt-3'>
+                    {collapsed ? (
+                      <Menu iconShape='circle'>
+                        <MenuItem
+                          id='applyFilter'
+                          icon={<FaFilter />}
+                          title='Apply the filters'
+                        ></MenuItem>
+                      </Menu>
+                    ) : null}
                     {collapsed ? (
                       <Menu iconShape='circle'>
                         <SubMenu icon={<FaStar />}>
@@ -215,7 +224,18 @@ const HomeScreen = ({ match, history }) => {
                       </Menu>
                     ) : (
                       <Menu>
-                        <MenuItem>Ratings</MenuItem>
+                        <MenuItem>
+                          <div className='d-flex align-items-center justify-content-between'>
+                            <span>Ratings</span>
+                            <Button
+                              variant='info'
+                              className='btn-sm'
+                              title='Apply the filters'
+                            >
+                              Apply <i className='fas fa-filter'></i>
+                            </Button>
+                          </div>
+                        </MenuItem>
                         <MenuItem>
                           <Form.Check
                             type='checkbox'
@@ -314,8 +334,8 @@ const HomeScreen = ({ match, history }) => {
                         <SubMenu icon={<FaEthereum />}>
                           <MenuItem>
                             <Row className='d-flex align-items-center'>
-                              <Col xs={2}>From:</Col>
-                              <Col xs={4}>
+                              <Col>From:</Col>
+                              <Col>
                                 <Form.Control
                                   readOnly
                                   title='From'
@@ -324,8 +344,10 @@ const HomeScreen = ({ match, history }) => {
                                   style={{ height: '2rem' }}
                                 />
                               </Col>
-                              <Col xs={1}>To:</Col>
-                              <Col xs={4}>
+                            </Row>
+                            <Row className='d-flex align-items-center mt-1'>
+                              <Col>To:</Col>
+                              <Col>
                                 <Form.Control
                                   readOnly
                                   title='To'
@@ -334,7 +356,6 @@ const HomeScreen = ({ match, history }) => {
                                   style={{ height: '2rem' }}
                                 />
                               </Col>
-                              <Col xs={1}></Col>
                             </Row>
                             <Row>
                               <div className='sliderArea-collapsed mt-5'>
@@ -357,6 +378,10 @@ const HomeScreen = ({ match, history }) => {
                                   tipProps={{
                                     placement: 'top',
                                     visible: false
+                                  }}
+                                  onChange={(value) => {
+                                    setPriceFrom(value[0]);
+                                    setPriceTo(value[1]);
                                   }}
                                 />
                               </div>
@@ -438,7 +463,7 @@ const HomeScreen = ({ match, history }) => {
               </Row>
             </Col>
           </Row>
-          <Row className='mt-5'>
+          <Row className='d-flex justify-content-end'>
             <Paginate
               pages={pages}
               page={page}

@@ -130,7 +130,7 @@ input[type='checkbox']:hover {
 
 .sliderArea {
   width: 240px;
-  height: 30px;
+  height: 50px;
   margin: 0 auto;
 }
 
@@ -146,6 +146,34 @@ input[type='checkbox']:hover {
 
 .rc-slider-tooltip {
   visibility: hidden !important;
+}
+
+.rc-slider-track {
+  background-color: #1f9bcf !important;
+}
+
+.rc-slider-handle-dragging {
+  box-shadow: 0 0 0 5px #1f9bcf !important;
+}
+
+.rc-slider-handle {
+  cursor: pointer !important;
+  border-radius: 0% !important;
+  border: solid 2px #1f9bcf !important;
+}
+
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  padding: 6px 0px;
+  border-radius: 15px;
+  font-size: 8px;
+  text-align: center;
+}
+
+#applyFilter > div > span {
+  background-color: #1f9bcf !important;
+  color: white !important;
 }
 
 /* Profile Screen */
