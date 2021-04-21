@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Alert, Button, Jumbotron, Form } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Alert,
+  Button,
+  Jumbotron,
+  Form,
+  Dropdown,
+  DropdownButton
+} from 'react-bootstrap';
 import Switch from 'react-switch';
 import Packet from '../components/Packet';
 import Loader from '../components/Loader';
@@ -41,6 +50,7 @@ const HomeScreen = ({ match, history }) => {
   const [priceTo, setPriceTo] = useState(500);
   const [collapsed, setCollapsed] = useState(false);
   const [toggled, setToggled] = useState(false);
+  const [sorting, setSorting] = useState('dateDesc');
 
   // Hook that triggers when component did mount
   useEffect(() => {
@@ -107,7 +117,7 @@ const HomeScreen = ({ match, history }) => {
           Go Back
         </Button>
       )}
-      <h1 className='mb-1 pt-4 pb-0'>Explore Data Packets</h1>
+      <h1 className='mb-3 mt-2 pt-4 pb-0'>Explore Data Packets</h1>
       {loading ? (
         <Loader />
       ) : error ? (
@@ -461,7 +471,100 @@ const HomeScreen = ({ match, history }) => {
             </Col>
             {/********************************** Packets *************************************/}
             <Col sm={collapsed ? 11 : 9}>
-              <Row>
+              <Row className='mx-0 align-items-center'>
+                <Col xs={2}>
+                  <Row>
+                    <DropdownButton
+                      id='dropdown-item-button'
+                      title='Sorting'
+                      variant='light'
+                    >
+                      <Dropdown.Item
+                        as='button'
+                        value='dateDesc'
+                        style={
+                          sorting === 'dateDesc'
+                            ? { backgroundColor: '#1f9bcf', color: 'white' }
+                            : null
+                        }
+                        onClick={() => setSorting('dateDesc')}
+                      >
+                        Date &#x2193;
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        as='button'
+                        value='dateAsc'
+                        style={
+                          sorting === 'dateAsc'
+                            ? { backgroundColor: '#1f9bcf', color: 'white' }
+                            : null
+                        }
+                        onClick={() => setSorting('dateAsc')}
+                      >
+                        Date &#x2191;
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        as='button'
+                        value='ratingDesc'
+                        style={
+                          sorting === 'ratingDesc'
+                            ? { backgroundColor: '#1f9bcf', color: 'white' }
+                            : null
+                        }
+                        onClick={() => setSorting('ratingDesc')}
+                      >
+                        Rating &#x2193;
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        as='button'
+                        value='ratingAsc'
+                        style={
+                          sorting === 'ratingAsc'
+                            ? { backgroundColor: '#1f9bcf', color: 'white' }
+                            : null
+                        }
+                        onClick={() => setSorting('ratingAsc')}
+                      >
+                        Rating &#x2191;
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        as='button'
+                        value='priceDesc'
+                        style={
+                          sorting === 'priceDesc'
+                            ? { backgroundColor: '#1f9bcf', color: 'white' }
+                            : null
+                        }
+                        onClick={() => setSorting('priceDesc')}
+                      >
+                        Price &#x2193;
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        as='button'
+                        value='priceAsc'
+                        style={
+                          sorting === 'priceAsc'
+                            ? { backgroundColor: '#1f9bcf', color: 'white' }
+                            : null
+                        }
+                        onClick={() => setSorting('priceAsc')}
+                      >
+                        Price &#x2191;
+                      </Dropdown.Item>
+                    </DropdownButton>
+                  </Row>
+                </Col>
+                <Col xs={10}>
+                  <Row className='d-flex justify-content-end'>
+                    <Paginate
+                      pages={pages}
+                      page={page}
+                      keyword={keyword ? keyword : ''}
+                    />
+                  </Row>
+                </Col>
+              </Row>
+              <Row className='align-items-center'>
                 {packets.map((packet) => (
                   <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
                     <Packet packet={packet} />
@@ -470,7 +573,7 @@ const HomeScreen = ({ match, history }) => {
               </Row>
             </Col>
           </Row>
-          <Row className='d-flex justify-content-end'>
+          <Row className='d-flex justify-content-end mx-0'>
             <Paginate
               pages={pages}
               page={page}
