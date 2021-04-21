@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Moment from 'react-moment';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Button, Card } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import Rating from './Rating';
 import ModalComponent from '../components/ModalComponent';
 import { prelistPacketDetails, addToWatchlist } from '../actions/packetActions';

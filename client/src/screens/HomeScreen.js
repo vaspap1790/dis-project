@@ -397,7 +397,9 @@ const HomeScreen = ({ match, history }) => {
                         </MenuItem>
                         <MenuItem>
                           <Row className='d-flex align-items-center'>
-                            <Col xs={2}>From:</Col>
+                            <Col xs={2}>
+                              <span style={{ color: '#adadad' }}>From:</span>:
+                            </Col>
                             <Col xs={4}>
                               <Form.Control
                                 readOnly
@@ -407,7 +409,9 @@ const HomeScreen = ({ match, history }) => {
                                 style={{ height: '2rem' }}
                               />
                             </Col>
-                            <Col xs={1}>To:</Col>
+                            <Col xs={1}>
+                              <span style={{ color: '#adadad' }}>To:</span>
+                            </Col>
                             <Col xs={4}>
                               <Form.Control
                                 readOnly

@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Row,
-  Col,
-  Image,
-  ListGroup,
-  Card,
-  Button,
-  Alert
-} from 'react-bootstrap';
+import { Row, Col, Image, ListGroup, Button, Alert } from 'react-bootstrap';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
 import ModalComponent from '../components/ModalComponent';
