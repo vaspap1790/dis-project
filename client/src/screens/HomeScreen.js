@@ -46,11 +46,21 @@ const HomeScreen = ({ match, history }) => {
   const { loading, error, packets, pages, page } = packetList;
 
   // Component level state
-  const [priceFrom, setPriceFrom] = useState(0);
-  const [priceTo, setPriceTo] = useState(500);
   const [collapsed, setCollapsed] = useState(false);
   const [toggled, setToggled] = useState(false);
+
   const [sorting, setSorting] = useState('dateDesc');
+
+  const [filters, setFilters] = useState({});
+
+  const [rating1, setRating1] = useState(false);
+  const [rating2, setRating2] = useState(false);
+  const [rating3, setRating3] = useState(false);
+  const [rating4, setRating4] = useState(false);
+  const [rating5, setRating5] = useState(false);
+
+  const [priceFrom, setPriceFrom] = useState(0);
+  const [priceTo, setPriceTo] = useState(500);
 
   // Hook that triggers when component did mount
   useEffect(() => {
@@ -64,6 +74,10 @@ const HomeScreen = ({ match, history }) => {
 
   const handleToggleSidebar = (value) => {
     setToggled(value);
+  };
+
+  const applyFilters = () => {
+    console.log('FILTERS');
   };
 
   const goBack = () => {
@@ -181,14 +195,17 @@ const HomeScreen = ({ match, history }) => {
                           id='applyFilter'
                           icon={<FaFilter />}
                           title='Apply the filters'
+                          onClick={applyFilters}
                         ></MenuItem>
                       </Menu>
                     ) : null}
+                    {/********************************** Ratings *************************************/}
                     {collapsed ? (
                       <Menu iconShape='circle'>
                         <SubMenu icon={<FaStar />}>
                           <MenuItem title='Packets rated with 1 star'>
                             <Form.Check
+                              checked={rating1}
                               type='checkbox'
                               className='link-icon'
                               id='1'
@@ -197,38 +214,77 @@ const HomeScreen = ({ match, history }) => {
                                   <Rating value={1} />
                                 </span>
                               }
+                              onChange={() => {
+                                if (rating1) {
+                                  setRating1(false);
+                                } else {
+                                  setRating1(true);
+                                }
+                              }}
                             />
                           </MenuItem>
                           <MenuItem title='Packets rated with 2 stars'>
                             <Form.Check
+                              checked={rating2}
                               type='checkbox'
                               className='link-icon'
                               id='2'
                               label={<Rating value={2} />}
+                              onChange={() => {
+                                if (rating2) {
+                                  setRating2(false);
+                                } else {
+                                  setRating2(true);
+                                }
+                              }}
                             />
                           </MenuItem>
                           <MenuItem title='Packets rated with 3 stars'>
                             <Form.Check
+                              checked={rating3}
                               type='checkbox'
                               className='link-icon'
                               id='3'
                               label={<Rating value={3} />}
+                              onChange={() => {
+                                if (rating3) {
+                                  setRating3(false);
+                                } else {
+                                  setRating3(true);
+                                }
+                              }}
                             />
                           </MenuItem>
                           <MenuItem title='Packets rated with 4 stars'>
                             <Form.Check
+                              checked={rating4}
                               type='checkbox'
                               className='link-icon'
                               id='4'
                               label={<Rating value={4} />}
+                              onChange={() => {
+                                if (rating4) {
+                                  setRating4(false);
+                                } else {
+                                  setRating4(true);
+                                }
+                              }}
                             />
                           </MenuItem>
                           <MenuItem title='Packets rated with 5 stars'>
                             <Form.Check
+                              checked={rating5}
                               type='checkbox'
                               className='link-icon'
                               id='5'
                               label={<Rating value={5} />}
+                              onChange={() => {
+                                if (rating5) {
+                                  setRating5(false);
+                                } else {
+                                  setRating5(true);
+                                }
+                              }}
                             />
                           </MenuItem>
                         </SubMenu>
@@ -242,6 +298,7 @@ const HomeScreen = ({ match, history }) => {
                               variant='info'
                               className='btn-sm'
                               title='Apply the filters'
+                              onClick={applyFilters}
                             >
                               Apply <i className='fas fa-filter'></i>
                             </Button>
@@ -249,6 +306,7 @@ const HomeScreen = ({ match, history }) => {
                         </MenuItem>
                         <MenuItem title='Packets rated with 1 star'>
                           <Form.Check
+                            checked={rating1}
                             type='checkbox'
                             className='link-icon'
                             id='1'
@@ -263,10 +321,18 @@ const HomeScreen = ({ match, history }) => {
                                 <Rating value={1} />
                               </>
                             }
+                            onChange={() => {
+                              if (rating1) {
+                                setRating1(false);
+                              } else {
+                                setRating1(true);
+                              }
+                            }}
                           />
                         </MenuItem>
                         <MenuItem title='Packets rated with 2 stars'>
                           <Form.Check
+                            checked={rating2}
                             type='checkbox'
                             className='link-icon'
                             id='2'
@@ -281,10 +347,18 @@ const HomeScreen = ({ match, history }) => {
                                 <Rating value={2} />
                               </>
                             }
+                            onChange={() => {
+                              if (rating2) {
+                                setRating2(false);
+                              } else {
+                                setRating2(true);
+                              }
+                            }}
                           />
                         </MenuItem>
                         <MenuItem title='Packets rated with 3 stars'>
                           <Form.Check
+                            checked={rating3}
                             type='checkbox'
                             className='link-icon'
                             id='3'
@@ -299,10 +373,18 @@ const HomeScreen = ({ match, history }) => {
                                 <Rating value={3} />
                               </>
                             }
+                            onChange={() => {
+                              if (rating3) {
+                                setRating3(false);
+                              } else {
+                                setRating3(true);
+                              }
+                            }}
                           />
                         </MenuItem>
                         <MenuItem title='Packets rated with 4 stars'>
                           <Form.Check
+                            checked={rating4}
                             type='checkbox'
                             className='link-icon'
                             id='4'
@@ -317,10 +399,18 @@ const HomeScreen = ({ match, history }) => {
                                 <Rating value={4} />
                               </>
                             }
+                            onChange={() => {
+                              if (rating4) {
+                                setRating4(false);
+                              } else {
+                                setRating4(true);
+                              }
+                            }}
                           />
                         </MenuItem>
                         <MenuItem title='Packets rated with 5 stars'>
                           <Form.Check
+                            checked={rating5}
                             type='checkbox'
                             className='link-icon'
                             id='5'
@@ -335,11 +425,19 @@ const HomeScreen = ({ match, history }) => {
                                 <Rating value={5} />
                               </>
                             }
+                            onChange={() => {
+                              if (rating5) {
+                                setRating5(false);
+                              } else {
+                                setRating5(true);
+                              }
+                            }}
                           />
                         </MenuItem>
                       </Menu>
                     )}
 
+                    {/******************************* Price Range **********************************/}
                     {collapsed ? (
                       <Menu iconShape='circle'>
                         <SubMenu icon={<FaEthereum />}>
