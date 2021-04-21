@@ -169,23 +169,27 @@ const CartScreen = ({ match, history }) => {
                   <ListGroup.Item key={item.packet}>
                     <Row>
                       <Col md={1} lg={1} className='v-align h-align'>
-                        <Image
-                          src={
-                            item.image === ''
-                              ? '/images/sample.jpg'
-                              : item.image
-                          }
-                          alt={item.name}
-                          fluid
-                          rounded
-                        />
+                        <Link to={`/packet/${item.packet}`} title={item.name}>
+                          <Image
+                            src={
+                              item.image === ''
+                                ? '/images/sample.jpg'
+                                : item.image
+                            }
+                            alt={item.name}
+                            fluid
+                            rounded
+                          />
+                        </Link>
                       </Col>
                       <Col
                         md={8}
                         lg={7}
                         className='cart-text d-flex align-items-center'
                       >
-                        <Link to={`/packet/${item.packet}`}>{item.name}</Link>
+                        <Link to={`/packet/${item.packet}`} title={item.name}>
+                          {item.name}
+                        </Link>
                       </Col>
                       <Col md={1} lg={1} className='v-align h-align'>
                         <i className='fab fa-ethereum'></i>

@@ -99,6 +99,7 @@ const Header = () => {
                             className='v-align h-align mx-1 px-1'
                             style={{ overflow: 'hidden', width: 'fit-content' }}
                             to={`/packet/${item._id}`}
+                            title={item.name}
                           >
                             {item.name}
                           </Link>
