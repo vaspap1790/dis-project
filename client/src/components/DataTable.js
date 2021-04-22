@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
-import { Image, Form } from 'react-bootstrap';
+import { Image, Form, Alert } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import ModalComponent from '../components/ModalComponent';
+import Loader from '../components/Loader';
+import {
+  getUserAccess,
+  emptyAccessProfileError
+} from '../actions/accessActions';
 import {
   createPacketReview,
   emptyCreateReviewError,
@@ -15,11 +20,21 @@ import {
 
 //import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
-const DataTable = ({ data }) => {
+const DataTable = () => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
   // App level State
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  const accessUser = useSelector((state) => state.accessUser);
+  const {
+    userAccess: data,
+    loading: loadingUserAccess,
+    error: userAccessError
+  } = accessUser;
+
   const reviewCreate = useSelector((state) => state.reviewCreate);
   const {
     loading: reviewLoading,
@@ -63,6 +78,11 @@ const DataTable = ({ data }) => {
     </Form>
   );
 
+  // Hook that triggers when component did mount
+  useEffect(() => {
+    dispatch(getUserAccess(userInfo._id));
+  }, [dispatch, userInfo]);
+
   // Component Methods
   const closeRatingModal = () => {
     showRatingModal(false);
@@ -84,6 +104,10 @@ const DataTable = ({ data }) => {
       dispatch(emptyCreateReviewError());
       dispatch(emptyCreateReviewSuccess());
     }, 10000);
+  };
+
+  const handleUserAccessErrorOnClose = () => {
+    dispatch(emptyAccessProfileError());
   };
 
   // Header formatters
@@ -282,20 +306,43 @@ const DataTable = ({ data }) => {
   //DataTable instantiation
   return (
     <>
-      <BootstrapTable
-        bootstrap4
-        keyField='createdAt'
-        data={data}
-        columns={columns}
-        defaultSorted={defaultSorted}
-        striped
-        hover
-        condensed
-        noDataIndication={'No items purchased'}
-        pagination={paginationFactory(pagingOptions)}
-        filter={filterFactory()}
-        headerClasses='table-dark'
-      />
+      <div className='p-2'>
+        {loadingUserAccess ? (
+          <Loader />
+        ) : userAccessError ? (
+          <Alert
+            variant='danger'
+            onClose={() => {
+              handleUserAccessErrorOnClose();
+            }}
+            dismissible
+          >
+            {userAccessError}{' '}
+            {userAccessError === 'Not Authorised!' ? (
+              <span>
+                Try to Logout and Login again to refresh your access token
+              </span>
+            ) : (
+              ''
+            )}
+          </Alert>
+        ) : (
+          <BootstrapTable
+            bootstrap4
+            keyField='createdAt'
+            data={data}
+            columns={columns}
+            defaultSorted={defaultSorted}
+            striped
+            hover
+            condensed
+            noDataIndication={'No items purchased'}
+            pagination={paginationFactory(pagingOptions)}
+            filter={filterFactory()}
+            headerClasses='table-dark'
+          />
+        )}
+      </div>
 
       {/* Modals */}
       <ModalComponent

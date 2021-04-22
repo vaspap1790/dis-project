@@ -27,8 +27,7 @@ import {
   PACKET_TOP_SUCCESS,
   PACKET_TOP_FAIL,
   ADD_TO_WATCHLIST,
-  REMOVE_FROM_WATCHLIST,
-  PACKET_UPDATE_PAGE
+  REMOVE_FROM_WATCHLIST
 } from '../constants/packetConstants';
 import { logout } from './userActions';
 
@@ -302,11 +301,4 @@ export const removeFromWatchlist = (packet) => async (dispatch, getState) => {
     'favourites',
     JSON.stringify(getState().watchlist.favourites)
   );
-};
-
-export const changePage = (page) => async (dispatch) => {
-  dispatch({
-    type: PACKET_UPDATE_PAGE,
-    payload: page
-  });
 };

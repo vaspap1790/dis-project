@@ -14,10 +14,6 @@ import {
   emptyUserPacketsError,
   listPacketData
 } from '../actions/packetActions';
-import {
-  getUserAccess,
-  emptyAccessProfileError
-} from '../actions/accessActions';
 
 const ProfileScreen = ({ match, history }) => {
   // Hook that enables components to interact with the App State through reducers
@@ -29,13 +25,6 @@ const ProfileScreen = ({ match, history }) => {
   // App level State
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-
-  const accessUser = useSelector((state) => state.accessUser);
-  const {
-    userAccess,
-    loading: loadingUserAccess,
-    error: userAccessError
-  } = accessUser;
 
   const packetsUser = useSelector((state) => state.packetsUser);
   const {
@@ -59,7 +48,6 @@ const ProfileScreen = ({ match, history }) => {
       dispatch(getUserPackets(userDetailsId));
     } else {
       dispatch(getUserPackets(userInfo._id));
-      dispatch(getUserAccess(userInfo._id));
     }
   }, [dispatch, history, userLogin, userInfo, userDetails, userDetailsId]);
 
@@ -75,10 +63,6 @@ const ProfileScreen = ({ match, history }) => {
 
   const handleUserPacketsErrorOnClose = () => {
     dispatch(emptyUserPacketsError());
-  };
-
-  const handleUserAccessErrorOnClose = () => {
-    dispatch(emptyAccessProfileError());
   };
 
   const goBack = () => {
@@ -222,33 +206,7 @@ const ProfileScreen = ({ match, history }) => {
                 {/*************** Purchased Tab ******************/}
                 {!userDetails ? (
                   <Tab eventKey='purchased' title='Purchased'>
-                    <div className='p-2'>
-                      {loadingUserAccess ? (
-                        <Loader />
-                      ) : userAccessError ? (
-                        <Alert
-                          variant='danger'
-                          onClose={() => {
-                            handleUserAccessErrorOnClose();
-                          }}
-                          dismissible
-                        >
-                          {userAccessError}{' '}
-                          {userAccessError === 'Not Authorised!' ? (
-                            <span>
-                              Try to Logout and Login again to refresh your
-                              access token
-                            </span>
-                          ) : (
-                            ''
-                          )}
-                        </Alert>
-                      ) : (
-                        <>
-                          <DataTable data={userAccess} />
-                        </>
-                      )}
-                    </div>
+                    <DataTable />
                   </Tab>
                 ) : null}
               </Tabs>

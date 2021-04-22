@@ -28,8 +28,7 @@ import {
   PACKET_TOP_SUCCESS,
   PACKET_TOP_FAIL,
   ADD_TO_WATCHLIST,
-  REMOVE_FROM_WATCHLIST,
-  PACKET_UPDATE_PAGE
+  REMOVE_FROM_WATCHLIST
 } from '../constants/packetConstants';
 
 export const packetListReducer = (state = { packets: [], page: 1 }, action) => {
@@ -43,8 +42,6 @@ export const packetListReducer = (state = { packets: [], page: 1 }, action) => {
         pages: action.payload.pages,
         page: action.payload.page
       };
-    case PACKET_UPDATE_PAGE:
-      return { ...state, page: action.payload };
     case PACKET_LIST_FAIL:
       return { loading: false, error: action.payload };
     default:

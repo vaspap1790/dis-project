@@ -3,8 +3,6 @@ export const PACKET_LIST_REQUEST = 'PACKET_LIST_REQUEST';
 export const PACKET_LIST_SUCCESS = 'PACKET_LIST_SUCCESS';
 export const PACKET_LIST_FAIL = 'PACKET_LIST_FAIL';
 
-export const PACKET_UPDATE_PAGE = 'PACKET_UPDATE_PAGE';
-
 /////////////////////////////// Profile Actions /////////////////////////////////
 export const PACKET_USER_REQUEST = 'PACKET_USER_REQUEST';
 export const PACKET_USER_SUCCESS = 'PACKET_USER_SUCCESS';
