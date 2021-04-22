@@ -13,7 +13,11 @@ import {
   USER_UPDATE_PROFILE_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
   USER_PROFILE_EMPTY_SUCCESS,
-  USER_PROFILE_EMPTY_ERROR
+  USER_PROFILE_EMPTY_ERROR,
+  USER_DETAILS_RESET,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL
 } from '../constants/userConstants';
 import { ACCESS_PROFILE_RESET } from '../constants/accessConstants';
 import { PACKET_USER_RESET } from '../constants/packetConstants';
@@ -120,6 +124,7 @@ export const logout = () => (dispatch) => {
   dispatch({ type: USER_LOGOUT });
   dispatch({ type: ACCESS_PROFILE_RESET });
   dispatch({ type: PACKET_USER_RESET });
+  dispatch({ type: USER_DETAILS_RESET });
 };
 
 /////////////////////////////// Profile Actions //////////////////////////////////
@@ -173,4 +178,26 @@ export const emptyProfileSuccess = () => async (dispatch) => {
   dispatch({
     type: USER_PROFILE_EMPTY_SUCCESS
   });
+};
+
+/////////////////////////////// Details Actions //////////////////////////////////
+export const getUserDetails = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: USER_DETAILS_REQUEST });
+
+    const { data } = await axios.get(`/api/packets/userDetails/${id}`);
+
+    dispatch({
+      type: USER_DETAILS_SUCCESS,
+      payload: data
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+    });
+  }
 };

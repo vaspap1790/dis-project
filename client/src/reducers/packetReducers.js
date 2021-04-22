@@ -50,21 +50,26 @@ export const packetListReducer = (state = { packets: [], page: 1 }, action) => {
 };
 
 export const packetsUserReducer = (
-  state = { userData: { packets: [], reviews: [], userRating: [] } },
+  state = { packets: [], page: 1 },
   action
 ) => {
   switch (action.type) {
     case PACKET_USER_REQUEST:
       return {
         loading: true,
-        userData: { packets: [], reviews: [], userRating: [] }
+        ...state
       };
     case PACKET_USER_SUCCESS:
-      return { loading: false, userData: action.payload };
+      return {
+        loading: false,
+        packets: action.payload.packets,
+        pages: action.payload.pages,
+        page: action.payload.page
+      };
     case PACKET_USER_FAIL:
       return { ...state, loading: false, error: action.payload };
     case PACKET_USER_RESET:
-      return { userData: { packets: [], reviews: [], userRating: [] } };
+      return { userData: { packets: [] } };
     case PACKET_USER_EMPTY_ERROR:
       return { error: null };
     default:

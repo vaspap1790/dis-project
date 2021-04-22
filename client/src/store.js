@@ -20,7 +20,8 @@ import { reviewCreateReducer } from './reducers/reviewReducers';
 import {
   userLoginReducer,
   userRegisterReducer,
-  userUpdateProfileReducer
+  userUpdateProfileReducer,
+  userDetailsReducer
 } from './reducers/userReducers';
 
 // Initialise reducer
@@ -35,6 +36,7 @@ const reducer = combineReducers({
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userUpdateProfile: userUpdateProfileReducer,
+  userDetails: userDetailsReducer,
   accessAdd: accessAddReducer,
   accessUser: accesssUserReducer,
   reviewCreate: reviewCreateReducer,

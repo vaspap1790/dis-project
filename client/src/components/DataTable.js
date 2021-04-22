@@ -48,6 +48,7 @@ const DataTable = () => {
   const [comment, setComment] = useState('');
   const [packetId, setPacketId] = useState('');
 
+  // Component Variables
   const form = (
     <Form>
       <Form.Group controlId='rating'>

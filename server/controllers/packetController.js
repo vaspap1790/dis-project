@@ -106,6 +106,33 @@ const getPacketDataById = asyncHandler(async (req, res) => {
 // @route   GET /api/packets/user/:id
 // @access  Public
 const getPacketsByUserId = asyncHandler(async (req, res) => {
+  const pageSize = 10;
+
+  const page = Number(req.query.pageNumber) || 1;
+  const sorting = req.query.sorting.split('_');
+  let sortParameter = sorting[0];
+  let sortCriteria = sorting[1].trim() === 'desc' ? -1 : 1;
+  let sort = {};
+  sort[`${sortParameter}`] = sortCriteria;
+
+  const count = await Packet.countDocuments({ user: req.params.id });
+  const packets = await Packet.find({ user: req.params.id })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1))
+    .sort(sort);
+
+  if (packets && packets.length !== 0) {
+    res.json({ packets, page, pages: Math.ceil(count / pageSize) });
+  } else {
+    res.status(404);
+    throw new Error('No data Packets uploaded');
+  }
+});
+
+// @desc    Fetch user details
+// @route   GET /api/packets/userDetails/:id
+// @access  Public
+const getUserDetails = asyncHandler(async (req, res) => {
   const packets = await Packet.find({ user: req.params.id });
   const userRating = await User.findById(req.params.id);
   let data = {};
@@ -136,17 +163,17 @@ const getPacketsByUserId = asyncHandler(async (req, res) => {
     }
 
     data = {
-      packets: packets,
       reviews: reviews,
-      userRating: userRating
+      userRating: userRating,
+      numOfPackets: packets.length
     };
 
     await userRating.save();
   } else {
     data = {
-      packets: [],
       reviews: [],
-      userRating: userRating
+      userRating: userRating,
+      numOfPackets: 0
     };
   }
   res.json(data);
@@ -212,5 +239,6 @@ export {
   createPacket,
   updatePacket,
   getTopPackets,
-  getPacketDataById
+  getPacketDataById,
+  getUserDetails
 };

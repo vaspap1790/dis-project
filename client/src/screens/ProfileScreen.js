@@ -1,14 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Packet from '../components/Packet';
-import Rating from '../components/Rating';
 import DataTable from '../components/DataTable';
 import Meta from '../components/Meta';
-import ReviewsContainer from '../components/ReviewsContainer';
-import { ProSidebar, SidebarHeader, SidebarContent } from 'react-pro-sidebar';
-import 'react-pro-sidebar/dist/css/styles.css';
-import { Button, Row, Col, Alert, Tabs, Tab } from 'react-bootstrap';
+import {
+  Button,
+  Row,
+  Col,
+  Alert,
+  Tabs,
+  Tab,
+  Dropdown,
+  DropdownButton
+} from 'react-bootstrap';
 import Loader from '../components/Loader';
+import Paginate from '../components/Paginate';
+import ProfileSidebar from '../components/ProfileSidebar';
 import {
   getUserPackets,
   emptyUserPacketsError,
@@ -21,6 +28,7 @@ const ProfileScreen = ({ match, history }) => {
 
   // Request Parameters
   const userDetailsId = match.params.id;
+  const pageNumberFromURL = match.params.pageNumber || 1;
 
   // App level State
   const userLogin = useSelector((state) => state.userLogin);
@@ -28,12 +36,15 @@ const ProfileScreen = ({ match, history }) => {
 
   const packetsUser = useSelector((state) => state.packetsUser);
   const {
-    userData,
+    packets,
     loading: loadingUserPackets,
-    error: userPacketsError
+    error: userPacketsError,
+    pages,
+    page
   } = packetsUser;
 
-  const { packets: userPackets, reviews: userReviews, userRating } = userData;
+  const [sorting, setSorting] = useState('createdAt_desc');
+  const [pageNumber, setPageNumber] = useState(pageNumberFromURL);
 
   // Component Variables
   const userDetails = !userInfo
@@ -45,11 +56,19 @@ const ProfileScreen = ({ match, history }) => {
   // Hook that triggers when component did mount
   useEffect(() => {
     if (userDetails) {
-      dispatch(getUserPackets(userDetailsId));
+      dispatch(getUserPackets(userDetailsId, pageNumber, sorting));
     } else {
-      dispatch(getUserPackets(userInfo._id));
+      dispatch(getUserPackets(userInfo._id, pageNumber, sorting));
     }
-  }, [dispatch, history, userLogin, userInfo, userDetails, userDetailsId]);
+  }, [
+    dispatch,
+    userLogin,
+    userInfo,
+    userDetails,
+    userDetailsId,
+    pageNumber,
+    sorting
+  ]);
 
   // Component Methods
   const uploadHandler = () => {
@@ -59,6 +78,10 @@ const ProfileScreen = ({ match, history }) => {
   const updateHandler = (e) => {
     dispatch(listPacketData(e.target.id));
     history.push(`/packets/update/${e.target.id}`);
+  };
+
+  const handlePageNumber = (value) => {
+    setPageNumber(value);
   };
 
   const handleUserPacketsErrorOnClose = () => {
@@ -74,6 +97,7 @@ const ProfileScreen = ({ match, history }) => {
     <>
       {/************************************** Nav&Title ****************************************/}
       <Row className='d-flex justify-content-start align-items-center mb-3'>
+        <Meta title='Data Dapp | Profile' />
         <Button
           className='btn btn-primary mr-1'
           title='Go Back'
@@ -82,19 +106,14 @@ const ProfileScreen = ({ match, history }) => {
           Go Back
         </Button>
         {userInfo && !userDetails ? (
-          <>
-            <Meta title='Data Dapp | Profile' />
-            <Button
-              className='btn btn-success mr-1'
-              title='Upload a data packet'
-              onClick={uploadHandler}
-            >
-              Upload <i className='fas fa-upload'></i>
-            </Button>
-          </>
-        ) : (
-          <Meta title={userRating.username} />
-        )}
+          <Button
+            className='btn btn-success mr-1'
+            title='Upload a data packet'
+            onClick={uploadHandler}
+          >
+            Upload <i className='fas fa-upload'></i>
+          </Button>
+        ) : null}
         <h1 className='my-auto ml-2' style={{ display: 'inline' }}>
           User Profile
         </h1>
@@ -103,58 +122,7 @@ const ProfileScreen = ({ match, history }) => {
       <Row>
         {/************************************** Sidebar *****************************************/}
         <Col xs={3}>
-          <ProSidebar
-            breakPoint='md'
-            style={{ height: '100%', width: 'inherit' }}
-          >
-            <SidebarHeader>
-              <div
-                style={{
-                  padding: '24px',
-                  textTransform: 'uppercase',
-                  fontWeight: 'bold',
-                  fontSize: 14,
-                  letterSpacing: '1px',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                {loadingUserPackets ? (
-                  <Loader />
-                ) : userPacketsError ? null : (
-                  userRating && (
-                    <div>
-                      <div className='mx-auto' style={{ textAlign: 'center' }}>
-                        {userRating.username}
-                      </div>
-                      <div className='mx-auto' style={{ textAlign: 'center' }}>
-                        Uploaded{' '}
-                        <span className='badge badge-pill badge-success'>
-                          {userPackets.length}
-                        </span>{' '}
-                        items
-                      </div>
-                      <div className='mx-auto' style={{ textAlign: 'center' }}>
-                        <Rating
-                          value={userRating.rating}
-                          text={`${userRating.numReviews} reviews`}
-                        />
-                      </div>
-                    </div>
-                  )
-                )}
-              </div>
-            </SidebarHeader>
-            <SidebarContent className='mt-3'>
-              {/**************** Reviews Tab *******************/}
-              {loadingUserPackets ? (
-                <Loader />
-              ) : (
-                <ReviewsContainer reviews={userReviews} isProfile={true} />
-              )}
-            </SidebarContent>
-          </ProSidebar>
+          <ProfileSidebar id={userDetails ? userDetailsId : userInfo._id} />
         </Col>
         {/************************************* Main screen ***************************************/}
         <Col xs={9}>
@@ -165,32 +133,136 @@ const ProfileScreen = ({ match, history }) => {
               <Tabs defaultActiveKey='uploaded' transition={false}>
                 {/*************** Uploaded Tab *******************/}
                 <Tab eventKey='uploaded' title='Uploaded'>
-                  <div className='p-2'>
-                    {userPacketsError &&
-                    userPacketsError === 'No items uploaded' ? (
-                      <Alert variant='info'>{userPacketsError}</Alert>
-                    ) : userPacketsError &&
-                      userPacketsError !== 'No items uploaded' ? (
-                      <Alert
-                        variant='danger'
-                        onClose={() => {
-                          handleUserPacketsErrorOnClose();
-                        }}
-                        dismissible={userPacketsError === 'No items uploaded'}
-                      >
-                        {userPacketsError}
-                      </Alert>
-                    ) : (
-                      <Row>
-                        {userPackets && userPackets.length === 0 ? (
-                          <Col>
-                            <Alert variant='info'>
-                              No data packets uploaded
-                            </Alert>
-                          </Col>
-                        ) : null}
-                        {userPackets &&
-                          userPackets.map((packet) => (
+                  {userPacketsError &&
+                  userPacketsError === 'No items uploaded' ? (
+                    <Alert variant='info'>{userPacketsError}</Alert>
+                  ) : userPacketsError &&
+                    userPacketsError !== 'No items uploaded' ? (
+                    <Alert
+                      variant='danger'
+                      onClose={() => {
+                        handleUserPacketsErrorOnClose();
+                      }}
+                      dismissible={userPacketsError === 'No items uploaded'}
+                    >
+                      {userPacketsError}
+                    </Alert>
+                  ) : (
+                    <>
+                      <Row className='mx-0 align-items-center'>
+                        <Col xs={2}>
+                          <Row>
+                            <DropdownButton
+                              id='dropdown-item-button'
+                              title='Sorting'
+                              variant='light'
+                            >
+                              <Dropdown.Item
+                                as='button'
+                                value='createdAt_desc'
+                                style={
+                                  sorting === 'createdAt_desc'
+                                    ? {
+                                        backgroundColor: '#1f9bcf',
+                                        color: 'white'
+                                      }
+                                    : null
+                                }
+                                onClick={() => setSorting('createdAt_desc')}
+                              >
+                                Date &#x2193;
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                as='button'
+                                value='createdAt_asc'
+                                style={
+                                  sorting === 'createdAt_asc'
+                                    ? {
+                                        backgroundColor: '#1f9bcf',
+                                        color: 'white'
+                                      }
+                                    : null
+                                }
+                                onClick={() => setSorting('createdAt_asc')}
+                              >
+                                Date &#x2191;
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                as='button'
+                                value='rating_desc'
+                                style={
+                                  sorting === 'rating_desc'
+                                    ? {
+                                        backgroundColor: '#1f9bcf',
+                                        color: 'white'
+                                      }
+                                    : null
+                                }
+                                onClick={() => setSorting('rating_desc')}
+                              >
+                                Rating &#x2193;
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                as='button'
+                                value='rating_asc'
+                                style={
+                                  sorting === 'rating_asc'
+                                    ? {
+                                        backgroundColor: '#1f9bcf',
+                                        color: 'white'
+                                      }
+                                    : null
+                                }
+                                onClick={() => setSorting('rating_asc')}
+                              >
+                                Rating &#x2191;
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                as='button'
+                                value='price_desc'
+                                style={
+                                  sorting === 'price_desc'
+                                    ? {
+                                        backgroundColor: '#1f9bcf',
+                                        color: 'white'
+                                      }
+                                    : null
+                                }
+                                onClick={() => setSorting('price_desc')}
+                              >
+                                Price &#x2193;
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                as='button'
+                                value='price_asc'
+                                style={
+                                  sorting === 'price_asc'
+                                    ? {
+                                        backgroundColor: '#1f9bcf',
+                                        color: 'white'
+                                      }
+                                    : null
+                                }
+                                onClick={() => setSorting('price_asc')}
+                              >
+                                Price &#x2191;
+                              </Dropdown.Item>
+                            </DropdownButton>
+                          </Row>
+                        </Col>
+                        <Col xs={10}>
+                          <Row className='d-flex justify-content-end'>
+                            <Paginate
+                              pages={pages}
+                              page={page}
+                              handlePage={handlePageNumber}
+                            />
+                          </Row>
+                        </Col>
+                      </Row>
+                      <Row className='align-items-center'>
+                        <>
+                          {packets.map((packet) => (
                             <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
                               <Packet
                                 handler={updateHandler}
@@ -199,9 +271,18 @@ const ProfileScreen = ({ match, history }) => {
                               />
                             </Col>
                           ))}
+                        </>
                       </Row>
-                    )}
-                  </div>
+
+                      <Row className='d-flex justify-content-end mx-0'>
+                        <Paginate
+                          pages={pages}
+                          page={page}
+                          handlePage={handlePageNumber}
+                        />
+                      </Row>
+                    </>
+                  )}
                 </Tab>
                 {/*************** Purchased Tab ******************/}
                 {!userDetails ? (

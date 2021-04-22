@@ -130,11 +130,17 @@ export const listPacketData = (id) => async (dispatch) => {
 };
 
 //////////////////////////////// User Actions ///////////////////////////////////
-export const getUserPackets = (id) => async (dispatch) => {
+export const getUserPackets = (
+  id,
+  pageNumber = '',
+  sorting = 'createdAt_desc'
+) => async (dispatch) => {
   try {
     dispatch({ type: PACKET_USER_REQUEST });
 
-    const { data } = await axios.get(`/api/packets/user/${id}`);
+    const { data } = await axios.get(
+      `/api/packets/user/${id}?sorting=${sorting}&pageNumber=${pageNumber}`
+    );
 
     dispatch({
       type: PACKET_USER_SUCCESS,
