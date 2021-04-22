@@ -99,7 +99,7 @@ ModalComponent.defaultProps = {
   info: false,
   danger: false,
   success: false,
-  procced: () => {
+  proceed: () => {
     console.log('Proceed');
   },
   closeButton: false,

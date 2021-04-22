@@ -39,7 +39,7 @@ const HomeScreen = ({ match, history }) => {
 
   // Request Parameters
   const keyword = match.params.keyword;
-  const pageNumber = match.params.pageNumber || 1;
+  const pageNumberFromURL = match.params.pageNumber || 1;
 
   // App level State
   const packetList = useSelector((state) => state.packetList);
@@ -70,6 +70,8 @@ const HomeScreen = ({ match, history }) => {
   const [priceFrom, setPriceFrom] = useState(0);
   const [priceTo, setPriceTo] = useState(0);
 
+  const [pageNumber, setPageNumber] = useState(pageNumberFromURL);
+
   // Hook that triggers when component did mount
   useEffect(() => {
     dispatch(listPackets(keyword, pageNumber, sorting, filters));
@@ -82,6 +84,10 @@ const HomeScreen = ({ match, history }) => {
 
   const handleToggleSidebar = (value) => {
     setToggled(value);
+  };
+
+  const handlePageNumber = (value) => {
+    setPageNumber(value);
   };
 
   const applyFilters = () => {
@@ -666,9 +672,7 @@ const HomeScreen = ({ match, history }) => {
                 <Paginate
                   pages={pages}
                   page={page}
-                  keyword={keyword ? keyword : ''}
-                  sorting={sorting}
-                  filters={filters}
+                  handlePage={handlePageNumber}
                 />
               </Row>
             </Col>
@@ -694,13 +698,7 @@ const HomeScreen = ({ match, history }) => {
       </Row>
 
       <Row className='d-flex justify-content-end mx-0'>
-        <Paginate
-          pages={pages}
-          page={page}
-          keyword={keyword ? keyword : ''}
-          sorting={sorting}
-          filters={filters}
-        />
+        <Paginate pages={pages} page={page} handlePage={handlePageNumber} />
       </Row>
     </>
   );
