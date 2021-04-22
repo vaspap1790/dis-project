@@ -76,9 +76,17 @@ const App = () => {
           <Route path='/packets/update/:id' component={UpdatePacketScreen} />
           <Route path='/cart/:id?' component={CartScreen} />
           <Route path='/search/:keyword' component={HomeScreen} exact />
-          <Route path='/page/:pageNumber' component={HomeScreen} exact />
           <Route
-            path='/search/:keyword/page/:pageNumber'
+            path='/sorting/:sorting/rating1/:rating1/rating2/:rating2/rating3/
+            :rating3/rating4/:rating4/rating5/:rating5/
+            priceFrom/:priceFrom/priceTo/:priceTo/page/:pageNumber'
+            component={HomeScreen}
+            exact
+          />
+          <Route
+            path='/search/:keyword/sorting/:sorting/rating1/:rating1/rating2/:rating2/rating3/
+            :rating3/rating4/:rating4/rating5/:rating5/
+            priceFrom/:priceFrom/priceTo/:priceTo/page/:pageNumber'
             component={HomeScreen}
             exact
           />

@@ -70,7 +70,7 @@ const Packet = ({ packet, handler, isProfile }) => {
           </Link>
           <Card.Text className='mb-3'>
             {isProfile ? null : (
-              <span style={{ display: 'inline' }} className='mb-0'>
+              <span style={{ display: 'block' }} className='mb-0'>
                 by{' '}
                 <Link
                   to={`/profile/${packet.user._id}`}
@@ -82,7 +82,7 @@ const Packet = ({ packet, handler, isProfile }) => {
                 </Link>
               </span>
             )}
-            <span style={{ display: 'inline' }} className='mb-0'>
+            <span style={{ display: 'block' }} className='mb-0'>
               at{' '}
               <span className='text-muted'>
                 <Moment format='D MMM YYYY hh:mm:ss'>{packet.createdAt}</Moment>

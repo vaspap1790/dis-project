@@ -27,20 +27,34 @@ import {
   PACKET_TOP_SUCCESS,
   PACKET_TOP_FAIL,
   ADD_TO_WATCHLIST,
-  REMOVE_FROM_WATCHLIST
+  REMOVE_FROM_WATCHLIST,
+  PACKET_UPDATE_PAGE
 } from '../constants/packetConstants';
 import { logout } from './userActions';
 
 ///////////////////////////////// List Actions ////////////////////////////////////
 // thunk allows to make async requests here
-export const listPackets = (keyword = '', pageNumber = '') => async (
-  dispatch
-) => {
+export const listPackets = (
+  keyword = '',
+  pageNumber = '',
+  sorting = 'createdAt_desc',
+  filters = {
+    rating1: false,
+    rating2: false,
+    rating3: false,
+    rating4: false,
+    rating5: false,
+    priceFrom: 0,
+    priceTo: 0
+  }
+) => async (dispatch) => {
   try {
     dispatch({ type: PACKET_LIST_REQUEST });
 
     const { data } = await axios.get(
-      `/api/packets?keyword=${keyword}&pageNumber=${pageNumber}`
+      `/api/packets?keyword=${keyword}&sorting=${sorting}
+      &rating1=${filters.rating1}&rating2=${filters.rating2}&rating3=${filters.rating3}&rating4=${filters.rating4}
+      &rating5=${filters.rating5}&priceFrom=${filters.priceFrom}&priceTo=${filters.priceTo}&pageNumber=${pageNumber}`
     );
 
     dispatch({
@@ -288,4 +302,11 @@ export const removeFromWatchlist = (packet) => async (dispatch, getState) => {
     'favourites',
     JSON.stringify(getState().watchlist.favourites)
   );
+};
+
+export const changePage = (page) => async (dispatch) => {
+  dispatch({
+    type: PACKET_UPDATE_PAGE,
+    payload: page
+  });
 };

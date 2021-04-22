@@ -8,22 +8,53 @@ import User from '../models/userModel.js';
 // @access  Public
 const getPackets = asyncHandler(async (req, res) => {
   const pageSize = 10;
+  const ratings = [];
+  console.log('12');
   const page = Number(req.query.pageNumber) || 1;
+  const sorting = req.query.sorting.split('_');
+  let sortParameter = sorting[0];
+  let sortCriteria = sorting[1].trim() === 'desc' ? -1 : 1;
+  let sort = {};
+  sort[`${sortParameter}`] = sortCriteria;
+  console.log(req.query.rating4);
+  req.query.rating1.trim() === 'true' ? ratings.push(1, 1.5) : null;
+  req.query.rating2.trim() === 'true' ? ratings.push(2, 2.5) : null;
+  req.query.rating3.trim() === 'true' ? ratings.push(3, 3.5) : null;
+  req.query.rating4.trim() === 'true' ? ratings.push(4, 4.5) : null;
+  req.query.rating5.trim() === 'true' ? ratings.push(5) : null;
+  const priceFrom = Number(req.query.priceFrom) || 0;
+  const priceTo = Number(req.query.priceTo) || 0;
+  const keyword = req.query.keyword;
+  console.log(ratings);
+  console.log(sort);
+  let searchObject = {};
 
-  const keyword = req.query.keyword
-    ? {
-        name: {
-          $regex: req.query.keyword,
-          $options: 'i' //case insensitive
-        }
-      }
-    : {};
-
-  const count = await Packet.countDocuments({ ...keyword });
-  const packets = await Packet.find({ ...keyword })
+  if (keyword) {
+    searchObject.name = {
+      $regex: req.query.keyword,
+      $options: 'i' //case insensitive
+    };
+  }
+  console.log('36');
+  if (ratings.length !== 0) {
+    searchObject.rating = {
+      $in: ratings
+    };
+  }
+  console.log('42');
+  if (priceFrom !== 0 || priceTo !== 0) {
+    searchObject.price = {
+      $gte: priceFrom,
+      $lte: priceTo
+    };
+  }
+  console.log(searchObject);
+  const count = await Packet.countDocuments(searchObject);
+  const packets = await Packet.find(searchObject)
     .populate('user', 'username')
     .limit(pageSize)
-    .skip(pageSize * (page - 1));
+    .skip(pageSize * (page - 1))
+    .sort(sort);
 
   if (packets && packets.length !== 0) {
     res.json({ packets, page, pages: Math.ceil(count / pageSize) });
