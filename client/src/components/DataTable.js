@@ -307,7 +307,7 @@ const DataTable = () => {
   //DataTable instantiation
   return (
     <>
-      <div className='p-2'>
+      <div className='p-2 mt-3'>
         {loadingUserAccess ? (
           <Loader />
         ) : userAccessError ? (

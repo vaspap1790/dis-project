@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Row,
-  Col,
-  Alert,
-  Button,
-  Jumbotron,
-  Form,
-  Dropdown,
-  DropdownButton
-} from 'react-bootstrap';
+import { Row, Col, Alert, Button, Jumbotron, Form } from 'react-bootstrap';
 import Switch from 'react-switch';
 import Packet from '../components/Packet';
 import Loader from '../components/Loader';
 import Paginate from '../components/Paginate';
+import Sorting from '../components/Sorting';
 import Meta from '../components/Meta';
 import PacketCarousel from '../components/PacketCarousel';
 import {
@@ -88,6 +80,10 @@ const HomeScreen = ({ match, history }) => {
 
   const handlePageNumber = (value) => {
     setPageNumber(value);
+  };
+
+  const handleSorting = (value) => {
+    setSorting(value);
   };
 
   const applyFilters = () => {
@@ -586,86 +582,7 @@ const HomeScreen = ({ match, history }) => {
         <Col sm={collapsed ? 11 : 9}>
           <Row className='mx-0 align-items-center'>
             <Col xs={2}>
-              <Row>
-                <DropdownButton
-                  id='dropdown-item-button'
-                  title='Sorting'
-                  variant='light'
-                >
-                  <Dropdown.Item
-                    as='button'
-                    value='createdAt_desc'
-                    style={
-                      sorting === 'createdAt_desc'
-                        ? { backgroundColor: '#1f9bcf', color: 'white' }
-                        : null
-                    }
-                    onClick={() => setSorting('createdAt_desc')}
-                  >
-                    Date &#x2193;
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    as='button'
-                    value='createdAt_asc'
-                    style={
-                      sorting === 'createdAt_asc'
-                        ? { backgroundColor: '#1f9bcf', color: 'white' }
-                        : null
-                    }
-                    onClick={() => setSorting('createdAt_asc')}
-                  >
-                    Date &#x2191;
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    as='button'
-                    value='rating_desc'
-                    style={
-                      sorting === 'rating_desc'
-                        ? { backgroundColor: '#1f9bcf', color: 'white' }
-                        : null
-                    }
-                    onClick={() => setSorting('rating_desc')}
-                  >
-                    Rating &#x2193;
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    as='button'
-                    value='rating_asc'
-                    style={
-                      sorting === 'rating_asc'
-                        ? { backgroundColor: '#1f9bcf', color: 'white' }
-                        : null
-                    }
-                    onClick={() => setSorting('rating_asc')}
-                  >
-                    Rating &#x2191;
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    as='button'
-                    value='price_desc'
-                    style={
-                      sorting === 'price_desc'
-                        ? { backgroundColor: '#1f9bcf', color: 'white' }
-                        : null
-                    }
-                    onClick={() => setSorting('price_desc')}
-                  >
-                    Price &#x2193;
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    as='button'
-                    value='price_asc'
-                    style={
-                      sorting === 'price_asc'
-                        ? { backgroundColor: '#1f9bcf', color: 'white' }
-                        : null
-                    }
-                    onClick={() => setSorting('price_asc')}
-                  >
-                    Price &#x2191;
-                  </Dropdown.Item>
-                </DropdownButton>
-              </Row>
+              <Sorting sorting={sorting} handleSorting={handleSorting} />
             </Col>
             <Col xs={10}>
               <Row className='d-flex justify-content-end'>

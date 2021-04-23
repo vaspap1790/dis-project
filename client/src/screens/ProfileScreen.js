@@ -2,17 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Packet from '../components/Packet';
 import DataTable from '../components/DataTable';
+import Sorting from '../components/Sorting';
 import Meta from '../components/Meta';
-import {
-  Button,
-  Row,
-  Col,
-  Alert,
-  Tabs,
-  Tab,
-  Dropdown,
-  DropdownButton
-} from 'react-bootstrap';
+import { Button, Row, Col, Alert, Tabs, Tab } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import Paginate from '../components/Paginate';
 import ProfileSidebar from '../components/ProfileSidebar';
@@ -35,13 +27,7 @@ const ProfileScreen = ({ match, history }) => {
   const { userInfo } = userLogin;
 
   const packetsUser = useSelector((state) => state.packetsUser);
-  const {
-    packets,
-    loading: loadingUserPackets,
-    error: userPacketsError,
-    pages,
-    page
-  } = packetsUser;
+  const { packets, loading, error, pages, page } = packetsUser;
 
   const [sorting, setSorting] = useState('createdAt_desc');
   const [pageNumber, setPageNumber] = useState(pageNumberFromURL);
@@ -82,6 +68,10 @@ const ProfileScreen = ({ match, history }) => {
 
   const handlePageNumber = (value) => {
     setPageNumber(value);
+  };
+
+  const handleSorting = (value) => {
+    setSorting(value);
   };
 
   const handleUserPacketsErrorOnClose = () => {
@@ -127,128 +117,32 @@ const ProfileScreen = ({ match, history }) => {
         {/************************************* Main screen ***************************************/}
         <Col xs={9}>
           <Row>
-            {loadingUserPackets ? (
+            {loading ? (
               <Loader />
             ) : (
               <Tabs defaultActiveKey='uploaded' transition={false}>
                 {/*************** Uploaded Tab *******************/}
                 <Tab eventKey='uploaded' title='Uploaded'>
-                  {userPacketsError &&
-                  userPacketsError === 'No items uploaded' ? (
-                    <Alert variant='info'>{userPacketsError}</Alert>
-                  ) : userPacketsError &&
-                    userPacketsError !== 'No items uploaded' ? (
+                  {error && error === 'No items uploaded' ? (
+                    <Alert variant='info'>{error}</Alert>
+                  ) : error && error !== 'No items uploaded' ? (
                     <Alert
                       variant='danger'
                       onClose={() => {
                         handleUserPacketsErrorOnClose();
                       }}
-                      dismissible={userPacketsError === 'No items uploaded'}
+                      dismissible={error === 'No items uploaded'}
                     >
-                      {userPacketsError}
+                      {error}
                     </Alert>
                   ) : (
                     <>
-                      <Row className='mx-0 align-items-center'>
+                      <Row className='mx-0 align-items-center mt-3'>
                         <Col xs={2}>
-                          <Row>
-                            <DropdownButton
-                              id='dropdown-item-button'
-                              title='Sorting'
-                              variant='light'
-                            >
-                              <Dropdown.Item
-                                as='button'
-                                value='createdAt_desc'
-                                style={
-                                  sorting === 'createdAt_desc'
-                                    ? {
-                                        backgroundColor: '#1f9bcf',
-                                        color: 'white'
-                                      }
-                                    : null
-                                }
-                                onClick={() => setSorting('createdAt_desc')}
-                              >
-                                Date &#x2193;
-                              </Dropdown.Item>
-                              <Dropdown.Item
-                                as='button'
-                                value='createdAt_asc'
-                                style={
-                                  sorting === 'createdAt_asc'
-                                    ? {
-                                        backgroundColor: '#1f9bcf',
-                                        color: 'white'
-                                      }
-                                    : null
-                                }
-                                onClick={() => setSorting('createdAt_asc')}
-                              >
-                                Date &#x2191;
-                              </Dropdown.Item>
-                              <Dropdown.Item
-                                as='button'
-                                value='rating_desc'
-                                style={
-                                  sorting === 'rating_desc'
-                                    ? {
-                                        backgroundColor: '#1f9bcf',
-                                        color: 'white'
-                                      }
-                                    : null
-                                }
-                                onClick={() => setSorting('rating_desc')}
-                              >
-                                Rating &#x2193;
-                              </Dropdown.Item>
-                              <Dropdown.Item
-                                as='button'
-                                value='rating_asc'
-                                style={
-                                  sorting === 'rating_asc'
-                                    ? {
-                                        backgroundColor: '#1f9bcf',
-                                        color: 'white'
-                                      }
-                                    : null
-                                }
-                                onClick={() => setSorting('rating_asc')}
-                              >
-                                Rating &#x2191;
-                              </Dropdown.Item>
-                              <Dropdown.Item
-                                as='button'
-                                value='price_desc'
-                                style={
-                                  sorting === 'price_desc'
-                                    ? {
-                                        backgroundColor: '#1f9bcf',
-                                        color: 'white'
-                                      }
-                                    : null
-                                }
-                                onClick={() => setSorting('price_desc')}
-                              >
-                                Price &#x2193;
-                              </Dropdown.Item>
-                              <Dropdown.Item
-                                as='button'
-                                value='price_asc'
-                                style={
-                                  sorting === 'price_asc'
-                                    ? {
-                                        backgroundColor: '#1f9bcf',
-                                        color: 'white'
-                                      }
-                                    : null
-                                }
-                                onClick={() => setSorting('price_asc')}
-                              >
-                                Price &#x2191;
-                              </Dropdown.Item>
-                            </DropdownButton>
-                          </Row>
+                          <Sorting
+                            sorting={sorting}
+                            handleSorting={handleSorting}
+                          />
                         </Col>
                         <Col xs={10}>
                           <Row className='d-flex justify-content-end'>
@@ -261,17 +155,31 @@ const ProfileScreen = ({ match, history }) => {
                         </Col>
                       </Row>
                       <Row className='align-items-center'>
-                        <>
-                          {packets.map((packet) => (
-                            <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
-                              <Packet
-                                handler={updateHandler}
-                                packet={packet}
-                                isProfile={true}
-                              />
-                            </Col>
-                          ))}
-                        </>
+                        {loading ? (
+                          <Loader />
+                        ) : error ? (
+                          <Alert variant='danger' style={{ width: '30vw' }}>
+                            {error}
+                          </Alert>
+                        ) : (
+                          <>
+                            {packets.map((packet) => (
+                              <Col
+                                key={packet._id}
+                                sm={12}
+                                md={6}
+                                lg={4}
+                                xl={3}
+                              >
+                                <Packet
+                                  handler={updateHandler}
+                                  packet={packet}
+                                  isProfile={true}
+                                />
+                              </Col>
+                            ))}
+                          </>
+                        )}
                       </Row>
 
                       <Row className='d-flex justify-content-end mx-0'>

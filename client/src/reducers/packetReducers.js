@@ -57,7 +57,7 @@ export const packetsUserReducer = (
     case PACKET_USER_REQUEST:
       return {
         loading: true,
-        ...state
+        packets: []
       };
     case PACKET_USER_SUCCESS:
       return {
