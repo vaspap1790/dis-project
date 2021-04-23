@@ -152,6 +152,7 @@ const PacketScreen = ({ history, match }) => {
           </Row>
         </>
       )}
+
       {/* Modals */}
       <ModalComponent
         show={watchlistModal}

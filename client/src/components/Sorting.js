@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Row, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Row, Dropdown, DropdownButton } from 'react-bootstrap';
 
 const Sorting = ({ sorting, handleSorting }) => {
   return (
