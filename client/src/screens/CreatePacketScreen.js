@@ -75,7 +75,15 @@ const CreatePacketScreen = ({ history }) => {
 
   const uploadHandler = () => {
     const { form } = state;
+    let keys = true;
+    for (let i = 0; i < form.data.length; i++) {
+      if (form.data[i].encryptionKey === '') {
+        keys = false;
+      }
+    }
+
     if (
+      !keys ||
       !form.name ||
       !validateName(form.name) ||
       !form.description ||
