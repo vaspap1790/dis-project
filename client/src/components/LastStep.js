@@ -1,80 +1,31 @@
 import React, { useState } from 'react';
 import { StyledDropZone } from 'react-drop-zone';
 import { FileIcon, defaultStyles } from 'react-file-icon';
-import ReactQuill from 'react-quill';
-import { Alert } from 'react-bootstrap';
-import 'react-quill/dist/quill.snow.css';
+import { Alert, Table, Button } from 'react-bootstrap';
+import Moment from 'react-moment';
 import 'react-drop-zone/dist/styles.css';
 import Stats from './Stats';
 
 const LastStep = (props) => {
   // Component level State
-  const [editorValue, setEditorValue] = useState('');
   const [files, setFiles] = useState([]);
 
-  // Component Variables
-  const modules = {
-    toolbar: [
-      [{ header: '1' }, { header: '2' }, { font: [] }],
-      [{ size: [] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [
-        { list: 'ordered' },
-        { list: 'bullet' },
-        { indent: '-1' },
-        { indent: '+1' }
-      ],
-      ['clean']
-    ],
-    clipboard: {
-      // toggle to add extra line breaks when pasting HTML:
-      matchVisual: false
-    }
-  };
-
-  const formats = [
-    'header',
-    'font',
-    'size',
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'blockquote',
-    'list',
-    'bullet',
-    'indent'
-  ];
-
   // Component Methods
-  const removeFromUploadsHandler = (e) => {
-    e.stopPropagation();
-    setFiles([]);
-    setEditorValue('');
+  const removeFromUploadsHandler = (key) => {
+    setFiles(files.filter((file) => file.key !== key));
   };
 
-  const handleEditorValue = () => {
-    props.update('editorValue', editorValue);
-  };
+  const onDropHandler = async (filesUploaded) => {
+    for (let i = 0; i < filesUploaded.length; i++) {
+      try {
+        filesUploaded[i].timestamp = new Date();
+        filesUploaded[i].key = filesUploaded[i].timestamp + i;
 
-  const onDropHandler = async (file) => {
-    try {
-      file.timestamp = new Date();
-      var reader = new FileReader();
-      reader.onload = function () {
-        setEditorValue(this.result);
-      };
-      reader.readAsText(file);
-      if (files.length === 0) {
-        await setFiles((files) => [...files, file]);
-        props.update('data', file);
-      } else {
-        await setFiles([]);
-        await setFiles((files) => [...files, file]);
-        props.update('data', file);
+        await setFiles((files) => [...files, filesUploaded[i]]);
+        console.log(files);
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -88,57 +39,67 @@ const LastStep = (props) => {
         <Alert variant='danger'>{props.error}</Alert>
       )}
       <div
-        style={{ height: '55vh' }}
+        style={{ minHeight: '55vh' }}
         className={props.error && props.error !== null ? 'mb-2' : 'mb-2 pt-4'}
       >
-        <StyledDropZone onDrop={onDropHandler} className='mb-4'>
-          {files.length === 0 ? (
-            'Click or drop your file here'
-          ) : (
-            <div className='d-flex justify-content-center align-items-center'>
-              <span
-                style={{
-                  width: '2rem',
-                  verticalAlign: 'middle',
-                  marginRight: '2rem'
-                }}
-              >
-                <FileIcon
-                  extension={files[0].name.substr(
-                    files[0].name.lastIndexOf('.') + 1
-                  )}
-                  {...defaultStyles[
-                    files[0].name.substr(files[0].name.lastIndexOf('.') + 1)
-                  ]}
-                />
-              </span>{' '}
-              <span style={{ verticalAlign: 'middle', marginRight: '2rem' }}>
-                {files[0].name}
-              </span>{' '}
-              <span style={{ verticalAlign: 'middle' }}>
-                <i
-                  className='fas fa-trash trash'
-                  title='Remove from Uploads'
-                  onClick={removeFromUploadsHandler}
-                ></i>
-              </span>
-            </div>
-          )}
-        </StyledDropZone>
-        <div style={{ height: '30vh' }}>
-          <ReactQuill
-            theme='snow'
-            name='editor'
-            modules={modules}
-            formats={formats}
-            value={editorValue}
-            preserveWhitespace
-            onChange={setEditorValue}
-            style={{ height: '26vh' }}
-          />
-        </div>
+        <StyledDropZone multiple onDrop={onDropHandler} className='mb-4' />
+
+        <Table id='uploadsTable' bordered responsive size='sm'>
+          <thead>
+            <tr className='table-dark'>
+              <th className='uploadsTableHeaders text-center p-2'>Type</th>
+              <th className='uploadsTableHeaders text-center p-2'>File Name</th>
+              <th className='uploadsTableHeaders text-center p-2'>Date</th>
+              <th className='uploadsTableHeaders text-center p-2'>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {files.map((file) => (
+              <tr key={file.key}>
+                <td
+                  style={{ width: '1rem', verticalAlign: 'middle' }}
+                  className='p-2 small'
+                >
+                  <FileIcon
+                    extension={file.name.substr(file.name.lastIndexOf('.') + 1)}
+                    {...defaultStyles[
+                      file.name.substr(file.name.lastIndexOf('.') + 1)
+                    ]}
+                  />
+                </td>
+                <td
+                  style={{ verticalAlign: 'middle' }}
+                  className='text-center small'
+                >
+                  {file.name}
+                </td>
+                <td
+                  className='text-muted text-center small'
+                  style={{ verticalAlign: 'middle' }}
+                >
+                  <Moment format='D MMM YYYY hh:mm:ss'>{file.timestamp}</Moment>
+                </td>
+                <td
+                  className='text-center small'
+                  style={{ verticalAlign: 'middle' }}
+                >
+                  {' '}
+                  <Button
+                    title='Remove from Uploads'
+                    className='btn-Icon-Remove btn-sm'
+                    type='button'
+                    variant='light'
+                    onClick={() => removeFromUploadsHandler(file.key)}
+                  >
+                    <i className='fas fa-trash trash'></i>
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       </div>
-      <Stats step={3} {...props} handleEditorValue={handleEditorValue} />
+      <Stats step={3} {...props} files={files} />
     </div>
   );
 };

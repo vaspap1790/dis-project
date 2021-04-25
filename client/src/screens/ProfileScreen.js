@@ -116,91 +116,85 @@ const ProfileScreen = ({ match, history }) => {
         </Col>
         {/************************************* Main screen ***************************************/}
         <Col xs={9}>
-          <Row>
-            {loading ? (
-              <Loader />
-            ) : (
-              <Tabs defaultActiveKey='uploaded' transition={false}>
-                {/*************** Uploaded Tab *******************/}
-                <Tab eventKey='uploaded' title='Uploaded'>
-                  {error && error === 'No items uploaded' ? (
-                    <Alert variant='info'>{error}</Alert>
-                  ) : error && error !== 'No items uploaded' ? (
-                    <Alert
-                      variant='danger'
-                      onClose={() => {
-                        handleUserPacketsErrorOnClose();
-                      }}
-                      dismissible={error === 'No items uploaded'}
-                    >
-                      {error}
-                    </Alert>
-                  ) : (
-                    <>
-                      <Row className='mx-0 align-items-center mt-3'>
-                        <Col xs={2}>
-                          <Sorting
-                            sorting={sorting}
-                            handleSorting={handleSorting}
-                          />
-                        </Col>
-                        <Col xs={10}>
-                          <Row className='d-flex justify-content-end'>
-                            <Paginate
-                              pages={pages}
-                              page={page}
-                              handlePage={handlePageNumber}
-                            />
-                          </Row>
-                        </Col>
-                      </Row>
-                      <Row className='align-items-center'>
-                        {loading ? (
-                          <Loader />
-                        ) : error ? (
-                          <Alert variant='danger' style={{ width: '30vw' }}>
-                            {error}
-                          </Alert>
-                        ) : (
-                          <>
-                            {packets.map((packet) => (
-                              <Col
-                                key={packet._id}
-                                sm={12}
-                                md={6}
-                                lg={4}
-                                xl={3}
-                              >
-                                <Packet
-                                  handler={updateHandler}
-                                  packet={packet}
-                                  isProfile={true}
-                                />
-                              </Col>
-                            ))}
-                          </>
-                        )}
-                      </Row>
-
-                      <Row className='d-flex justify-content-end mx-0'>
-                        <Paginate
-                          pages={pages}
-                          page={page}
-                          handlePage={handlePageNumber}
+          {loading ? (
+            <Loader />
+          ) : (
+            <Tabs defaultActiveKey='uploaded' transition={false}>
+              {/*************** Uploaded Tab *******************/}
+              <Tab eventKey='uploaded' title='Uploaded'>
+                {error && error === 'No data Packets uploaded' ? (
+                  <Alert variant='info' className='mt-3'>
+                    {error}
+                  </Alert>
+                ) : error && error !== 'No items uploaded' ? (
+                  <Alert
+                    variant='danger'
+                    className=' mt-3'
+                    onClose={() => {
+                      handleUserPacketsErrorOnClose();
+                    }}
+                    dismissible
+                  >
+                    {error}
+                  </Alert>
+                ) : (
+                  <>
+                    <Row className='mx-0 align-items-center mt-3'>
+                      <Col xs={2}>
+                        <Sorting
+                          sorting={sorting}
+                          handleSorting={handleSorting}
                         />
-                      </Row>
-                    </>
-                  )}
+                      </Col>
+                      <Col xs={10}>
+                        <Row className='d-flex justify-content-end'>
+                          <Paginate
+                            pages={pages}
+                            page={page}
+                            handlePage={handlePageNumber}
+                          />
+                        </Row>
+                      </Col>
+                    </Row>
+                    <Row className='align-items-center'>
+                      {loading ? (
+                        <Loader />
+                      ) : error ? (
+                        <Alert variant='danger' style={{ width: '30vw' }}>
+                          {error}
+                        </Alert>
+                      ) : (
+                        <>
+                          {packets.map((packet) => (
+                            <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
+                              <Packet
+                                handler={updateHandler}
+                                packet={packet}
+                                isProfile={true}
+                              />
+                            </Col>
+                          ))}
+                        </>
+                      )}
+                    </Row>
+                    <Row className='d-flex justify-content-end mx-0'>
+                      <Paginate
+                        pages={pages}
+                        page={page}
+                        handlePage={handlePageNumber}
+                      />
+                    </Row>
+                  </>
+                )}
+              </Tab>
+              {/*************** Purchased Tab ******************/}
+              {!userDetails ? (
+                <Tab eventKey='purchased' title='Purchased'>
+                  <DataTable />
                 </Tab>
-                {/*************** Purchased Tab ******************/}
-                {!userDetails ? (
-                  <Tab eventKey='purchased' title='Purchased'>
-                    <DataTable />
-                  </Tab>
-                ) : null}
-              </Tabs>
-            )}
-          </Row>
+              ) : null}
+            </Tabs>
+          )}
         </Col>
       </Row>
     </>

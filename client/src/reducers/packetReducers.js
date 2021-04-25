@@ -43,7 +43,7 @@ export const packetListReducer = (state = { packets: [], page: 1 }, action) => {
         page: action.payload.page
       };
     case PACKET_LIST_FAIL:
-      return { loading: false, error: action.payload };
+      return { loading: false, error: action.payload, packets: [] };
     default:
       return state;
   }

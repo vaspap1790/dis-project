@@ -9,6 +9,7 @@ import SecondStep from '../components/SecondStep';
 import LastStep from '../components/LastStep';
 import ModalComponent from '../components/ModalComponent';
 import Meta from '../components/Meta';
+import ipfs from '../utils/ipfs';
 import '../css/wizard.css';
 import { Button, Row, Container } from 'react-bootstrap';
 import { createPacket, emptyCreatePacketError } from '../actions/packetActions';
@@ -90,23 +91,39 @@ const CreatePacketScreen = ({ history }) => {
     }
   };
 
-  const handleProceed = () => {
+  const handleProceed = async () => {
     const { form } = state;
     showConfirmationModal(false);
-    //TODO: IPFS upload with form.data ?
-    dispatch(
-      createPacket({
-        name: form.name,
-        description: form.description,
-        category: form.category,
-        price: form.price,
-        image: form.image,
-        sample: form.editorValue
-      })
-    );
-    setTimeout(function () {
-      dispatch(emptyCreatePacketError());
-    }, 8000);
+    console.log(form);
+    // const file = form.data;
+    // const reader = new window.FileReader();
+    // reader.readAsArrayBuffer(file);
+    // reader.onloadend = async () => {
+    //   const result = await ipfs.add(Buffer(reader.result));
+    //   console.log('Ipfs result', result);
+
+    //   for await (const chunk of ipfs.cat(result.cid.string)) {
+    //     console.log(chunk);
+    //   }
+
+    //   if (error) {
+    //     console.error(error);
+    //     return;
+    //   }
+    // dispatch(
+    //   createPacket({
+    //     name: form.name,
+    //     description: form.description,
+    //     category: form.category,
+    //     price: form.price,
+    //     image: form.image,
+    //     sample: form.editorValue
+    //   })
+    // );
+    // setTimeout(function () {
+    //   dispatch(emptyCreatePacketError());
+    // }, 8000);
+    // };
   };
 
   const goBack = () => {

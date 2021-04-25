@@ -95,14 +95,25 @@ const HomeScreen = ({ match, history }) => {
       <Meta />
       {!keyword ? (
         <Row className='mb-1'>
-          {/********************************** Carousel *************************************/}
-          <Col sm={7}>
-            <PacketCarousel />
-          </Col>
-          {/********************************** Jumbotron ************************************/}
-          <Col sm={5}>
-            <JumbotronHome />
-          </Col>
+          {packets.length === 0 ? (
+            <Col sm={12}>
+              {/********************************** Jumbotron ************************************/}
+              <JumbotronHome />
+            </Col>
+          ) : (
+            <>
+              {' '}
+              {/********************************** Carousel *************************************/}
+              <Col sm={7}>
+                <PacketCarousel />
+              </Col>
+              {/********************************** Jumbotron ************************************/}
+              <Col sm={5}>
+                <JumbotronHome />
+              </Col>
+              )
+            </>
+          )}
         </Row>
       ) : (
         <Button className='btn btn-primary my-3' onClick={goBack}>
@@ -144,26 +155,34 @@ const HomeScreen = ({ match, history }) => {
         {/********************************** Packets *************************************/}
         <Col sm={collapsed ? 11 : 9}>
           <Row className='mx-0 align-items-center'>
-            <Col xs={2}>
-              <Sorting sorting={sorting} handleSorting={handleSorting} />
-            </Col>
-            <Col xs={10}>
-              <Row className='d-flex justify-content-end'>
-                <Paginate
-                  pages={pages}
-                  page={page}
-                  handlePage={handlePageNumber}
-                />
-              </Row>
-            </Col>
+            {error && error.trim() === 'No data Packets uploaded' ? (
+              <Col>
+                <Alert variant='info'>No Data Packets Uploaded</Alert>
+              </Col>
+            ) : (
+              <>
+                <Col xs={2}>
+                  <Sorting sorting={sorting} handleSorting={handleSorting} />
+                </Col>
+                <Col xs={10}>
+                  <Row className='d-flex justify-content-end'>
+                    <Paginate
+                      pages={pages}
+                      page={page}
+                      handlePage={handlePageNumber}
+                    />
+                  </Row>
+                </Col>
+              </>
+            )}
           </Row>
           <Row className='align-items-center'>
             {loading ? (
               <Loader />
-            ) : error ? (
-              <Alert variant='danger' style={{ width: '30vw' }}>
-                {error}
-              </Alert>
+            ) : error && error.trim() !== 'No data Packets uploaded' ? (
+              <Col>
+                <Alert variant='danger'>{error}</Alert>
+              </Col>
             ) : (
               <>
                 {packets.map((packet) => (
@@ -176,7 +195,6 @@ const HomeScreen = ({ match, history }) => {
           </Row>
         </Col>
       </Row>
-
       <Row className='d-flex justify-content-end mx-0'>
         <Paginate pages={pages} page={page} handlePage={handlePageNumber} />
       </Row>

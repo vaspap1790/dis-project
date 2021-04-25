@@ -11,8 +11,9 @@ const Stats = ({
   totalSteps,
   step,
   uploadHandler,
-  handleEditorValue,
-  loading
+  loading,
+  files,
+  update
 }) => {
   // Component Methods
   const popover = (
@@ -56,8 +57,8 @@ const Stats = ({
           className='btn btn-success'
           title='Upload Data Packet'
           onClick={() => {
+            update('data', files);
             uploadHandler();
-            handleEditorValue();
           }}
         >
           {loading ? (

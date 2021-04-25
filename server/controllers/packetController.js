@@ -183,7 +183,7 @@ const getUserDetails = asyncHandler(async (req, res) => {
 // @route   POST /api/packets
 // @access  Private
 const createPacket = asyncHandler(async (req, res) => {
-  const { name, price, description, image, category, sample } = req.body;
+  const { name, price, description, image, category } = req.body;
 
   const packet = new Packet({
     name: name,
@@ -192,8 +192,7 @@ const createPacket = asyncHandler(async (req, res) => {
     category: category,
     numReviews: 0,
     description: description,
-    image: image,
-    sample: sample
+    image: image
   });
 
   const createdPacket = await packet.save();

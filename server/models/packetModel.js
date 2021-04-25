@@ -34,20 +34,15 @@ const packetSchema = mongoose.Schema(
       required: true,
       default: 0
     },
-    sample: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    ipfsHash: {
-      type: Number,
+    ipfsHashes: {
+      type: [String],
       required: true,
-      default: 0
+      default: []
     },
-    encryption_key: {
-      type: Number,
+    encryption_keys: {
+      type: [String],
       required: true,
-      default: 0
+      default: []
     },
     price: {
       type: Number,
