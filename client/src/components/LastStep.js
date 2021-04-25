@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { StyledDropZone } from 'react-drop-zone';
 import { FileIcon, defaultStyles } from 'react-file-icon';
-import { Alert, Table, Button } from 'react-bootstrap';
+import { Alert, Table, Button, Form } from 'react-bootstrap';
+import ModalComponent from '../components/ModalComponent';
 import Moment from 'react-moment';
 import 'react-drop-zone/dist/styles.css';
 import Stats from './Stats';
@@ -9,25 +10,66 @@ import Stats from './Stats';
 const LastStep = (props) => {
   // Component level State
   const [files, setFiles] = useState([]);
+  const [keyModal, showKeyModal] = useState(false);
+  const [key, setKey] = useState('');
+  const [fileKey, setFileKey] = useState('');
 
   // Component Methods
+  const submitHandler = (e) => {
+    e.preventDefault();
+  };
+
   const removeFromUploadsHandler = (key) => {
     setFiles(files.filter((file) => file.key !== key));
+  };
+
+  const updateKey = async () => {
+    const filter = files.filter((file) => file.key === fileKey);
+    const file = filter[0];
+    file.encryptionKey = key;
+
+    await setFiles(files.filter((file) => file.key !== fileKey));
+    setFiles((files) => [...files, file]);
+
+    showKeyModal(false);
+    setFileKey('');
+    setKey('');
   };
 
   const onDropHandler = async (filesUploaded) => {
     for (let i = 0; i < filesUploaded.length; i++) {
       try {
+        filesUploaded[i].encryptionKey = '';
         filesUploaded[i].timestamp = new Date();
         filesUploaded[i].key = filesUploaded[i].timestamp + i;
 
         await setFiles((files) => [...files, filesUploaded[i]]);
-        console.log(files);
       } catch (error) {
         console.log(error);
       }
     }
   };
+
+  const closeKeyModal = () => {
+    showKeyModal(false);
+    setFileKey('');
+    setKey('');
+  };
+
+  const form = (
+    <Form onSubmit={submitHandler}>
+      <Form.Group controlId='key'>
+        <Form.Label>Encyption Key</Form.Label>
+        <Form.Control
+          type='text'
+          placeholder='Enter encryption key'
+          title='Enter encryption key'
+          value={key}
+          onChange={(e) => setKey(e.target.value)}
+        ></Form.Control>
+      </Form.Group>
+    </Form>
+  );
 
   // This will be rendered
   return (
@@ -49,7 +91,10 @@ const LastStep = (props) => {
             <tr className='table-dark'>
               <th className='uploadsTableHeaders text-center p-2'>Type</th>
               <th className='uploadsTableHeaders text-center p-2'>File Name</th>
-              <th className='uploadsTableHeaders text-center p-2'>Date</th>
+              <th className='uploadsTableHeaders text-center p-2'>
+                Encryption Key
+              </th>
+              <th className='uploadsTableHeaders text-center p-2'>Timestamp</th>
               <th className='uploadsTableHeaders text-center p-2'>Action</th>
             </tr>
           </thead>
@@ -72,6 +117,30 @@ const LastStep = (props) => {
                   className='text-center small'
                 >
                   {file.name}
+                </td>
+                <td
+                  style={{ verticalAlign: 'middle' }}
+                  className='text-center small'
+                >
+                  <i
+                    className='fas fa-key link-icon blue-hover'
+                    title='Add Encryption Key'
+                    onClick={() => {
+                      setFileKey(file.key);
+                      showKeyModal(true);
+                    }}
+                  ></i>{' '}
+                  {file.encryptionKey === '' ? (
+                    <i
+                      className='fas fa-times'
+                      style={{ color: '#d9534f' }}
+                    ></i>
+                  ) : (
+                    <i
+                      className='fas fa-check'
+                      style={{ color: '#4bbf73' }}
+                    ></i>
+                  )}
                 </td>
                 <td
                   className='text-muted text-center small'
@@ -100,6 +169,16 @@ const LastStep = (props) => {
         </Table>
       </div>
       <Stats step={3} {...props} files={files} />
+
+      {/* Modals */}
+      <ModalComponent
+        show={keyModal}
+        close={closeKeyModal}
+        proceed={updateKey}
+        title='Add Encryption Key'
+        body={form}
+        success={true}
+      />
     </div>
   );
 };
