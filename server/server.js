@@ -10,6 +10,7 @@ import userRoutes from './routes/userRoutes.js';
 import accessRoutes from './routes/accessRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
+import actionRoutes from './routes/actionRoutes.js';
 
 // Global variables will be available through 'process.env.*' in '.env' file
 dotenv.config();
@@ -37,6 +38,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/access', accessRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/review', reviewRoutes);
+app.use('/api/action', actionRoutes);
 
 // Make this folder static so the web server can serve it
 const __dirname = path.resolve();

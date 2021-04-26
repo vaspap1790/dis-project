@@ -111,11 +111,11 @@ const ProfileScreen = ({ match, history }) => {
 
       <Row>
         {/************************************** Sidebar *****************************************/}
-        <Col xs={3}>
+        <Col xs={2}>
           <ProfileSidebar id={userDetails ? userDetailsId : userInfo._id} />
         </Col>
         {/************************************* Main screen ***************************************/}
-        <Col xs={9}>
+        <Col xs={10}>
           {loading ? (
             <Loader />
           ) : (

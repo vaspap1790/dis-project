@@ -230,6 +230,10 @@ input[type='checkbox']:hover {
   color: white !important;
 }
 
+.pro-sidebar {
+  min-width: 100px !important;
+}
+
 /* Profile Screen */
 .nav-item {
   margin: 0rem;
