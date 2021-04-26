@@ -10,7 +10,8 @@ import {
   NavDropdown,
   Alert,
   Button,
-  Image
+  Image,
+  Badge
 } from 'react-bootstrap';
 import SearchBox from './SearchBox';
 import ModalComponent from '../components/ModalComponent';
@@ -124,23 +125,38 @@ const Header = () => {
                   </Nav.Link>
                 </LinkContainer>
                 {userInfo ? (
-                  <NavDropdown
-                    title={userInfo.username}
-                    alignRight
-                    id='username'
-                  >
-                    <LinkContainer to='/profile'>
-                      <NavDropdown.Item>Profile</NavDropdown.Item>
-                    </LinkContainer>
-                    <LinkContainer to='/editDetails'>
-                      <NavDropdown.Item>Edit User Details</NavDropdown.Item>
-                    </LinkContainer>
-                    <LinkContainer to='/login'>
-                      <NavDropdown.Item onClick={logoutHandler}>
-                        Logout
-                      </NavDropdown.Item>
-                    </LinkContainer>
-                  </NavDropdown>
+                  <>
+                    <NavDropdown
+                      title={userInfo.username}
+                      alignRight
+                      id='username'
+                    >
+                      <LinkContainer to='/profile'>
+                        <NavDropdown.Item>Profile</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to='/editDetails'>
+                        <NavDropdown.Item>Edit User Details</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to='/login'>
+                        <NavDropdown.Item onClick={logoutHandler}>
+                          Logout
+                        </NavDropdown.Item>
+                      </LinkContainer>
+                    </NavDropdown>
+
+                    <NavDropdown
+                      title={
+                        <>
+                          <i className='fas fa-bell'></i>
+                          <Badge variant='light' className='notif'>
+                            9
+                          </Badge>
+                        </>
+                      }
+                      alignRight
+                      id='notifications'
+                    ></NavDropdown>
+                  </>
                 ) : (
                   <LinkContainer to='/login'>
                     <Nav.Link>

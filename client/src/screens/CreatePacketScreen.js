@@ -99,39 +99,43 @@ const CreatePacketScreen = ({ history }) => {
     }
   };
 
+  const uploadToIPFS = async (files, encryptionKeys, ipfsHashes) => {
+    for (let i = 0; i < files.length; i++) {
+      const reader = new window.FileReader();
+      reader.readAsArrayBuffer(files[i]);
+      reader.onloadend = async () => {
+        const result = await ipfs.add(Buffer(reader.result));
+        ipfsHashes.push(result.path);
+      };
+      encryptionKeys.push(files[i].encryptionKey);
+    }
+  };
+
   const handleProceed = async () => {
     const { form } = state;
+    const files = form.data;
+
     showConfirmationModal(false);
-    console.log(form);
-    // const file = form.data;
-    // const reader = new window.FileReader();
-    // reader.readAsArrayBuffer(file);
-    // reader.onloadend = async () => {
-    //   const result = await ipfs.add(Buffer(reader.result));
-    //   console.log('Ipfs result', result);
 
-    //   for await (const chunk of ipfs.cat(result.cid.string)) {
-    //     console.log(chunk);
-    //   }
+    let encryptionKeys = [];
+    let ipfsHashes = [];
 
-    //   if (error) {
-    //     console.error(error);
-    //     return;
-    //   }
-    // dispatch(
-    //   createPacket({
-    //     name: form.name,
-    //     description: form.description,
-    //     category: form.category,
-    //     price: form.price,
-    //     image: form.image,
-    //     sample: form.editorValue
-    //   })
-    // );
-    // setTimeout(function () {
-    //   dispatch(emptyCreatePacketError());
-    // }, 8000);
-    // };
+    await uploadToIPFS(files, encryptionKeys, ipfsHashes);
+
+    const newPacket = {
+      name: form.name,
+      description: form.description,
+      category: form.category,
+      price: form.price,
+      image: form.image,
+      ipfsHashes: ipfsHashes,
+      encryptionKeys: encryptionKeys
+    };
+
+    dispatch(createPacket(newPacket));
+    setTimeout(function () {
+      dispatch(emptyCreatePacketError());
+    }, 8000);
   };
 
   const goBack = () => {

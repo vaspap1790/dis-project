@@ -2,12 +2,16 @@ import React from 'react';
 import { Button, Jumbotron } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-const JumbotronHome = () => {
+const JumbotronHome = ({ wholeScreen }) => {
   return (
-    <Jumbotron className='py-4 mb-n5'>
+    <Jumbotron className='py-4'>
       <h1 style={{ zIndex: 5, position: 'relative' }}>
         Welcome to Data Dapp, people of Ethereum{' '}
-        <i className='fab fa-ethereum eth-jumbo fa-10x'></i>
+        {wholeScreen ? (
+          <i className='fab fa-ethereum eth-jumbo fa-8x'></i>
+        ) : (
+          <i className='fab fa-ethereum eth-jumbo-half fa-10x'></i>
+        )}
       </h1>
       <p
         style={{

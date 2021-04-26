@@ -165,15 +165,23 @@ const ProfileScreen = ({ match, history }) => {
                         </Alert>
                       ) : (
                         <>
-                          {packets.map((packet) => (
-                            <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
-                              <Packet
-                                handler={updateHandler}
-                                packet={packet}
-                                isProfile={true}
-                              />
-                            </Col>
-                          ))}
+                          {packets !== undefined
+                            ? packets.map((packet) => (
+                                <Col
+                                  key={packet._id}
+                                  sm={12}
+                                  md={6}
+                                  lg={4}
+                                  xl={3}
+                                >
+                                  <Packet
+                                    handler={updateHandler}
+                                    packet={packet}
+                                    isProfile={true}
+                                  />
+                                </Col>
+                              ))
+                            : null}
                         </>
                       )}
                     </Row>

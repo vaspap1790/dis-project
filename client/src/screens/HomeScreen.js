@@ -98,7 +98,7 @@ const HomeScreen = ({ match, history }) => {
           {packets.length === 0 ? (
             <Col sm={12}>
               {/********************************** Jumbotron ************************************/}
-              <JumbotronHome />
+              <JumbotronHome wholeScreen={true} />
             </Col>
           ) : (
             <>
@@ -109,7 +109,7 @@ const HomeScreen = ({ match, history }) => {
               </Col>
               {/********************************** Jumbotron ************************************/}
               <Col sm={5}>
-                <JumbotronHome />
+                <JumbotronHome wholeScreen={false} />
               </Col>
               )
             </>

@@ -52,11 +52,11 @@ export const accesssUserReducer = (state = { userAccess: [] }, action) => {
     case ACCESS_PROFILE_SUCCESS:
       return { loading: false, userAccess: action.payload };
     case ACCESS_PROFILE_FAIL:
-      return { loading: false, error: action.payload };
+      return { loading: false, userAccess: [], error: action.payload };
     case ACCESS_PROFILE_RESET:
       return { userAccess: [] };
     case ACCESS_PROFILE_EMPTY_ERROR:
-      return { error: null };
+      return { error: null, ...state };
     default:
       return state;
   }
