@@ -252,10 +252,9 @@ const DataTablePurchased = () => {
     },
     {
       dataField: 'createdAt',
-      text: 'Purchased',
+      text: 'Date',
       sort: true,
       headerTitle: true,
-      filter: textFilter(),
       headerStyle: {
         borderStyle: 'none',
         borderRightStyle: 'solid',
