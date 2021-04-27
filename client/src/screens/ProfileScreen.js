@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Packet from '../components/Packet';
-import DataTable from '../components/DataTable';
+import DataTablePurchased from '../components/DataTablePurchased';
+import DataTableActions from '../components/DataTableActions';
 import Sorting from '../components/Sorting';
 import Meta from '../components/Meta';
 import { Button, Row, Col, Alert, Tabs, Tab } from 'react-bootstrap';
@@ -119,7 +120,19 @@ const ProfileScreen = ({ match, history }) => {
           {loading ? (
             <Loader />
           ) : (
-            <Tabs defaultActiveKey='uploaded' transition={false}>
+            <Tabs defaultActiveKey='actions' transition={false}>
+              {/*************** Actions Tab ******************/}
+              {!userDetails ? (
+                <Tab eventKey='actions' title='Actions'>
+                  <DataTableActions />
+                </Tab>
+              ) : null}
+              {/*************** Purchased Tab ******************/}
+              {!userDetails ? (
+                <Tab eventKey='purchased' title='Purchased'>
+                  <DataTablePurchased />
+                </Tab>
+              ) : null}
               {/*************** Uploaded Tab *******************/}
               <Tab eventKey='uploaded' title='Uploaded'>
                 {error && error === 'No data Packets uploaded' ? (
@@ -195,12 +208,6 @@ const ProfileScreen = ({ match, history }) => {
                   </>
                 )}
               </Tab>
-              {/*************** Purchased Tab ******************/}
-              {!userDetails ? (
-                <Tab eventKey='purchased' title='Purchased'>
-                  <DataTable />
-                </Tab>
-              ) : null}
             </Tabs>
           )}
         </Col>

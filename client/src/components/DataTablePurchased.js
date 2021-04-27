@@ -6,8 +6,8 @@ import { Image, Form, Alert } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
-import ModalComponent from '../components/ModalComponent';
-import Loader from '../components/Loader';
+import ModalComponent from './ModalComponent';
+import Loader from './Loader';
 import {
   getUserAccess,
   emptyAccessProfileError
@@ -20,7 +20,7 @@ import {
 
 //import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
-const DataTable = () => {
+const DataTablePurchased = () => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
@@ -304,7 +304,7 @@ const DataTable = () => {
     ]
   };
 
-  //DataTable instantiation
+  //DataTablePurchased instantiation
   return (
     <>
       <div className='p-2 mt-3'>
@@ -362,4 +362,4 @@ const DataTable = () => {
   );
 };
 
-export default DataTable;
+export default DataTablePurchased;

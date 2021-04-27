@@ -11,6 +11,12 @@ import {
   packetTopRatedReducer,
   watchlistReducer
 } from './reducers/packetReducers';
+import {
+  actionListReducer,
+  actionCountReducer,
+  actionCreateReducer,
+  actionUpdateReducer
+} from './reducers/actionReducers';
 import { cartReducer } from './reducers/cartReducers';
 import {
   accessAddReducer,
@@ -41,7 +47,11 @@ const reducer = combineReducers({
   accessUser: accesssUserReducer,
   reviewCreate: reviewCreateReducer,
   packetTopRated: packetTopRatedReducer,
-  watchlist: watchlistReducer
+  watchlist: watchlistReducer,
+  actionList: actionListReducer,
+  actionCount: actionCountReducer,
+  actionCreate: actionCreateReducer,
+  actionUpdate: actionUpdateReducer
 });
 
 // Get info from browser's local storage

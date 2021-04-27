@@ -24,7 +24,7 @@ export const actionListReducer = (state = { actions: [] }, action) => {
     case ACTION_LIST_SUCCESS:
       return {
         loading: false,
-        actions: action.payload.actions
+        actions: action.payload
       };
     case ACTION_LIST_FAIL:
       return { loading: false, error: action.payload, actions: [] };

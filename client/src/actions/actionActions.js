@@ -17,6 +17,7 @@ import {
   COUNT_UNREAD_ACTIONS_SUCCESS,
   COUNT_UNREAD_ACTIONS_FAIL
 } from '../constants/actionConstants';
+import { logout } from './userActions';
 
 export const getUserActions = (id) => async (dispatch) => {
   try {
@@ -126,7 +127,7 @@ export const updateAction = (actionId, update, userId) => async (
     };
 
     const { data } = await axios.put(
-      `/api/action/update/${action._id}`,
+      `/api/action/update/${actionId}`,
       { actionId, update, userId },
       config
     );
