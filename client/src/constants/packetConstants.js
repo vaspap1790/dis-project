@@ -32,6 +32,7 @@ export const PACKET_CREATE_RESET = 'PACKET_CREATE_RESET';
 
 // Messages
 export const PACKET_CREATE_EMPTY_ERROR = 'PACKET_CREATE_EMPTY_ERROR';
+export const PACKET_CREATE_EMPTY_SUCCESS = 'PACKET_CREATE_EMPTY_SUCCESS';
 
 /////////////////////////////// Update Actions /////////////////////////////////
 export const PACKET_UPDATE_REQUEST = 'PACKET_UPDATE_REQUEST';

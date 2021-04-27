@@ -101,26 +101,11 @@ const PacketScreen = ({ history, match }) => {
         <>
           <Row>
             <Col md={6} className='px-0'>
-              {packet.sample !== '' ? (
-                <div>
-                  <ReactQuill
-                    theme='snow'
-                    name='editor'
-                    modules={modules}
-                    value={packet.sample}
-                    preserveWhitespace
-                    readOnly
-                  />
-                </div>
-              ) : (
-                <Image
-                  src={
-                    packet.image === '' ? '/images/sample.jpg' : packet.image
-                  }
-                  alt={packet.name}
-                  fluid
-                />
-              )}
+              <Image
+                src={packet.image === '' ? '/images/sample.jpg' : packet.image}
+                alt={packet.name}
+                fluid
+              />
             </Col>
             <Col md={6} className='px-0'>
               <Row className='d-flex'>

@@ -111,7 +111,6 @@ const HomeScreen = ({ match, history }) => {
               <Col sm={5}>
                 <JumbotronHome wholeScreen={false} />
               </Col>
-              )
             </>
           )}
         </Row>

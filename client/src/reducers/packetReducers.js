@@ -28,7 +28,8 @@ import {
   PACKET_TOP_SUCCESS,
   PACKET_TOP_FAIL,
   ADD_TO_WATCHLIST,
-  REMOVE_FROM_WATCHLIST
+  REMOVE_FROM_WATCHLIST,
+  PACKET_CREATE_EMPTY_SUCCESS
 } from '../constants/packetConstants';
 
 export const packetListReducer = (state = { packets: [], page: 1 }, action) => {
@@ -141,6 +142,8 @@ export const packetCreateReducer = (state = {}, action) => {
       return {};
     case PACKET_CREATE_EMPTY_ERROR:
       return { ...state, error: null };
+    case PACKET_CREATE_EMPTY_SUCCESS:
+      return { ...state, success: null };
     default:
       return state;
   }

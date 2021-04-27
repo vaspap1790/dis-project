@@ -8,11 +8,16 @@ import FirstStep from '../components/FirstStep';
 import SecondStep from '../components/SecondStep';
 import LastStep from '../components/LastStep';
 import ModalComponent from '../components/ModalComponent';
+import Loader from '../components/Loader';
 import Meta from '../components/Meta';
 import ipfs from '../utils/ipfs';
 import '../css/wizard.css';
 import { Button, Row, Container } from 'react-bootstrap';
-import { createPacket, emptyCreatePacketError } from '../actions/packetActions';
+import {
+  createPacket,
+  emptyCreatePacketError,
+  emptyCreatePacketSuccess
+} from '../actions/packetActions';
 import {
   validateName,
   validateDescription,
@@ -34,6 +39,7 @@ const CreatePacketScreen = ({ history }) => {
   // Component level State
   const [validationModal, showValidationModal] = useState(false);
   const [confirmationModal, showConfirmationModal] = useState(false);
+  const [loadingModal, showLoadingModal] = useState(false);
 
   const [state, updateState] = useState({
     form: {}
@@ -52,6 +58,7 @@ const CreatePacketScreen = ({ history }) => {
   // Component Methods
   const closeValidationModal = () => showValidationModal(false);
   const closeConfirmationModal = () => showConfirmationModal(false);
+  const closeLoadingModal = () => showLoadingModal(false);
 
   const updateForm = (key, value) => {
     const { form } = state;
@@ -99,16 +106,15 @@ const CreatePacketScreen = ({ history }) => {
     }
   };
 
-  const uploadToIPFS = async (files, encryptionKeys, ipfsHashes) => {
-    for (let i = 0; i < files.length; i++) {
+  const uploadToIPFS = async (file) => {
+    return new Promise((resolve, reject) => {
       const reader = new window.FileReader();
-      reader.readAsArrayBuffer(files[i]);
+      reader.readAsArrayBuffer(file);
       reader.onloadend = async () => {
         const result = await ipfs.add(Buffer(reader.result));
-        ipfsHashes.push(result.path);
+        resolve(result);
       };
-      encryptionKeys.push(files[i].encryptionKey);
-    }
+    });
   };
 
   const handleProceed = async () => {
@@ -116,11 +122,16 @@ const CreatePacketScreen = ({ history }) => {
     const files = form.data;
 
     showConfirmationModal(false);
+    showLoadingModal(true);
 
     let encryptionKeys = [];
     let ipfsHashes = [];
 
-    await uploadToIPFS(files, encryptionKeys, ipfsHashes);
+    for (let i = 0; i < files.length; i++) {
+      const result = await uploadToIPFS(files[i]);
+      ipfsHashes.push(result.path);
+      encryptionKeys.push(files[i].encryptionKey);
+    }
 
     const newPacket = {
       name: form.name,
@@ -133,14 +144,24 @@ const CreatePacketScreen = ({ history }) => {
     };
 
     dispatch(createPacket(newPacket));
+    showLoadingModal(false);
+
     setTimeout(function () {
       dispatch(emptyCreatePacketError());
+      dispatch(emptyCreatePacketSuccess());
     }, 8000);
   };
 
   const goBack = () => {
     history.goBack();
   };
+
+  const loadingModalContent = (
+    <>
+      <Loader />
+      <div className='my-2'>Uploading your files to IPFS...</div>
+    </>
+  );
 
   //This will be rendered
   return (
@@ -196,6 +217,12 @@ const CreatePacketScreen = ({ history }) => {
           body='Are you sure you want to proceed and upload the data packet?'
           danger={true}
           success={true}
+        />
+        <ModalComponent
+          show={loadingModal}
+          close={closeLoadingModal}
+          title='Uploading...'
+          body={loadingModalContent}
         />
         <ModalComponent
           show={validationModal}

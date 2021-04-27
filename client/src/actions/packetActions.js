@@ -27,7 +27,8 @@ import {
   PACKET_TOP_SUCCESS,
   PACKET_TOP_FAIL,
   ADD_TO_WATCHLIST,
-  REMOVE_FROM_WATCHLIST
+  REMOVE_FROM_WATCHLIST,
+  PACKET_CREATE_EMPTY_SUCCESS
 } from '../constants/packetConstants';
 import { logout } from './userActions';
 
@@ -204,6 +205,12 @@ export const createPacket = (packet) => async (dispatch, getState) => {
 export const emptyCreatePacketError = () => async (dispatch) => {
   dispatch({
     type: PACKET_CREATE_EMPTY_ERROR
+  });
+};
+
+export const emptyCreatePacketSuccess = () => async (dispatch) => {
+  dispatch({
+    type: PACKET_CREATE_EMPTY_SUCCESS
   });
 };
 

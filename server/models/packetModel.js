@@ -26,12 +26,10 @@ const packetSchema = mongoose.Schema(
     },
     rating: {
       type: Number,
-      required: true,
       default: 0
     },
     numReviews: {
       type: Number,
-      required: true,
       default: 0
     },
     ipfsHashes: {
@@ -39,7 +37,7 @@ const packetSchema = mongoose.Schema(
       required: true,
       default: []
     },
-    encryption_keys: {
+    encryptionKeys: {
       type: [String],
       required: true,
       default: []

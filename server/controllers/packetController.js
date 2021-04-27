@@ -2,6 +2,9 @@ import asyncHandler from 'express-async-handler';
 import Packet from '../models/packetModel.js';
 import Review from '../models/reviewModel.js';
 import User from '../models/userModel.js';
+import Cryptr from 'cryptr';
+
+const cryptr = new Cryptr(`${process.env.ENCRYPT_KEY}`);
 
 // @desc    Fetch all packets
 // @route   GET /api/packets
@@ -77,6 +80,15 @@ const getPacketById = asyncHandler(async (req, res) => {
   );
 
   if (packet) {
+    const decryptedEncryptionKeys = [];
+
+    if (packet.encryptionKeys.length !== 0) {
+      for (var i = 0; i < packet.encryptionKeys.length; i++) {
+        decryptedEncryptionKeys.push(cryptr.decrypt(packet.encryptionKeys[i]));
+      }
+      packet.encryptionKeys = decryptedEncryptionKeys;
+    }
+
     const data = { packet, reviews };
     res.json(data);
   } else {
@@ -95,6 +107,14 @@ const getPacketDataById = asyncHandler(async (req, res) => {
   );
 
   if (packet) {
+    const decryptedEncryptionKeys = [];
+
+    if (packet.encryptionKeys.length !== 0) {
+      for (var i = 0; i < packet.encryptionKeys.length; i++) {
+        decryptedEncryptionKeys.push(cryptr.decrypt(encryptionKeys[i]));
+      }
+      packet.encryptionKeys = decryptedEncryptionKeys;
+    }
     res.json(packet);
   } else {
     res.status(404);
@@ -183,18 +203,33 @@ const getUserDetails = asyncHandler(async (req, res) => {
 // @route   POST /api/packets
 // @access  Private
 const createPacket = asyncHandler(async (req, res) => {
-  const { name, price, description, image, category } = req.body;
+  const {
+    name,
+    price,
+    description,
+    image,
+    category,
+    ipfsHashes,
+    encryptionKeys
+  } = req.body;
+
+  const encryptedEncryptionKeys = [];
+
+  for (var i = 0; i < encryptionKeys.length; i++) {
+    encryptedEncryptionKeys.push(cryptr.encrypt(encryptionKeys[i]));
+  }
 
   const packet = new Packet({
     name: name,
     price: price,
     user: req.user._id,
     category: category,
-    numReviews: 0,
     description: description,
-    image: image
+    image: image,
+    ipfsHashes: ipfsHashes,
+    encryptionKeys: encryptedEncryptionKeys
   });
-
+  console.log(packet);
   const createdPacket = await packet.save();
   res.status(201).json(createdPacket);
 });
