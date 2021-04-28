@@ -119,11 +119,6 @@ const Header = () => {
                     </>
                   )}
                 </NavDropdown>
-                <LinkContainer to='/cart'>
-                  <Nav.Link>
-                    Cart <i className='fas fa-shopping-cart'></i>
-                  </Nav.Link>
-                </LinkContainer>
                 {userInfo ? (
                   <>
                     <NavDropdown

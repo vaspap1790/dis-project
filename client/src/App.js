@@ -7,7 +7,6 @@ import HomeScreen from './screens/HomeScreen';
 import PacketScreen from './screens/PacketScreen';
 import CreatePacketScreen from './screens/CreatePacketScreen';
 import UpdatePacketScreen from './screens/UpdatePacketScreen';
-import CartScreen from './screens/CartScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import ProfileScreen from './screens/ProfileScreen';
@@ -74,7 +73,6 @@ const App = () => {
           <Route path='/packet/:id' component={PacketScreen} />
           <Route path='/packets/create' component={CreatePacketScreen} />
           <Route path='/packets/update/:id' component={UpdatePacketScreen} />
-          <Route path='/cart/:id?' component={CartScreen} />
           <Route path='/search/:keyword' component={HomeScreen} exact />
           <Route path='/' component={HomeScreen} exact />
         </Container>

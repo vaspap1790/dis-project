@@ -10,7 +10,6 @@ import {
   ACCESS_PROFILE_FAIL,
   ACCESS_PROFILE_EMPTY_ERROR
 } from '../constants/accessConstants';
-import { CART_REMOVE_ITEM } from '../constants/cartConstants';
 
 ////////////////////////////////// Add Action ////////////////////////////////////
 export const addNewAccess = (packetId) => async (dispatch, getState) => {
@@ -52,16 +51,6 @@ export const addNewAccess = (packetId) => async (dispatch, getState) => {
         type: ACCESS_ADD_SUCCESS,
         payload: data
       });
-
-      dispatch({
-        type: CART_REMOVE_ITEM,
-        payload: packetId
-      });
-
-      localStorage.setItem(
-        'cartItems',
-        JSON.stringify(getState().cart.cartItems)
-      );
     }
   } catch (error) {
     dispatch({

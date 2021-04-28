@@ -12,7 +12,7 @@ import ProfileSidebar from '../components/ProfileSidebar';
 import {
   getUserPackets,
   emptyUserPacketsError,
-  listPacketData
+  listPacketDetails
 } from '../actions/packetActions';
 
 const ProfileScreen = ({ match, history }) => {
@@ -63,7 +63,7 @@ const ProfileScreen = ({ match, history }) => {
   };
 
   const updateHandler = (e) => {
-    dispatch(listPacketData(e.target.id));
+    dispatch(listPacketDetails(e.target.id));
     history.push(`/packets/update/${e.target.id}`);
   };
 

@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Action from '../models/actionModel.js';
+import Packet from '../models/packetModel.js';
 
 // @desc    Add new action
 // @route   POST /api/action
@@ -23,7 +24,20 @@ const addNewAction = asyncHandler(async (req, res) => {
       type: type
     });
     const addedAction = await action.save();
-    res.status(201).json(addedAction);
+    const decryptedEncryptionKeys = [];
+
+    if (type === 'Sample') {
+      let packet = await Packet.findById(req.params.id);
+
+      if (packet.encryptionKeys.length !== 0) {
+        for (var i = 0; i < packet.encryptionKeys.length; i++) {
+          decryptedEncryptionKeys.push(
+            cryptr.decrypt(packet.encryptionKeys[i])
+          );
+        }
+      }
+    }
+    res.status(201).json(decryptedEncryptionKeys);
   }
 });
 

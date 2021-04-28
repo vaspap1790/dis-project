@@ -73,7 +73,7 @@ const UpdatePacketScreen = ({ history, match }) => {
       history.push('/login');
     }
     const fetch = async () => {
-      const { data } = await axios.get(`/api/packets/data/${packetId}`);
+      const { data } = await axios.get(`/api/packets/${packetId}`);
       setName(data.name);
       setDescription(data.description);
       setCategory(data.category);

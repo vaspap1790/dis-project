@@ -4,7 +4,6 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import {
   packetListReducer,
   packetDetailsReducer,
-  packetDataReducer,
   packetsUserReducer,
   packetCreateReducer,
   packetUpdateReducer,
@@ -17,7 +16,6 @@ import {
   actionCreateReducer,
   actionUpdateReducer
 } from './reducers/actionReducers';
-import { cartReducer } from './reducers/cartReducers';
 import {
   accessAddReducer,
   accesssUserReducer
@@ -34,11 +32,9 @@ import {
 const reducer = combineReducers({
   packetList: packetListReducer,
   packetDetails: packetDetailsReducer,
-  packetData: packetDataReducer,
   packetsUser: packetsUserReducer,
   packetCreate: packetCreateReducer,
   packetUpdate: packetUpdateReducer,
-  cart: cartReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userUpdateProfile: userUpdateProfileReducer,
@@ -55,10 +51,6 @@ const reducer = combineReducers({
 });
 
 // Get info from browser's local storage
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
-  : [];
-
 const userInfoFromStorage = localStorage.getItem('userInfo')
   ? JSON.parse(localStorage.getItem('userInfo'))
   : null;
@@ -69,7 +61,6 @@ const watchlistFromStorage = localStorage.getItem('favourites')
 
 // Initialise App State
 const initialState = {
-  cart: { cartItems: cartItemsFromStorage },
   userLogin: { userInfo: userInfoFromStorage },
   watchlist: { favourites: watchlistFromStorage }
 };

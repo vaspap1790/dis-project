@@ -62,7 +62,10 @@ export const countUnreadActions = (id) => async (dispatch) => {
 };
 
 //////////////////////////////// Create Packet Actions ///////////////////////////////////
-export const createAction = (action) => async (dispatch, getState) => {
+export const createAction = (packetId, requesterId, receiverId, type) => async (
+  dispatch,
+  getState
+) => {
   try {
     dispatch({
       type: ACTION_CREATE_REQUEST
@@ -78,6 +81,7 @@ export const createAction = (action) => async (dispatch, getState) => {
       }
     };
 
+    const action = { packetId, requesterId, receiverId, type };
     const { data } = await axios.post(`/api/action`, action, config);
 
     dispatch({

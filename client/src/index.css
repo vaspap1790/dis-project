@@ -303,49 +303,6 @@ input[type='checkbox']:hover {
   }
 }
 
-/* Responsive Cart Screen */
-.trash {
-  color: #d9534f !important;
-}
-
-.trash:hover {
-  color: #d23430 !important;
-}
-
-@media screen and (max-width: 768px) {
-  .cart-text {
-    justify-content: center;
-    margin: 1rem;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .btn-Icon-Checkout {
-    display: none;
-  }
-  .btn-Icon-Remove {
-    display: none;
-  }
-}
-
-@media screen and (min-width: 768px) {
-  .btn-Text-Remove {
-    display: none;
-  }
-}
-
-@media screen and (min-width: 992px) {
-  .btn-Icon-Checkout {
-    display: none;
-  }
-}
-
-@media screen and (min-width: 768px) and (max-width: 992px) {
-  .btn-Text-Checkout {
-    display: none;
-  }
-}
-
 /* Packet Form Screen */
 .uploadsTableHeaders {
   border-color: #fff !important;

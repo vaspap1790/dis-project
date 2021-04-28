@@ -74,47 +74,7 @@ const getPacketById = asyncHandler(async (req, res) => {
     'user',
     'username'
   );
-  const reviews = await Review.find({ packet: req.params.id }).populate(
-    'user',
-    'username'
-  );
-
   if (packet) {
-    const decryptedEncryptionKeys = [];
-
-    if (packet.encryptionKeys.length !== 0) {
-      for (var i = 0; i < packet.encryptionKeys.length; i++) {
-        decryptedEncryptionKeys.push(cryptr.decrypt(packet.encryptionKeys[i]));
-      }
-      packet.encryptionKeys = decryptedEncryptionKeys;
-    }
-
-    const data = { packet, reviews };
-    res.json(data);
-  } else {
-    res.status(404);
-    throw new Error('Packet not found');
-  }
-});
-
-// @desc    Fetch single packet
-// @route   GET /api/packets/data/:id
-// @access  Public
-const getPacketDataById = asyncHandler(async (req, res) => {
-  let packet = await Packet.findById(req.params.id).populate(
-    'user',
-    'username'
-  );
-
-  if (packet) {
-    const decryptedEncryptionKeys = [];
-
-    if (packet.encryptionKeys.length !== 0) {
-      for (var i = 0; i < packet.encryptionKeys.length; i++) {
-        decryptedEncryptionKeys.push(cryptr.decrypt(encryptionKeys[i]));
-      }
-      packet.encryptionKeys = decryptedEncryptionKeys;
-    }
     res.json(packet);
   } else {
     res.status(404);
@@ -273,6 +233,5 @@ export {
   createPacket,
   updatePacket,
   getTopPackets,
-  getPacketDataById,
   getUserDetails
 };

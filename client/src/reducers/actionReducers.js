@@ -33,16 +33,16 @@ export const actionListReducer = (state = { actions: [] }, action) => {
   }
 };
 
-export const actionCreateReducer = (state = {}, action) => {
+export const actionCreateReducer = (state = { keys: [] }, action) => {
   switch (action.type) {
     case ACTION_CREATE_REQUEST:
       return { loading: true };
     case ACTION_CREATE_SUCCESS:
-      return { loading: false, success: true, action: action.payload };
+      return { loading: false, success: true, keys: action.payload };
     case ACTION_CREATE_FAIL:
       return { loading: false, error: action.payload };
     case ACTION_CREATE_RESET:
-      return {};
+      return { loading: false, keys: [], error: null };
     case ACTION_CREATE_EMPTY_ERROR:
       return { ...state, error: null };
     default:

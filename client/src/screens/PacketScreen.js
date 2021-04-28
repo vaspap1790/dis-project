@@ -4,23 +4,23 @@ import { Row, Col, Image, ListGroup, Button, Alert } from 'react-bootstrap';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
 import ModalComponent from '../components/ModalComponent';
-import ReviewsContainer from '../components/ReviewsContainer';
 import ReactQuill from 'react-quill';
 import Meta from '../components/Meta';
 import 'react-quill/dist/quill.snow.css';
 import 'react-drop-zone/dist/styles.css';
 import { listPacketDetails, addToWatchlist } from '../actions/packetActions';
+import { createAction } from '../actions/actionActions';
 
 const PacketScreen = ({ history, match }) => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
   // App level State
-  const packetDetails = useSelector((state) => state.packetDetails);
-  const { loading: loadingDetails, error, packet, reviews } = packetDetails;
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-  const cart = useSelector((state) => state.cart);
-  const { cartItems } = cart;
+  const packetDetails = useSelector((state) => state.packetDetails);
+  const { loading: loadingDetails, error, packet } = packetDetails;
 
   // Component level State
   const [watchlistModal, showWatchlistModal] = useState(false);
@@ -36,8 +36,14 @@ const PacketScreen = ({ history, match }) => {
   }, [dispatch, match]);
 
   // Component Methods
-  const addToCartHandler = () => {
-    history.push(`/cart/${match.params.id}`);
+  const purchaseHandler = () => {
+    //TODO:
+  };
+
+  const sampleHandler = () => {
+    // TODO: Check blockchain if this user has
+    // requested sample of this product again
+    dispatch(createAction(packet._id, userInfo._id, packet.user._id, 'Sample'));
   };
 
   const goBack = () => {
@@ -75,18 +81,28 @@ const PacketScreen = ({ history, match }) => {
               Watch <i className='fas fa-eye'></i>
             </Button>
             <Button
-              onClick={addToCartHandler}
-              className='btn btn-success mr-1'
-              disabled={cartItems.find(
-                (cartItem) => cartItem.packet === packet._id
-              )}
+              onClick={sampleHandler}
+              className='btn btn-warning mr-1'
+              disabled={userInfo === undefined || !userInfo}
               title={
-                cartItems.find((cartItem) => cartItem.packet === packet._id)
-                  ? 'You have already added this item to your Cart'
-                  : 'Add this item to your Cart'
+                userInfo === undefined || !userInfo
+                  ? 'You have to be logged in to perform this action'
+                  : 'See a sample of the data packet'
               }
             >
-              Cart <i className='fas fa-shopping-cart'></i>
+              Sample <i className='fas fa-search'></i>
+            </Button>
+            <Button
+              onClick={purchaseHandler}
+              className='btn btn-success mr-1'
+              disabled={userInfo === undefined || !userInfo}
+              title={
+                userInfo === undefined || !userInfo
+                  ? 'You have to be logged in to perform this action'
+                  : 'Purchase this item'
+              }
+            >
+              Purchase <i className='fab fa-ethereum'></i>
             </Button>
             <Meta title={packet.name} />
           </>
@@ -126,10 +142,6 @@ const PacketScreen = ({ history, match }) => {
                   <ListGroup.Item>Category: {packet.category}</ListGroup.Item>
                   <ListGroup.Item>
                     Description: {packet.description}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <h2>Reviews</h2>
-                    <ReviewsContainer reviews={reviews} />
                   </ListGroup.Item>
                 </ListGroup>
               </Row>
