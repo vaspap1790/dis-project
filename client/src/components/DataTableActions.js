@@ -26,14 +26,29 @@ const DataTablePurchased = () => {
   const [packetId, setPacketId] = useState('');
 
   // Hook that triggers when component did mount
-  useEffect(() => {
-    dispatch(getUserActions(userInfo._id));
-  }, [dispatch, userInfo]);
+  // useEffect(() => {
+  //   dispatch(getUserActions(userInfo._id));
+  //   setInterval(function () {
+  //     dispatch(getUserActions(userInfo._id));
+  //   }, 60000);
+  // }, [dispatch, userInfo]);
 
   // Component Methods
   // const handleUserActionsErrorOnClose = () => {
   //   dispatch(emptyAccessProfileError());
   // };
+
+  const markAsRead = () => {
+    //TODO:
+  };
+
+  const markAsUnread = () => {
+    //TODO:
+  };
+
+  const deleteNotification = () => {
+    //TODO:
+  };
 
   // Header formatters
   const imageHeaderFormatter = (column, colIndex) => {
@@ -124,7 +139,7 @@ const DataTablePurchased = () => {
 
   const nameFormatter = (cell, row, rowIndex) => {
     return (
-      <div className='v-align h-align' style={{ height: '3rem' }}>
+      <div className='v-align h-align small' style={{ height: '3rem' }}>
         <Link to={`/packet/${row.packet._id}`}>{cell}</Link>
       </div>
     );
@@ -132,8 +147,15 @@ const DataTablePurchased = () => {
 
   const userFormatter = (cell, row, rowIndex) => {
     return (
-      <div className='v-align h-align' style={{ height: '3rem' }}>
-        {cell}
+      <div className='v-align h-align small' style={{ height: '3rem' }}>
+        by&nbsp;
+        <Link
+          to={`/profile/${row.requester._id}`}
+          className='link'
+          title='See User Profile'
+        >
+          {cell}
+        </Link>
       </div>
     );
   };
@@ -141,7 +163,17 @@ const DataTablePurchased = () => {
   const typeFormatter = (cell, row, rowIndex) => {
     return (
       <div className='v-align h-align' style={{ height: '3rem' }}>
-        {cell}
+        <span
+          className={
+            cell === 'Sample'
+              ? 'small badge-pill badge-warning'
+              : cell === 'Purchase'
+              ? 'small badge-pill badge-success'
+              : ''
+          }
+        >
+          {cell}
+        </span>
       </div>
     );
   };
@@ -149,14 +181,26 @@ const DataTablePurchased = () => {
   const statusFormatter = (cell, row, rowIndex) => {
     return (
       <div className='v-align h-align' style={{ height: '3rem' }}>
-        {cell}
+        <span
+          className={
+            cell === 'Pending'
+              ? 'small badge-pill badge-info'
+              : cell === 'Approved'
+              ? 'small badge-pill badge-success'
+              : cell === 'Rejected'
+              ? 'small badge-pill badge-danger'
+              : ''
+          }
+        >
+          {cell}
+        </span>
       </div>
     );
   };
 
   const dateFormatter = (cell, row, rowIndex) => {
     return (
-      <div className='v-align h-align' style={{ height: '3rem' }}>
+      <div className='v-align h-align small' style={{ height: '3rem' }}>
         <Moment format='D MMM YYYY hh:mm:ss'>{cell}</Moment>
       </div>
     );
@@ -165,28 +209,42 @@ const DataTablePurchased = () => {
   const actionFormatter = (cell, row, rowIndex) => {
     return (
       <div className='v-align h-align' style={{ height: '3rem' }}>
+        {cell.readByReceiver !== false ? (
+          <span
+            type='button'
+            variant='primary'
+            title='Mark as Read'
+            className='blue-hover'
+            onClick={() => {
+              markAsRead(cell);
+            }}
+          >
+            <i className='fas fa-bookmark'></i>
+          </span>
+        ) : (
+          <span
+            type='button'
+            variant='primary'
+            title='Mark as Unread'
+            className='blue-hover'
+            onClick={() => {
+              markAsUnread(cell);
+            }}
+          >
+            <i className='far fa-bookmark'></i>{' '}
+          </span>
+        )}
+        &nbsp;
         <span
           type='button'
           variant='primary'
-          title='Download'
+          title='Delete Notification'
           className='blue-hover'
           onClick={() => {
-            //TODO: download data packet
-            console.log(cell);
+            deleteNotification(cell);
           }}
         >
-          <i className='fas fa-arrow-down'></i>
-        </span>
-        <span
-          type='button'
-          variant='primary'
-          title='Rate'
-          className='blue-hover'
-          onClick={() => {
-            setPacketId(cell);
-          }}
-        >
-          <i className='fas fa-star'></i>
+          <i className='fas fa-times' style={{ color: '#d9534f' }}></i>{' '}
         </span>
       </div>
     );
@@ -222,7 +280,7 @@ const DataTablePurchased = () => {
       headerFormatter: nameHeaderFormatter
     },
     {
-      dataField: 'user.username',
+      dataField: 'requester.username',
       text: 'User',
       sort: true,
       headerTitle: true,
@@ -319,6 +377,15 @@ const DataTablePurchased = () => {
     ]
   };
 
+  const unread = (row, rowIndex) => {
+    const style = {};
+    if (row.readByReceiver === false) {
+      style.backgroundColor = '#d2ebf5';
+    }
+
+    return style;
+  };
+
   //DataTablePurchased instantiation
   return (
     <>
@@ -356,6 +423,7 @@ const DataTablePurchased = () => {
             pagination={paginationFactory(pagingOptions)}
             filter={filterFactory()}
             headerClasses='table-dark'
+            rowStyle={unread}
           />
         )}
       </div>

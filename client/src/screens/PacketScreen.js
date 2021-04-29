@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Image, ListGroup, Button, Alert } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Image,
+  ListGroup,
+  Button,
+  Alert,
+  Table
+} from 'react-bootstrap';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
 import ModalComponent from '../components/ModalComponent';
@@ -22,13 +30,51 @@ const PacketScreen = ({ history, match }) => {
   const packetDetails = useSelector((state) => state.packetDetails);
   const { loading: loadingDetails, error, packet } = packetDetails;
 
+  const actionCreate = useSelector((state) => state.actionCreate);
+  const { loading: loadingCreateAction, errorCreateAction, key } = actionCreate;
+
   // Component level State
   const [watchlistModal, showWatchlistModal] = useState(false);
+  const [sampleModal, showSampleModal] = useState(false);
 
   //Component Variables
-  const modules = {
-    toolbar: false
-  };
+  const sampleModalContent = (
+    <>
+      {loadingCreateAction ? (
+        <>
+          <Loader />
+          <div>Retrieving key...</div>
+        </>
+      ) : errorCreateAction ? (
+        <Alert variant='danger'>{errorCreateAction}</Alert>
+      ) : (
+        <>
+          <Table id='keyTable' bordered responsive size='sm'>
+            <thead>
+              <tr className='table-dark'>
+                <th className='uploadsTableHeaders text-center p-2'>
+                  IPFS Hash
+                </th>
+                <th className='uploadsTableHeaders text-center p-2'>
+                  Encryption Key
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={{ verticalAlign: 'middle' }} className='text-center'>
+                  {key.ipfsHash}
+                </td>
+                <td style={{ verticalAlign: 'middle' }} className='text-center'>
+                  {key.encryptionKey}
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+        </>
+      )}
+    </>
+  );
 
   // Hook that triggers when component did mount
   useEffect(() => {
@@ -43,6 +89,7 @@ const PacketScreen = ({ history, match }) => {
   const sampleHandler = () => {
     // TODO: Check blockchain if this user has
     // requested sample of this product again
+    showSampleModal(true);
     dispatch(createAction(packet._id, userInfo._id, packet.user._id, 'Sample'));
   };
 
@@ -56,6 +103,7 @@ const PacketScreen = ({ history, match }) => {
   };
 
   const closeWatchlistModal = () => showWatchlistModal(false);
+  const closeSampleModal = () => showSampleModal(false);
 
   // This will be rendered
   return (
@@ -156,6 +204,13 @@ const PacketScreen = ({ history, match }) => {
         close={closeWatchlistModal}
         title='Add to Watchlist'
         body='You successfully added the data packet to the Watchlist'
+        info={true}
+      />
+      <ModalComponent
+        show={sampleModal}
+        close={closeSampleModal}
+        title='Sample'
+        body={sampleModalContent}
         info={true}
       />
     </>

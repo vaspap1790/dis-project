@@ -1,12 +1,17 @@
 import asyncHandler from 'express-async-handler';
 import Action from '../models/actionModel.js';
 import Packet from '../models/packetModel.js';
+import { getRandomInt } from '../utils/utilities.js';
+import Cryptr from 'cryptr';
+
+const cryptr = new Cryptr(`${process.env.ENCRYPT_KEY}`);
 
 // @desc    Add new action
 // @route   POST /api/action
 // @access  Private
 const addNewAction = asyncHandler(async (req, res) => {
-  const { packetId, requesterId, receiverId, type } = req.body.action;
+  const { packetId, requesterId, receiverId, type } = req.body;
+  let key = {};
 
   if (
     packetId === undefined ||
@@ -24,21 +29,18 @@ const addNewAction = asyncHandler(async (req, res) => {
       type: type
     });
     const addedAction = await action.save();
-    const decryptedEncryptionKeys = [];
 
     if (type === 'Sample') {
-      let packet = await Packet.findById(req.params.id);
+      let packet = await Packet.findById(packetId);
 
       if (packet.encryptionKeys.length !== 0) {
-        for (var i = 0; i < packet.encryptionKeys.length; i++) {
-          decryptedEncryptionKeys.push(
-            cryptr.decrypt(packet.encryptionKeys[i])
-          );
-        }
+        let randInt = getRandomInt(packet.encryptionKeys.length);
+        key.encryptionKey = cryptr.decrypt(packet.encryptionKeys[randInt]);
+        key.ipfsHash = packet.ipfsHashes[randInt];
       }
     }
-    res.status(201).json(decryptedEncryptionKeys);
   }
+  res.status(201).json(key);
 });
 
 // @desc    Fetch all user actions
@@ -60,10 +62,10 @@ const getActions = asyncHandler(async (req, res) => {
 // @access  Private
 const countUnreadActions = asyncHandler(async (req, res) => {
   const count = await Action.countDocuments({
-    receiverId: req.params.id,
+    receiver: req.params.id,
     readByReceiver: false
   });
-  res.json(actions);
+  res.json(count);
 });
 
 // @desc    Update action

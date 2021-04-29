@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -17,6 +17,8 @@ import SearchBox from './SearchBox';
 import ModalComponent from '../components/ModalComponent';
 import { logout } from '../actions/userActions';
 import { removeFromWatchlist } from '../actions/packetActions';
+import { countUnreadActions } from '../actions/actionActions';
+import { getUserActions } from '../actions/actionActions';
 
 const Header = () => {
   // Hook that enables components to interact with the App State through reducers
@@ -26,11 +28,27 @@ const Header = () => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const actionCount = useSelector((state) => state.actionCount);
+  const { count } = actionCount;
+
   const watchlist = useSelector((state) => state.watchlist);
   const { favourites } = watchlist;
 
   // Component level State
   const [watchlistModal, showWatchlistModal] = useState(false);
+
+  // Hook that triggers when component did mount
+  useEffect(() => {
+    if (userInfo) {
+      dispatch(countUnreadActions(userInfo._id));
+      dispatch(getUserActions(userInfo._id));
+
+      setInterval(function () {
+        dispatch(countUnreadActions(userInfo._id));
+        dispatch(getUserActions(userInfo._id));
+      }, 60000);
+    }
+  }, [dispatch]);
 
   // Component Methods
   const logoutHandler = () => {
@@ -139,18 +157,31 @@ const Header = () => {
                       </LinkContainer>
                     </NavDropdown>
 
-                    <NavDropdown
-                      title={
-                        <>
-                          <i className='fas fa-bell'></i>
-                          <Badge variant='light' className='notif'>
-                            9
-                          </Badge>
-                        </>
-                      }
-                      alignRight
-                      id='notifications'
-                    ></NavDropdown>
+                    {count === 0 ? (
+                      <Nav.Link>
+                        <i className='fas fa-bell'></i>
+                      </Nav.Link>
+                    ) : (
+                      <NavDropdown
+                        title={
+                          <>
+                            <i className='fas fa-bell'></i>
+                            <Badge variant='light' className='notif'>
+                              {count}
+                            </Badge>
+                          </>
+                        }
+                        alignRight
+                        id='notifications'
+                      >
+                        <LinkContainer to='/profile'>
+                          <NavDropdown.Item>
+                            You have unread notifications go to Profile {'>'}{' '}
+                            Actions
+                          </NavDropdown.Item>
+                        </LinkContainer>
+                      </NavDropdown>
+                    )}
                   </>
                 ) : (
                   <LinkContainer to='/login'>

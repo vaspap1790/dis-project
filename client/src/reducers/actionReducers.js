@@ -33,16 +33,16 @@ export const actionListReducer = (state = { actions: [] }, action) => {
   }
 };
 
-export const actionCreateReducer = (state = { keys: [] }, action) => {
+export const actionCreateReducer = (state = { key: {} }, action) => {
   switch (action.type) {
     case ACTION_CREATE_REQUEST:
       return { loading: true };
     case ACTION_CREATE_SUCCESS:
-      return { loading: false, success: true, keys: action.payload };
+      return { loading: false, success: true, key: action.payload };
     case ACTION_CREATE_FAIL:
       return { loading: false, error: action.payload };
     case ACTION_CREATE_RESET:
-      return { loading: false, keys: [], error: null };
+      return { loading: false, key: {}, error: null };
     case ACTION_CREATE_EMPTY_ERROR:
       return { ...state, error: null };
     default:
@@ -50,7 +50,7 @@ export const actionCreateReducer = (state = { keys: [] }, action) => {
   }
 };
 
-export const actionCountReducer = (state = {}, action) => {
+export const actionCountReducer = (state = { count: 0 }, action) => {
   switch (action.type) {
     case COUNT_UNREAD_ACTIONS_REQUEST:
       return { loading: true };
