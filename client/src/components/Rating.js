@@ -64,13 +64,13 @@ const Rating = ({ value, text, color }) => {
           }
         ></i>
       </span>
-      <span style={{ marginLeft: '0.5rem' }}>{text && text}</span>
+      <span style={{ marginLeft: '0.5rem' }}>{text && `(${text})`}</span>
     </span>
   );
 };
 
 Rating.defaultProps = {
-  value: 0,
+  value: '(0)',
   color: '#f8e825'
 };
 

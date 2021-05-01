@@ -175,6 +175,19 @@ const DataTableNotifications = () => {
     );
   };
 
+  const readHeaderFormatter = (
+    column,
+    colIndex,
+    { sortElement, filterElement }
+  ) => {
+    return (
+      <div className='v-align h-align' style={{ height: '3rem' }}>
+        <span>{column.text}</span>
+        <span>{sortElement}</span>{' '}
+      </div>
+    );
+  };
+
   //Column formatters
   const nameFormatter = (cell, row, rowIndex) => {
     return (
@@ -268,6 +281,40 @@ const DataTableNotifications = () => {
     );
   };
 
+  const readFormatter = (cell, row, rowIndex) => {
+    return (
+      <div className='v-align h-align' style={{ height: '3rem' }}>
+        {row.readByReceiver === false ? (
+          <span
+            type='button'
+            variant='primary'
+            title='Mark as Read'
+            className='blue-hover'
+            onClick={() => {
+              setActionId(row._id);
+              showReadModal(true);
+            }}
+          >
+            <i className='far fa-bookmark'></i>
+          </span>
+        ) : (
+          <span
+            type='button'
+            variant='primary'
+            title='Mark as Unread'
+            className='blue-hover'
+            onClick={() => {
+              setActionId(row._id);
+              showUnreadModal(true);
+            }}
+          >
+            <i className='fas fa-bookmark'></i>{' '}
+          </span>
+        )}
+      </div>
+    );
+  };
+
   const actionFormatter = (cell, row, rowIndex) => {
     return (
       <div className='v-align h-align' style={{ height: '3rem' }}>
@@ -301,33 +348,6 @@ const DataTableNotifications = () => {
             &nbsp;
           </>
         ) : null}
-        {row.readByReceiver === false ? (
-          <span
-            type='button'
-            variant='primary'
-            title='Mark as Read'
-            className='blue-hover'
-            onClick={() => {
-              setActionId(row._id);
-              showReadModal(true);
-            }}
-          >
-            <i className='far fa-bookmark'></i>
-          </span>
-        ) : (
-          <span
-            type='button'
-            variant='primary'
-            title='Mark as Unread'
-            className='blue-hover'
-            onClick={() => {
-              setActionId(row._id);
-              showUnreadModal(true);
-            }}
-          >
-            <i className='fas fa-bookmark'></i>{' '}
-          </span>
-        )}
         {row.status !== 'Pending' ? (
           <>
             &nbsp;
@@ -426,6 +446,18 @@ const DataTableNotifications = () => {
       headerFormatter: dateHeaderFormatter
     },
     {
+      dataField: 'readByReceiver',
+      text: 'Read',
+      sort: true,
+      headerStyle: {
+        borderStyle: 'none',
+        borderRightStyle: 'solid',
+        borderRightColor: '#fff'
+      },
+      formatter: readFormatter,
+      headerFormatter: readHeaderFormatter
+    },
+    {
       dataField: 'packet._id',
       text: 'Actions',
       headerStyle: {
@@ -439,8 +471,8 @@ const DataTableNotifications = () => {
   //Sorting Options
   const defaultSorted = [
     {
-      dataField: 'createdAt',
-      order: 'desc'
+      dataField: 'readByReceiver',
+      order: 'asc'
     }
   ];
 

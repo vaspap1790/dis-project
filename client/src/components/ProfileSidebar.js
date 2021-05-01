@@ -54,7 +54,7 @@ const ProfileSidebar = ({ id }) => {
                 <div className='mx-auto' style={{ textAlign: 'center' }}>
                   <Rating
                     value={userRating.rating}
-                    text={`${userRating.numReviews} reviews`}
+                    text={`${userRating.numReviews}`}
                   />
                 </div>
               </div>

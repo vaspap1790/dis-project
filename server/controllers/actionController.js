@@ -90,7 +90,8 @@ const getRequests = asyncHandler(async (req, res) => {
 const countUnreadActions = asyncHandler(async (req, res) => {
   const count = await Action.countDocuments({
     receiver: req.params.id,
-    readByReceiver: false
+    readByReceiver: false,
+    showToReceiver: true
   });
   res.json(count);
 });
