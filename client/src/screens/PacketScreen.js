@@ -17,7 +17,7 @@ import Meta from '../components/Meta';
 import 'react-quill/dist/quill.snow.css';
 import 'react-drop-zone/dist/styles.css';
 import { listPacketDetails, addToWatchlist } from '../actions/packetActions';
-import { createAction } from '../actions/actionActions';
+import { getUserRequests, createAction } from '../actions/actionActions';
 
 const PacketScreen = ({ history, match }) => {
   // Hook that enables components to interact with the App State through reducers
@@ -36,8 +36,59 @@ const PacketScreen = ({ history, match }) => {
   // Component level State
   const [watchlistModal, showWatchlistModal] = useState(false);
   const [sampleModal, showSampleModal] = useState(false);
+  const [purchaseModal, showPurchaseModal] = useState(false);
+  const [loadingSampleModal, showLoadingSampleModal] = useState(false);
+  const [loadingPurchaseModal, showLoadingPurchaseModal] = useState(false);
 
-  //Component Variables
+  // Hook that triggers when component did mount
+  useEffect(() => {
+    dispatch(listPacketDetails(match.params.id));
+  }, [dispatch, match]);
+
+  // Component Methods
+  const reloadTable = () => {
+    dispatch(getUserRequests(userInfo._id));
+  };
+
+  const purchaseProceed = () => {
+    //TODO:
+    showPurchaseModal(false);
+    dispatch(
+      createAction(packet._id, userInfo._id, packet.user._id, 'Purchase')
+    );
+    showLoadingPurchaseModal(true);
+  };
+
+  const sampleProceed = () => {
+    // TODO: Check blockchain if this user has
+    // requested sample of this product again
+    showSampleModal(false);
+    dispatch(createAction(packet._id, userInfo._id, packet.user._id, 'Sample'));
+    showLoadingSampleModal(true);
+  };
+
+  const sampleLoadingProceed = () => {
+    reloadTable();
+    showLoadingSampleModal(false);
+  };
+
+  const purchaseLoadingProceed = () => {
+    reloadTable();
+    showLoadingPurchaseModal(false);
+  };
+
+  const purchaseModalContent = (
+    <>
+      {loadingCreateAction ? (
+        <Loader />
+      ) : errorCreateAction ? (
+        <Alert variant='danger'>{errorCreateAction}</Alert>
+      ) : (
+        <div className='my-2'>Your purchase request was successfully sent</div>
+      )}
+    </>
+  );
+
   const sampleModalContent = (
     <>
       {loadingCreateAction ? (
@@ -76,23 +127,6 @@ const PacketScreen = ({ history, match }) => {
     </>
   );
 
-  // Hook that triggers when component did mount
-  useEffect(() => {
-    dispatch(listPacketDetails(match.params.id));
-  }, [dispatch, match]);
-
-  // Component Methods
-  const purchaseHandler = () => {
-    //TODO:
-  };
-
-  const sampleHandler = () => {
-    // TODO: Check blockchain if this user has
-    // requested sample of this product again
-    showSampleModal(true);
-    dispatch(createAction(packet._id, userInfo._id, packet.user._id, 'Sample'));
-  };
-
   const goBack = () => {
     history.goBack();
   };
@@ -104,6 +138,9 @@ const PacketScreen = ({ history, match }) => {
 
   const closeWatchlistModal = () => showWatchlistModal(false);
   const closeSampleModal = () => showSampleModal(false);
+  const closePurchaseModal = () => showPurchaseModal(false);
+  const closeLoadingSampleModal = () => showLoadingSampleModal(false);
+  const closeLoadingPurchaseModal = () => showLoadingPurchaseModal(false);
 
   // This will be rendered
   return (
@@ -129,7 +166,7 @@ const PacketScreen = ({ history, match }) => {
               Watch <i className='fas fa-eye'></i>
             </Button>
             <Button
-              onClick={sampleHandler}
+              onClick={() => showSampleModal(true)}
               className='btn btn-warning mr-1'
               disabled={userInfo === undefined || !userInfo}
               title={
@@ -141,7 +178,7 @@ const PacketScreen = ({ history, match }) => {
               Sample <i className='fas fa-search'></i>
             </Button>
             <Button
-              onClick={purchaseHandler}
+              onClick={() => showPurchaseModal(true)}
               className='btn btn-success mr-1'
               disabled={userInfo === undefined || !userInfo}
               title={
@@ -209,9 +246,36 @@ const PacketScreen = ({ history, match }) => {
       <ModalComponent
         show={sampleModal}
         close={closeSampleModal}
+        proceed={sampleProceed}
         title='Sample'
+        body='Are you sure you want to proceed and request a sample of this data packet?'
+        danger={true}
+        success={true}
+      />
+      <ModalComponent
+        show={loadingSampleModal}
+        close={closeLoadingSampleModal}
+        proceed={sampleLoadingProceed}
+        title='Performing Action'
         body={sampleModalContent}
-        info={true}
+        success={true}
+      />
+      <ModalComponent
+        show={purchaseModal}
+        close={closePurchaseModal}
+        proceed={purchaseProceed}
+        title='Purchase'
+        body='Are you sure you want to proceed and request to purchase this data packet?'
+        danger={true}
+        success={true}
+      />
+      <ModalComponent
+        show={loadingPurchaseModal}
+        close={closeLoadingPurchaseModal}
+        proceed={purchaseLoadingProceed}
+        title='Performing Action'
+        body={purchaseModalContent}
+        success={true}
       />
     </>
   );

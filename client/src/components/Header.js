@@ -137,7 +137,10 @@ const Header = () => {
                             variant='light'
                             onClick={() => removeFromWatchlistHandler(item)}
                           >
-                            <i className='fas fa-trash trash'></i>
+                            <i
+                              className='fas fa-trash-alt'
+                              style={{ color: '#d9534f' }}
+                            ></i>
                           </Button>
                         </NavDropdown.Item>
                       ))}
