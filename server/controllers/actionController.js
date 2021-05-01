@@ -93,20 +93,24 @@ const countUnreadActions = asyncHandler(async (req, res) => {
 // @route   POST /api/action/update/:id
 // @access  Private
 const updateAction = asyncHandler(async (req, res) => {
-  const { actionId, update, userId } = req.body.data;
+  const { actionId, update, userId } = req.body;
   const action = await Action.findById(actionId);
 
   switch (update) {
-    case 'Approved':
+    case 'Approve':
       action.status = 'Approved';
       action.save();
       break;
-    case 'Rejected':
+    case 'Reject':
       action.status = 'Rejected';
       action.save();
       break;
     case 'Read':
       action.readByReceiver = true;
+      action.save();
+      break;
+    case 'Unread':
+      action.readByReceiver = false;
       action.save();
       break;
     case 'Remove':

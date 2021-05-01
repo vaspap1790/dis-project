@@ -51,7 +51,7 @@ const Header = () => {
         dispatch(countUnreadActions(userInfo._id));
         dispatch(getUserNotifications(userInfo._id));
         dispatch(getUserRequests(userInfo._id));
-      }, 30000);
+      }, 120000);
 
       return () => clearInterval(intervalId);
     }

@@ -7,6 +7,10 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import Loader from './Loader';
+import { countUnreadActions } from '../actions/actionActions';
+import ModalComponent from '../components/ModalComponent';
+
+import { getUserNotifications, updateAction } from '../actions/actionActions';
 
 //import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
@@ -21,41 +25,80 @@ const DataTableNotifications = () => {
   const notifList = useSelector((state) => state.notifList);
   const { notifications: data, loading, error } = notifList;
 
-  // Component level State
-  const [packetId, setPacketId] = useState('');
+  const actionUpdate = useSelector((state) => state.actionUpdate);
+  const {
+    loading: actionUpdateLoading,
+    error: actionUpdateError
+  } = actionUpdate;
 
-  // Hook that triggers when component did mount
-  // useEffect(() => {
-  //   dispatch(getUserActions(userInfo._id));
-  //   setInterval(function () {
-  //     dispatch(getUserActions(userInfo._id));
-  //   }, 60000);
-  // }, [dispatch, userInfo]);
+  // Component level State
+  const [actionId, setActionId] = useState('');
+  const [readModal, showReadModal] = useState(false);
+  const [unreadModal, showUnreadModal] = useState(false);
+  const [approveModal, showApproveModal] = useState(false);
+  const [rejectModal, showRejectModal] = useState(false);
+  const [removeModal, showRemoveModal] = useState(false);
+  const [loadingModal, showLoadingModal] = useState(false);
 
   // Component Methods
-  // const handleUserActionsErrorOnClose = () => {
-  //   dispatch(emptyAccessProfileError());
-  // };
+  const closeReadModal = () => showReadModal(false);
+  const closeUnreadModal = () => showUnreadModal(false);
+  const closeApproveModal = () => showApproveModal(false);
+  const closeRejectModal = () => showRejectModal(false);
+  const closeRemoveModal = () => showRemoveModal(false);
+  const closeLoadingModal = () => showLoadingModal(false);
 
-  const markAsRead = () => {
-    //TODO:
+  const reloadTable = () => {
+    dispatch(countUnreadActions(userInfo._id));
+    dispatch(getUserNotifications(userInfo._id));
   };
 
-  const markAsUnread = () => {
-    //TODO:
+  const readProceed = async () => {
+    showReadModal(false);
+    dispatch(updateAction(actionId, 'Read', userInfo._id));
+    showLoadingModal(true);
   };
 
-  const reject = () => {
-    //TODO:
+  const unreadProceed = async () => {
+    showUnreadModal(false);
+    dispatch(updateAction(actionId, 'Unread', userInfo._id));
+    showLoadingModal(true);
   };
 
-  const approve = () => {
-    //TODO:
+  const rejectProceed = () => {
+    showRejectModal(false);
+    dispatch(updateAction(actionId, 'Reject', userInfo._id));
+    showLoadingModal(true);
   };
 
-  const deleteNotification = () => {
-    //TODO:
+  const approveProceed = () => {
+    showApproveModal(false);
+    dispatch(updateAction(actionId, 'Approve', userInfo._id));
+    showLoadingModal(true);
   };
+
+  const removeProceed = () => {
+    showRemoveModal(false);
+    dispatch(updateAction(actionId, 'Remove', userInfo._id));
+    showLoadingModal(true);
+  };
+
+  const loadingProceed = () => {
+    reloadTable();
+    showLoadingModal(false);
+  };
+
+  const loadingModalContent = (
+    <>
+      {actionUpdateLoading ? (
+        <Loader />
+      ) : actionUpdateError ? (
+        <Alert variant='danger'>{actionUpdateError}</Alert>
+      ) : (
+        <div className='my-2'>Action Completed</div>
+      )}
+    </>
+  );
 
   // Header formatters
   const nameHeaderFormatter = (
@@ -133,7 +176,6 @@ const DataTableNotifications = () => {
   };
 
   //Column formatters
-
   const nameFormatter = (cell, row, rowIndex) => {
     return (
       <div className='' style={{ height: '3rem' }}>
@@ -237,7 +279,8 @@ const DataTableNotifications = () => {
               title='Approve Request'
               className='blue-hover'
               onClick={() => {
-                approve(cell);
+                setActionId(row._id);
+                showApproveModal(true);
               }}
             >
               <i className='fas fa-check' style={{ color: '#4bbf73' }}></i>{' '}
@@ -249,7 +292,8 @@ const DataTableNotifications = () => {
               title='Reject Request'
               className='blue-hover'
               onClick={() => {
-                reject(cell);
+                setActionId(row._id);
+                showRejectModal(true);
               }}
             >
               <i className='fas fa-times' style={{ color: '#d9534f' }}></i>{' '}
@@ -257,17 +301,18 @@ const DataTableNotifications = () => {
             &nbsp;
           </>
         ) : null}
-        {cell.readByReceiver !== false ? (
+        {row.readByReceiver === false ? (
           <span
             type='button'
             variant='primary'
             title='Mark as Read'
             className='blue-hover'
             onClick={() => {
-              markAsRead(cell);
+              setActionId(row._id);
+              showReadModal(true);
             }}
           >
-            <i className='fas fa-bookmark'></i>
+            <i className='far fa-bookmark'></i>
           </span>
         ) : (
           <span
@@ -276,10 +321,11 @@ const DataTableNotifications = () => {
             title='Mark as Unread'
             className='blue-hover'
             onClick={() => {
-              markAsUnread(cell);
+              setActionId(row._id);
+              showUnreadModal(true);
             }}
           >
-            <i className='far fa-bookmark'></i>{' '}
+            <i className='fas fa-bookmark'></i>{' '}
           </span>
         )}
         {row.status !== 'Pending' ? (
@@ -291,7 +337,8 @@ const DataTableNotifications = () => {
               title='Delete Notification'
               className='blue-hover'
               onClick={() => {
-                deleteNotification(cell);
+                setActionId(row._id);
+                showRemoveModal(true);
               }}
             >
               <i className='fas fa-trash-alt' style={{ color: '#d9534f' }}></i>{' '}
@@ -470,6 +517,59 @@ const DataTableNotifications = () => {
       </div>
 
       {/* Modals */}
+      <ModalComponent
+        show={loadingModal}
+        close={closeLoadingModal}
+        proceed={loadingProceed}
+        title='Performing Action'
+        body={loadingModalContent}
+        success={true}
+      />
+      <ModalComponent
+        show={readModal}
+        close={closeReadModal}
+        proceed={readProceed}
+        title='Confirm Mark as Read'
+        body='Are you sure you want to mark this notification as read?'
+        danger={true}
+        success={true}
+      />
+      <ModalComponent
+        show={unreadModal}
+        close={closeUnreadModal}
+        proceed={unreadProceed}
+        title='Confirm Mark as Unread'
+        body='Are you sure you want to mark this notification as unread?'
+        danger={true}
+        success={true}
+      />
+      <ModalComponent
+        show={approveModal}
+        close={closeApproveModal}
+        proceed={approveProceed}
+        title='Confirm Approve'
+        body='Are you sure you want to proceed and approve the purchase requestt?'
+        danger={true}
+        success={true}
+      />
+      <ModalComponent
+        show={rejectModal}
+        close={closeRejectModal}
+        proceed={rejectProceed}
+        title='Confirm Reject'
+        body='Are you sure you want to proceed and reject the purchase request?'
+        danger={true}
+        success={true}
+      />
+      <ModalComponent
+        show={removeModal}
+        close={closeRemoveModal}
+        proceed={removeProceed}
+        title='Confirm Remove'
+        body='Are you sure you want to proceed and remove this notification?'
+        danger={true}
+        success={true}
+      />
     </>
   );
 };

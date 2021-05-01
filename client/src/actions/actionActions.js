@@ -155,7 +155,7 @@ export const updateAction = (actionId, update, userId) => async (
     };
 
     const { data } = await axios.put(
-      `/api/action/update/${actionId}`,
+      `/api/action/update`,
       { actionId, update, userId },
       config
     );

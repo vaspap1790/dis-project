@@ -7,7 +7,6 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import Loader from './Loader';
-import { getUserRequests } from '../actions/actionActions';
 
 //import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
@@ -25,19 +24,7 @@ const DataTableRequests = () => {
   // Component level State
   const [packetId, setPacketId] = useState('');
 
-  // Hook that triggers when component did mount
-  // useEffect(() => {
-  //   dispatch(getUserRequests(userInfo._id));
-  //   setInterval(function () {
-  //     dispatch(getUserRequests(userInfo._id));
-  //   }, 300000);
-  // }, [dispatch, userInfo]);
-
   // Component Methods
-  // const handleUserActionsErrorOnClose = () => {
-  //   dispatch(emptyAccessProfileError());
-  // };
-
   const cancel = () => {
     //TODO:
   };
