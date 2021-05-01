@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Packet from '../components/Packet';
 import DataTablePurchased from '../components/DataTablePurchased';
-import DataTableActions from '../components/DataTableActions';
+import DataTableNotifications from '../components/DataTableNotifications';
+import DataTableRequests from '../components/DataTableRequests';
 import Sorting from '../components/Sorting';
 import Meta from '../components/Meta';
 import { Button, Row, Col, Alert, Tabs, Tab } from 'react-bootstrap';
@@ -120,11 +121,20 @@ const ProfileScreen = ({ match, history }) => {
           {loading ? (
             <Loader />
           ) : (
-            <Tabs defaultActiveKey='actions' transition={false}>
-              {/*************** Actions Tab ******************/}
+            <Tabs
+              defaultActiveKey={userDetails ? 'uploaded' : 'notifications'}
+              transition={false}
+            >
+              {/*************** Notifications Tab ******************/}
               {!userDetails ? (
-                <Tab eventKey='actions' title='Actions'>
-                  <DataTableActions />
+                <Tab eventKey='notifications' title='Notifications'>
+                  <DataTableNotifications />
+                </Tab>
+              ) : null}
+              {/*************** Requests Tab ******************/}
+              {!userDetails ? (
+                <Tab eventKey='requests' title='Requests'>
+                  <DataTableRequests />
                 </Tab>
               ) : null}
               {/*************** Purchased Tab ******************/}

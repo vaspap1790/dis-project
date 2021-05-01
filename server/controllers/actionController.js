@@ -22,13 +22,24 @@ const addNewAction = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('Something went wrong');
   } else {
-    const action = new Action({
-      requester: requesterId,
-      receiver: receiverId,
-      packet: packetId,
-      type: type
-    });
-    const addedAction = await action.save();
+    if (type === 'Sample') {
+      const action = new Action({
+        requester: requesterId,
+        receiver: receiverId,
+        packet: packetId,
+        type: type,
+        status: 'No Status'
+      });
+      const addedAction = await action.save();
+    } else {
+      const action = new Action({
+        requester: requesterId,
+        receiver: receiverId,
+        packet: packetId,
+        type: type
+      });
+      const addedAction = await action.save();
+    }
 
     if (type === 'Sample') {
       let packet = await Packet.findById(packetId);
@@ -44,12 +55,22 @@ const addNewAction = asyncHandler(async (req, res) => {
 });
 
 // @desc    Fetch all user actions
-// @route   GET /api/action/user/:id
+// @route   GET /api/action/notif/user/:id
 // @access  Private
-const getActions = asyncHandler(async (req, res) => {
-  const actions = await Action.find({
-    $or: [{ requester: req.params.id }, { receiver: req.params.id }]
-  })
+const getNotifications = asyncHandler(async (req, res) => {
+  const actions = await Action.find({ receiver: req.params.id })
+    .populate('requester', 'username')
+    .populate('receiver', 'username')
+    .populate('packet', 'name image');
+
+  res.json(actions);
+});
+
+// @desc    Fetch all user actions
+// @route   GET /api/action/requests/user/:id
+// @access  Private
+const getRequests = asyncHandler(async (req, res) => {
+  const actions = await Action.find({ requester: req.params.id })
     .populate('requester', 'username')
     .populate('receiver', 'username')
     .populate('packet', 'name image');
@@ -90,23 +111,13 @@ const updateAction = asyncHandler(async (req, res) => {
       break;
     case 'Remove':
       if (action.requesterId === userId) {
-        if (!action.showToReceiver) {
-          const res = await Action.remove({ _id: actionId });
-          res.deletedCount;
-        } else {
-          action.showToRequester = false;
-          action.save();
-        }
+        action.showToRequester = false;
+        action.save();
       }
 
       if (action.receiverId === userId) {
-        if (!action.showToRequester) {
-          const res = await Action.remove({ _id: actionId });
-          res.deletedCount;
-        } else {
-          action.showToReceiver = false;
-          action.save();
-        }
+        action.showToReceiver = false;
+        action.save();
       }
       break;
     default:
@@ -116,4 +127,10 @@ const updateAction = asyncHandler(async (req, res) => {
   res.json('Action Updated');
 });
 
-export { addNewAction, getActions, updateAction, countUnreadActions };
+export {
+  addNewAction,
+  getNotifications,
+  getRequests,
+  updateAction,
+  countUnreadActions
+};

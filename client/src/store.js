@@ -11,7 +11,8 @@ import {
   watchlistReducer
 } from './reducers/packetReducers';
 import {
-  actionListReducer,
+  notifListReducer,
+  requestListReducer,
   actionCountReducer,
   actionCreateReducer,
   actionUpdateReducer
@@ -44,7 +45,8 @@ const reducer = combineReducers({
   reviewCreate: reviewCreateReducer,
   packetTopRated: packetTopRatedReducer,
   watchlist: watchlistReducer,
-  actionList: actionListReducer,
+  notifList: notifListReducer,
+  requestList: requestListReducer,
   actionCount: actionCountReducer,
   actionCreate: actionCreateReducer,
   actionUpdate: actionUpdateReducer

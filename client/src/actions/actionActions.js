@@ -5,9 +5,12 @@ import {
   ACTION_CREATE_REQUEST,
   ACTION_CREATE_RESET,
   ACTION_CREATE_SUCCESS,
-  ACTION_LIST_FAIL,
-  ACTION_LIST_REQUEST,
-  ACTION_LIST_SUCCESS,
+  NOTIF_LIST_FAIL,
+  NOTIF_LIST_REQUEST,
+  NOTIF_LIST_SUCCESS,
+  REQUESTS_LIST_FAIL,
+  REQUESTS_LIST_REQUEST,
+  REQUESTS_LIST_SUCCESS,
   ACTION_UPDATE_EMPTY_ERROR,
   ACTION_UPDATE_EMPTY_SUCCESS,
   ACTION_UPDATE_FAIL,
@@ -19,19 +22,40 @@ import {
 } from '../constants/actionConstants';
 import { logout } from './userActions';
 
-export const getUserActions = (id) => async (dispatch) => {
+export const getUserNotifications = (id) => async (dispatch) => {
   try {
-    dispatch({ type: ACTION_LIST_REQUEST });
+    dispatch({ type: NOTIF_LIST_REQUEST });
 
-    const { data } = await axios.get(`/api/action/user/${id}`);
+    const { data } = await axios.get(`/api/action/notif/user/${id}`);
 
     dispatch({
-      type: ACTION_LIST_SUCCESS,
+      type: NOTIF_LIST_SUCCESS,
       payload: data
     });
   } catch (error) {
     dispatch({
-      type: ACTION_LIST_FAIL,
+      type: NOTIF_LIST_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+    });
+  }
+};
+
+export const getUserRequests = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: REQUESTS_LIST_REQUEST });
+
+    const { data } = await axios.get(`/api/action/requests/user/${id}`);
+
+    dispatch({
+      type: REQUESTS_LIST_SUCCESS,
+      payload: data
+    });
+  } catch (error) {
+    dispatch({
+      type: REQUESTS_LIST_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

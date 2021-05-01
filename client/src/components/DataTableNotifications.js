@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
-import { Image, Form, Alert } from 'react-bootstrap';
+import { Image, Alert, Row, Col } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
@@ -11,7 +11,7 @@ import { getUserActions } from '../actions/actionActions';
 
 //import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
-const DataTablePurchased = () => {
+const DataTableNotifications = () => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
@@ -19,8 +19,8 @@ const DataTablePurchased = () => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const actionList = useSelector((state) => state.actionList);
-  const { actions: data, loading, error } = actionList;
+  const notifList = useSelector((state) => state.notifList);
+  const { notifications: data, loading, error } = notifList;
 
   // Component level State
   const [packetId, setPacketId] = useState('');
@@ -46,19 +46,19 @@ const DataTablePurchased = () => {
     //TODO:
   };
 
+  const reject = () => {
+    //TODO:
+  };
+
+  const approve = () => {
+    //TODO:
+  };
+
   const deleteNotification = () => {
     //TODO:
   };
 
   // Header formatters
-  const imageHeaderFormatter = (column, colIndex) => {
-    return (
-      <div className='v-align h-align' style={{ height: '3rem' }}>
-        {column.text}
-      </div>
-    );
-  };
-
   const nameHeaderFormatter = (
     column,
     colIndex,
@@ -82,7 +82,6 @@ const DataTablePurchased = () => {
       <div className='v-align h-align' style={{ height: '3rem' }}>
         <span>{column.text}</span>
         <span>{sortElement}</span>
-        <span className='order-last'>{filterElement}</span>
       </div>
     );
   };
@@ -95,52 +94,69 @@ const DataTablePurchased = () => {
     );
   };
 
-  const userHeaderFormatter = (column, colIndex) => {
+  const userHeaderFormatter = (
+    column,
+    colIndex,
+    { sortElement, filterElement }
+  ) => {
     return (
       <div className='v-align h-align' style={{ height: '3rem' }}>
-        {column.text}
+        <span>{column.text}</span>
+        <span>{sortElement}</span>{' '}
       </div>
     );
   };
 
-  const statusHeaderFormatter = (column, colIndex) => {
+  const statusHeaderFormatter = (
+    column,
+    colIndex,
+    { sortElement, filterElement }
+  ) => {
     return (
       <div className='v-align h-align' style={{ height: '3rem' }}>
-        {column.text}
+        <span>{column.text}</span>
+        <span>{sortElement}</span>
       </div>
     );
   };
 
-  const typeHeaderFormatter = (column, colIndex) => {
+  const typeHeaderFormatter = (
+    column,
+    colIndex,
+    { sortElement, filterElement }
+  ) => {
     return (
       <div className='v-align h-align' style={{ height: '3rem' }}>
-        {column.text}
+        <span>{column.text}</span>
+        <span>{sortElement}</span>{' '}
       </div>
     );
   };
 
   //Column formatters
-  const imageFormatter = (cell, row, rowIndex) => {
-    return (
-      <div className='v-align h-align' style={{ height: '3rem' }}>
-        <Link to={`/packet/${row.packet._id}`}>
-          <Image
-            src={cell}
-            alt={row.name}
-            title={row.name}
-            fluid
-            rounded
-            style={{ width: '4rem', height: '3rem' }}
-          />
-        </Link>
-      </div>
-    );
-  };
 
   const nameFormatter = (cell, row, rowIndex) => {
     return (
-      <div className='v-align h-align small' style={{ height: '3rem' }}>
-        <Link to={`/packet/${row.packet._id}`}>{cell}</Link>
+      <div className='' style={{ height: '3rem' }}>
+        <Row>
+          <Col xs={1}></Col>
+          <Col xs={3} className='v-align justify-content-start'>
+            <Link to={`/packet/${row.packet._id}`}>
+              <Image
+                src={row.packet.image}
+                alt={row.name}
+                title={row.name}
+                fluid
+                rounded
+                style={{ width: '4rem', height: '3rem' }}
+              />
+            </Link>
+          </Col>
+          <Col xs={4} className='v-align h-align small'>
+            <Link to={`/packet/${row.packet._id}`}>{cell}</Link>
+          </Col>
+          <Col xs={4}></Col>
+        </Row>
       </div>
     );
   };
@@ -189,10 +205,16 @@ const DataTablePurchased = () => {
               ? 'small badge-pill badge-success'
               : cell === 'Rejected'
               ? 'small badge-pill badge-danger'
+              : cell === 'No Status'
+              ? 'small'
               : ''
           }
         >
-          {cell}
+          {cell === 'No Status' ? (
+            <span style={{ fontStyle: 'italic' }}>{cell}</span>
+          ) : (
+            cell
+          )}
         </span>
       </div>
     );
@@ -209,6 +231,34 @@ const DataTablePurchased = () => {
   const actionFormatter = (cell, row, rowIndex) => {
     return (
       <div className='v-align h-align' style={{ height: '3rem' }}>
+        {row.status === 'Pending' ? (
+          <>
+            <span
+              type='button'
+              variant='primary'
+              title='Approve Request'
+              className='blue-hover'
+              onClick={() => {
+                approve(cell);
+              }}
+            >
+              <i className='fas fa-check' style={{ color: '#4bbf73' }}></i>{' '}
+            </span>
+            &nbsp;
+            <span
+              type='button'
+              variant='primary'
+              title='Reject Request'
+              className='blue-hover'
+              onClick={() => {
+                reject(cell);
+              }}
+            >
+              <i className='fas fa-times' style={{ color: '#d9534f' }}></i>{' '}
+            </span>
+            &nbsp;
+          </>
+        ) : null}
         {cell.readByReceiver !== false ? (
           <span
             type='button'
@@ -234,35 +284,28 @@ const DataTablePurchased = () => {
             <i className='far fa-bookmark'></i>{' '}
           </span>
         )}
-        &nbsp;
-        <span
-          type='button'
-          variant='primary'
-          title='Delete Notification'
-          className='blue-hover'
-          onClick={() => {
-            deleteNotification(cell);
-          }}
-        >
-          <i className='fas fa-times' style={{ color: '#d9534f' }}></i>{' '}
-        </span>
+        {row.status !== 'Pending' ? (
+          <>
+            &nbsp;
+            <span
+              type='button'
+              variant='primary'
+              title='Delete Notification'
+              className='blue-hover'
+              onClick={() => {
+                deleteNotification(cell);
+              }}
+            >
+              <i className='fas fa-trash-alt' style={{ color: '#d9534f' }}></i>{' '}
+            </span>
+          </>
+        ) : null}
       </div>
     );
   };
 
   //Column Declaration
   const columns = [
-    {
-      dataField: 'packet.image',
-      text: 'Image',
-      headerStyle: {
-        borderStyle: 'none'
-      },
-      classes: 'hide-md',
-      headerClasses: 'hide-md',
-      formatter: imageFormatter,
-      headerFormatter: imageHeaderFormatter
-    },
     {
       dataField: 'packet.name',
       text: 'Name',
@@ -386,7 +429,7 @@ const DataTablePurchased = () => {
     return style;
   };
 
-  //DataTablePurchased instantiation
+  //DataTableNotifications instantiation
   return (
     <>
       <div className='p-2 mt-3'>
@@ -433,4 +476,4 @@ const DataTablePurchased = () => {
   );
 };
 
-export default DataTablePurchased;
+export default DataTableNotifications;

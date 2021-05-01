@@ -18,7 +18,7 @@ import ModalComponent from '../components/ModalComponent';
 import { logout } from '../actions/userActions';
 import { removeFromWatchlist } from '../actions/packetActions';
 import { countUnreadActions } from '../actions/actionActions';
-import { getUserActions } from '../actions/actionActions';
+import { getUserNotifications } from '../actions/actionActions';
 
 const Header = () => {
   // Hook that enables components to interact with the App State through reducers
@@ -41,14 +41,14 @@ const Header = () => {
   useEffect(() => {
     if (userInfo) {
       dispatch(countUnreadActions(userInfo._id));
-      dispatch(getUserActions(userInfo._id));
+      dispatch(getUserNotifications(userInfo._id));
 
       setInterval(function () {
         dispatch(countUnreadActions(userInfo._id));
-        dispatch(getUserActions(userInfo._id));
+        dispatch(getUserNotifications(userInfo._id));
       }, 60000);
     }
-  }, [dispatch]);
+  }, [dispatch, userInfo]);
 
   // Component Methods
   const logoutHandler = () => {
@@ -177,7 +177,7 @@ const Header = () => {
                         <LinkContainer to='/profile'>
                           <NavDropdown.Item>
                             You have unread notifications go to Profile {'>'}{' '}
-                            Actions
+                            Notifications
                           </NavDropdown.Item>
                         </LinkContainer>
                       </NavDropdown>
