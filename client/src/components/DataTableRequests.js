@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
@@ -7,6 +7,8 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import Loader from './Loader';
+import { getUserRequests, updateAction } from '../actions/actionActions';
+import ModalComponent from '../components/ModalComponent';
 
 //import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
@@ -21,17 +23,55 @@ const DataTableRequests = () => {
   const requestList = useSelector((state) => state.requestList);
   const { requests: data, loading, error } = requestList;
 
+  const actionUpdate = useSelector((state) => state.actionUpdate);
+  const {
+    loading: actionUpdateLoading,
+    error: actionUpdateError
+  } = actionUpdate;
+
   // Component level State
-  const [packetId, setPacketId] = useState('');
+  const [actionId, setActionId] = useState('');
+  const [removeModal, showRemoveModal] = useState(false);
+  const [cancelModal, showCancelModal] = useState(false);
+  const [loadingModal, showLoadingModal] = useState(false);
 
   // Component Methods
-  const cancel = () => {
-    //TODO:
+  const closeCancelModal = () => showCancelModal(false);
+  const closeRemoveModal = () => showRemoveModal(false);
+  const closeLoadingModal = () => showLoadingModal(false);
+
+  const reloadTable = () => {
+    dispatch(getUserRequests(userInfo._id));
   };
 
-  const deleteRequest = () => {
-    //TODO:
+  const cancelProceed = () => {
+    showCancelModal(false);
+    dispatch(updateAction(actionId, 'Cancel', userInfo._id));
+    showLoadingModal(true);
   };
+
+  const removeProceed = () => {
+    showRemoveModal(false);
+    dispatch(updateAction(actionId, 'Remove', userInfo._id));
+    showLoadingModal(true);
+  };
+
+  const loadingProceed = () => {
+    reloadTable();
+    showLoadingModal(false);
+  };
+
+  const loadingModalContent = (
+    <>
+      {actionUpdateLoading ? (
+        <Loader />
+      ) : actionUpdateError ? (
+        <Alert variant='danger'>{actionUpdateError}</Alert>
+      ) : (
+        <div className='my-2'>Action Completed</div>
+      )}
+    </>
+  );
 
   // Header formatters
   const nameHeaderFormatter = (
@@ -213,7 +253,8 @@ const DataTableRequests = () => {
               title='Cancel Request'
               className='blue-hover'
               onClick={() => {
-                cancel(cell);
+                setActionId(row._id);
+                showCancelModal(true);
               }}
             >
               <i className='fas fa-ban' style={{ color: '#d9534f' }}></i>{' '}
@@ -228,7 +269,8 @@ const DataTableRequests = () => {
             title='Delete Request'
             className='blue-hover'
             onClick={() => {
-              deleteRequest(cell);
+              setActionId(row._id);
+              showRemoveModal(true);
             }}
           >
             <i className='fas fa-trash-alt' style={{ color: '#d9534f' }}></i>{' '}
@@ -396,6 +438,32 @@ const DataTableRequests = () => {
       </div>
 
       {/* Modals */}
+      <ModalComponent
+        show={loadingModal}
+        close={closeLoadingModal}
+        proceed={loadingProceed}
+        title='Performing Action'
+        body={loadingModalContent}
+        success={true}
+      />
+      <ModalComponent
+        show={cancelModal}
+        close={closeCancelModal}
+        proceed={cancelProceed}
+        title='Confirm Cancelation'
+        body='Are you sure you want to proceed and cancel the request?'
+        danger={true}
+        success={true}
+      />
+      <ModalComponent
+        show={removeModal}
+        close={closeRemoveModal}
+        proceed={removeProceed}
+        title='Confirm Remove'
+        body='Are you sure you want to proceed and remove this request?'
+        danger={true}
+        success={true}
+      />
     </>
   );
 };

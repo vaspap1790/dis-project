@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
@@ -548,7 +548,7 @@ const DataTableNotifications = () => {
         close={closeApproveModal}
         proceed={approveProceed}
         title='Confirm Approve'
-        body='Are you sure you want to proceed and approve the purchase requestt?'
+        body='Are you sure you want to proceed and approve the purchase request?'
         danger={true}
         success={true}
       />

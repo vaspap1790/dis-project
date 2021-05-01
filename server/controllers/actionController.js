@@ -58,7 +58,10 @@ const addNewAction = asyncHandler(async (req, res) => {
 // @route   GET /api/action/notif/user/:id
 // @access  Private
 const getNotifications = asyncHandler(async (req, res) => {
-  const actions = await Action.find({ receiver: req.params.id })
+  const actions = await Action.find({
+    receiver: req.params.id,
+    showToReceiver: true
+  })
     .populate('requester', 'username')
     .populate('receiver', 'username')
     .populate('packet', 'name image');
@@ -70,7 +73,10 @@ const getNotifications = asyncHandler(async (req, res) => {
 // @route   GET /api/action/requests/user/:id
 // @access  Private
 const getRequests = asyncHandler(async (req, res) => {
-  const actions = await Action.find({ requester: req.params.id })
+  const actions = await Action.find({
+    requester: req.params.id,
+    showToRequester: true
+  })
     .populate('requester', 'username')
     .populate('receiver', 'username')
     .populate('packet', 'name image');
@@ -113,13 +119,15 @@ const updateAction = asyncHandler(async (req, res) => {
       action.readByReceiver = false;
       action.save();
       break;
+    case 'Cancel':
+      action.remove();
+      break;
     case 'Remove':
-      if (action.requesterId === userId) {
+      if (action.requester == userId) {
         action.showToRequester = false;
         action.save();
       }
-
-      if (action.receiverId === userId) {
+      if (action.receiver == userId) {
         action.showToReceiver = false;
         action.save();
       }
