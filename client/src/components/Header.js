@@ -18,7 +18,10 @@ import ModalComponent from '../components/ModalComponent';
 import { logout } from '../actions/userActions';
 import { removeFromWatchlist } from '../actions/packetActions';
 import { countUnreadActions } from '../actions/actionActions';
-import { getUserNotifications } from '../actions/actionActions';
+import {
+  getUserNotifications,
+  getUserRequests
+} from '../actions/actionActions';
 
 const Header = () => {
   // Hook that enables components to interact with the App State through reducers
@@ -42,11 +45,15 @@ const Header = () => {
     if (userInfo) {
       dispatch(countUnreadActions(userInfo._id));
       dispatch(getUserNotifications(userInfo._id));
+      dispatch(getUserRequests(userInfo._id));
 
-      setInterval(function () {
+      const intervalId = setInterval(function () {
         dispatch(countUnreadActions(userInfo._id));
         dispatch(getUserNotifications(userInfo._id));
-      }, 60000);
+        dispatch(getUserRequests(userInfo._id));
+      }, 30000);
+
+      return () => clearInterval(intervalId);
     }
   }, [dispatch, userInfo]);
 

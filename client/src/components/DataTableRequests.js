@@ -26,12 +26,12 @@ const DataTableRequests = () => {
   const [packetId, setPacketId] = useState('');
 
   // Hook that triggers when component did mount
-  useEffect(() => {
-    dispatch(getUserRequests(userInfo._id));
-    setInterval(function () {
-      dispatch(getUserRequests(userInfo._id));
-    }, 300000);
-  }, [dispatch, userInfo]);
+  // useEffect(() => {
+  //   dispatch(getUserRequests(userInfo._id));
+  //   setInterval(function () {
+  //     dispatch(getUserRequests(userInfo._id));
+  //   }, 300000);
+  // }, [dispatch, userInfo]);
 
   // Component Methods
   // const handleUserActionsErrorOnClose = () => {
@@ -152,7 +152,6 @@ const DataTableRequests = () => {
   const userFormatter = (cell, row, rowIndex) => {
     return (
       <div className='v-align h-align small' style={{ height: '3rem' }}>
-        to&nbsp;
         <Link
           to={`/profile/${row.receiver._id}`}
           className='link'
@@ -256,7 +255,7 @@ const DataTableRequests = () => {
   const columns = [
     {
       dataField: 'packet.name',
-      text: 'Name',
+      text: 'Item Name',
       sort: true,
       headerTitle: true,
       filter: textFilter(),
@@ -272,7 +271,7 @@ const DataTableRequests = () => {
     },
     {
       dataField: 'receiver.username',
-      text: 'User',
+      text: 'Request To',
       sort: true,
       headerTitle: true,
       headerStyle: {

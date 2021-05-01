@@ -7,7 +7,6 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import Loader from './Loader';
-import { getUserActions } from '../actions/actionActions';
 
 //import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
@@ -164,7 +163,6 @@ const DataTableNotifications = () => {
   const userFormatter = (cell, row, rowIndex) => {
     return (
       <div className='v-align h-align small' style={{ height: '3rem' }}>
-        by&nbsp;
         <Link
           to={`/profile/${row.requester._id}`}
           className='link'
@@ -308,7 +306,7 @@ const DataTableNotifications = () => {
   const columns = [
     {
       dataField: 'packet.name',
-      text: 'Name',
+      text: 'Item Name',
       sort: true,
       headerTitle: true,
       filter: textFilter(),
@@ -324,7 +322,7 @@ const DataTableNotifications = () => {
     },
     {
       dataField: 'requester.username',
-      text: 'User',
+      text: 'Request from',
       sort: true,
       headerTitle: true,
       headerStyle: {

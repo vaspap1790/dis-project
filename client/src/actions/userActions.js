@@ -21,6 +21,11 @@ import {
 } from '../constants/userConstants';
 import { ACCESS_PROFILE_RESET } from '../constants/accessConstants';
 import { PACKET_USER_RESET } from '../constants/packetConstants';
+import {
+  NOTIF_LIST_RESET,
+  COUNT_UNREAD_ACTIONS_RESET,
+  REQUESTS_LIST_RESET
+} from '../constants/actionConstants';
 import axios from 'axios';
 
 //////////////////////////////// Login Actions ///////////////////////////////////
@@ -125,6 +130,9 @@ export const logout = () => (dispatch) => {
   dispatch({ type: ACCESS_PROFILE_RESET });
   dispatch({ type: PACKET_USER_RESET });
   dispatch({ type: USER_DETAILS_RESET });
+  dispatch({ type: NOTIF_LIST_RESET });
+  dispatch({ type: COUNT_UNREAD_ACTIONS_RESET });
+  dispatch({ type: REQUESTS_LIST_RESET });
 };
 
 /////////////////////////////// Profile Actions //////////////////////////////////
