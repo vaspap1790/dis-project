@@ -3,6 +3,7 @@ import { Modal, Button, Alert, Spinner } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
 const ModalComponent = ({
+  size,
   show,
   close,
   proceed,
@@ -18,6 +19,7 @@ const ModalComponent = ({
 }) => {
   return (
     <Modal
+      size={size}
       show={show}
       onHide={close}
       backdrop='static'
@@ -96,6 +98,7 @@ const ModalComponent = ({
 };
 
 ModalComponent.defaultProps = {
+  size: 'md',
   info: false,
   danger: false,
   success: false,

@@ -12,9 +12,7 @@ import {
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
 import ModalComponent from '../components/ModalComponent';
-import ReactQuill from 'react-quill';
 import Meta from '../components/Meta';
-import 'react-quill/dist/quill.snow.css';
 import 'react-drop-zone/dist/styles.css';
 import { listPacketDetails, addToWatchlist } from '../actions/packetActions';
 import { getUserRequests, createAction } from '../actions/actionActions';
@@ -100,14 +98,18 @@ const PacketScreen = ({ history, match }) => {
         <Alert variant='danger'>{errorCreateAction}</Alert>
       ) : (
         <>
+          <div className='mb-2'>
+            You can access the sample file in{' '}
+            <span style={{ textDecoration: 'underline' }}>
+              https://ipfs.infura.io/ipfs/
+            </span>{' '}
+            + IPFS Hash
+          </div>
           <Table id='keyTable' bordered responsive size='sm'>
             <thead>
               <tr className='table-dark'>
                 <th className='uploadsTableHeaders text-center p-2'>
                   IPFS Hash
-                </th>
-                <th className='uploadsTableHeaders text-center p-2'>
-                  Encryption Key
                 </th>
               </tr>
             </thead>
@@ -116,6 +118,24 @@ const PacketScreen = ({ history, match }) => {
                 <td style={{ verticalAlign: 'middle' }} className='text-center'>
                   {key.ipfsHash}
                 </td>
+              </tr>
+            </tbody>
+          </Table>
+          <div className='my-2'>
+            You can decypt the data with the following encryption key. For
+            security reasons, the key is encrypted with your public key, thus
+            you can decrypt it with your private key.
+          </div>
+          <Table id='keyTable' bordered responsive size='sm'>
+            <thead>
+              <tr className='table-dark'>
+                <th className='uploadsTableHeaders text-center p-2'>
+                  Encryption Key
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
                 <td style={{ verticalAlign: 'middle' }} className='text-center'>
                   {key.encryptionKey}
                 </td>
@@ -253,6 +273,7 @@ const PacketScreen = ({ history, match }) => {
         success={true}
       />
       <ModalComponent
+        size='lg'
         show={loadingSampleModal}
         close={closeLoadingSampleModal}
         proceed={sampleLoadingProceed}
