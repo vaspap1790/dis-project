@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Row,
@@ -7,7 +7,9 @@ import {
   ListGroup,
   Button,
   Alert,
-  Table
+  Table,
+  Form,
+  InputGroup
 } from 'react-bootstrap';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
@@ -31,12 +33,17 @@ const PacketScreen = ({ history, match }) => {
   const actionCreate = useSelector((state) => state.actionCreate);
   const { loading: loadingCreateAction, errorCreateAction, key } = actionCreate;
 
+  const textAreaRefKey = useRef(null);
+  const textAreaRefHash = useRef(null);
+
   // Component level State
   const [watchlistModal, showWatchlistModal] = useState(false);
   const [sampleModal, showSampleModal] = useState(false);
   const [purchaseModal, showPurchaseModal] = useState(false);
   const [loadingSampleModal, showLoadingSampleModal] = useState(false);
   const [loadingPurchaseModal, showLoadingPurchaseModal] = useState(false);
+  const [keyCopied, setKeyCopied] = useState(false);
+  const [hashCopied, setHashCopied] = useState(false);
 
   // Hook that triggers when component did mount
   useEffect(() => {
@@ -73,6 +80,26 @@ const PacketScreen = ({ history, match }) => {
   const purchaseLoadingProceed = () => {
     reloadTable();
     showLoadingPurchaseModal(false);
+  };
+
+  const copyToClipboardKey = (e) => {
+    textAreaRefKey.current.select();
+    document.execCommand('copy');
+    e.target.focus();
+    setKeyCopied(true);
+    setTimeout(function () {
+      setKeyCopied(false);
+    }, 3000);
+  };
+
+  const copyToClipboardHash = (e) => {
+    textAreaRefHash.current.select();
+    document.execCommand('copy');
+    e.target.focus();
+    setHashCopied(true);
+    setTimeout(function () {
+      setHashCopied(false);
+    }, 3000);
   };
 
   const purchaseModalContent = (
@@ -115,8 +142,39 @@ const PacketScreen = ({ history, match }) => {
             </thead>
             <tbody>
               <tr>
-                <td style={{ verticalAlign: 'middle' }} className='text-center'>
-                  {key.ipfsHash}
+                <td className='d-flex align-items-center'>
+                  <Col xs={12}>
+                    <Row>
+                      <InputGroup>
+                        <Form.Control
+                          type='textarea'
+                          ref={textAreaRefHash}
+                          value={key.ipfsHash}
+                          aria-describedby='hashAppend'
+                          readOnly
+                        />
+                        <InputGroup.Append>
+                          <InputGroup.Text
+                            id='hashAppend'
+                            style={{ borderLeft: '0.5px solid #fff' }}
+                          >
+                            <i
+                              className='fas fa-clipboard fa-lg link-icon blue-hover'
+                              onClick={copyToClipboardHash}
+                              title='Copy IPFS Hash to Clipboard'
+                            ></i>
+                          </InputGroup.Text>
+                        </InputGroup.Append>
+                      </InputGroup>
+                    </Row>
+                    {hashCopied ? (
+                      <Row className='mt-1 justify-content-end'>
+                        <div style={{ color: '#3ca861' }} className='small'>
+                          Hash copied to clipboard
+                        </div>
+                      </Row>
+                    ) : null}
+                  </Col>
                 </td>
               </tr>
             </tbody>
@@ -136,8 +194,39 @@ const PacketScreen = ({ history, match }) => {
             </thead>
             <tbody>
               <tr>
-                <td style={{ verticalAlign: 'middle' }} className='text-center'>
-                  {key.encryptionKey}
+                <td className='d-flex align-items-center'>
+                  <Col xs={12}>
+                    <Row>
+                      <InputGroup>
+                        <Form.Control
+                          type='textarea'
+                          ref={textAreaRefKey}
+                          value={key.encryptionKey}
+                          aria-describedby='inputGroupPrepend'
+                          readOnly
+                        />
+                        <InputGroup.Append>
+                          <InputGroup.Text
+                            id='inputGroupPrepend'
+                            style={{ borderLeft: '0.5px solid #fff' }}
+                          >
+                            <i
+                              className='fas fa-clipboard fa-lg link-icon blue-hover'
+                              onClick={copyToClipboardKey}
+                              title='Copy Encryption Key to Clipboard'
+                            ></i>
+                          </InputGroup.Text>
+                        </InputGroup.Append>
+                      </InputGroup>
+                    </Row>
+                    {keyCopied ? (
+                      <Row className='mt-1 justify-content-end'>
+                        <div style={{ color: '#3ca861' }} className='small'>
+                          Key copied to clipboard
+                        </div>
+                      </Row>
+                    ) : null}
+                  </Col>
                 </td>
               </tr>
             </tbody>

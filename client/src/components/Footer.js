@@ -21,9 +21,9 @@ const Footer = () => {
             xs={4}
             className='d-flex justify-content-center align-items-center'
           >
-            <i class='fab fa-github p-2 link-icon blue-hover fa-2x'></i>
-            <i class='fab fa-linkedin p-2 link-icon blue-hover fa-2x'></i>
-            <i class='fab fa-twitter p-2 link-icon blue-hover fa-2x'></i>
+            <i className='fab fa-github p-2 link-icon blue-hover fa-2x'></i>
+            <i className='fab fa-linkedin p-2 link-icon blue-hover fa-2x'></i>
+            <i className='fab fa-twitter p-2 link-icon blue-hover fa-2x'></i>
           </Col>
           <Col xs={4} className='d-flex flex-column align-items-center'>
             <div className='p-1 link-icon blue-hover text-uppercase small'>
