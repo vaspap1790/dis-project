@@ -29,6 +29,7 @@ const HomeScreen = ({ match, history }) => {
   const [toggled, setToggled] = useState(false);
 
   const [sorting, setSorting] = useState('createdAt_desc');
+  const [category, setCategory] = useState('All Categories');
 
   const [filters, setFilters] = useState({
     rating1: false,
@@ -141,6 +142,7 @@ const HomeScreen = ({ match, history }) => {
               setRating5={setRating5}
               setPriceFrom={setPriceFrom}
               setPriceTo={setPriceTo}
+              setCategory={setCategory}
               rating1={rating1}
               rating2={rating2}
               rating3={rating3}
@@ -148,6 +150,7 @@ const HomeScreen = ({ match, history }) => {
               rating5={rating5}
               priceFrom={priceFrom}
               priceTo={priceTo}
+              category={category}
             />
           </div>
         </Col>

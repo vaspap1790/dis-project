@@ -8,14 +8,17 @@ import {
   SidebarContent
 } from 'react-pro-sidebar';
 import Rating from '../components/Rating';
+import Category from '../components/Category';
 import { Row, Col, Alert, Button, Form } from 'react-bootstrap';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
-
 import Switch from 'react-switch';
-import { FaEthereum, FaStar, FaFilter } from 'react-icons/fa';
+import { FaEthereum, FaStar, FaFilter, FaHandPointer } from 'react-icons/fa';
+import { BANKING_DATA, IOT_SENSOR_DATA, OTHER } from '../constants/categories';
+
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
+const categories = ['All Categories', BANKING_DATA, IOT_SENSOR_DATA, OTHER];
 
 const HomeSidebar = ({
   collapsed,
@@ -28,6 +31,7 @@ const HomeSidebar = ({
   setRating3,
   setRating4,
   setRating5,
+  setCategory,
   setPriceFrom,
   setPriceTo,
   rating1,
@@ -36,7 +40,8 @@ const HomeSidebar = ({
   rating4,
   rating5,
   priceFrom,
-  priceTo
+  priceTo,
+  category
 }) => {
   return (
     <ProSidebar
@@ -448,6 +453,41 @@ const HomeSidebar = ({
                     setPriceFrom(value[0]);
                     setPriceTo(value[1]);
                   }}
+                />
+              </div>
+            </MenuItem>
+          </Menu>
+        )}
+
+        {/********************************* Categories ***********************************/}
+        {collapsed ? (
+          <Menu iconShape='circle'>
+            <SubMenu icon={<FaHandPointer />}>
+              <MenuItem>
+                <div
+                  className='d-flex align-items-start justify-content-between pt-0'
+                  style={{ height: '10rem' }}
+                >
+                  <Category
+                    category={category}
+                    handleCategory={setCategory}
+                    categories={categories}
+                  />
+                </div>
+              </MenuItem>
+            </SubMenu>
+          </Menu>
+        ) : (
+          <Menu className='pt-0'>
+            <MenuItem className='pt-0'>
+              <div
+                className='d-flex align-items-start justify-content-between pt-0'
+                style={{ height: '20rem' }}
+              >
+                <Category
+                  category={category}
+                  handleCategory={setCategory}
+                  categories={categories}
                 />
               </div>
             </MenuItem>
