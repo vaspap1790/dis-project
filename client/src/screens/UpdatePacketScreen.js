@@ -39,8 +39,8 @@ const UpdatePacketScreen = ({ history, match }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const packetData = useSelector((state) => state.packetData);
-  const { packet } = packetData;
+  const packetDetails = useSelector((state) => state.packetDetails);
+  const { packet } = packetDetails;
 
   const packetUpdate = useSelector((state) => state.packetUpdate);
   const { loading: loadingUpdate, error, success } = packetUpdate;
@@ -212,7 +212,6 @@ const UpdatePacketScreen = ({ history, match }) => {
             </Alert>
           )}
           <div
-            style={{ height: '55vh' }}
             className={
               (success && success !== null) || (error && error !== null)
                 ? 'mb-2'

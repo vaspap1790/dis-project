@@ -149,24 +149,6 @@ const Header = () => {
                 </NavDropdown>
                 {userInfo ? (
                   <>
-                    <NavDropdown
-                      title={userInfo.username}
-                      alignRight
-                      id='username'
-                    >
-                      <LinkContainer to='/profile'>
-                        <NavDropdown.Item>Profile</NavDropdown.Item>
-                      </LinkContainer>
-                      <LinkContainer to='/editDetails'>
-                        <NavDropdown.Item>Edit User Details</NavDropdown.Item>
-                      </LinkContainer>
-                      <LinkContainer to='/login'>
-                        <NavDropdown.Item onClick={logoutHandler}>
-                          Logout
-                        </NavDropdown.Item>
-                      </LinkContainer>
-                    </NavDropdown>
-
                     {count === 0 ? (
                       <Nav.Link>
                         <i className='fas fa-bell'></i>
@@ -192,6 +174,23 @@ const Header = () => {
                         </LinkContainer>
                       </NavDropdown>
                     )}
+                    <NavDropdown
+                      title={userInfo.username}
+                      alignRight
+                      id='username'
+                    >
+                      <LinkContainer to='/profile'>
+                        <NavDropdown.Item>Profile</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to='/editDetails'>
+                        <NavDropdown.Item>Edit User Details</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to='/login'>
+                        <NavDropdown.Item onClick={logoutHandler}>
+                          Logout
+                        </NavDropdown.Item>
+                      </LinkContainer>
+                    </NavDropdown>
                   </>
                 ) : (
                   <LinkContainer to='/login'>
