@@ -82,6 +82,25 @@ exports.getPacketById = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Fetch packet keys
+// @route   GET /api/packets/keys/:id
+// @access  Public
+exports.getPacketKeys = asyncHandler(async (req, res) => {
+  let packet = await Packet.findById(req.params.id);
+
+  if (packet) {
+    let keys = [];
+    for (var i = 0; i < packet.encryptionKeys.length; i++) {
+      keys.push(cryptr.decrypt(packet.encryptionKeys[i]));
+    }
+    let ipfsHashes = packet.ipfsHashes;
+    res.json({ keys, ipfsHashes });
+  } else {
+    res.status(404);
+    throw new Error('Packet not found');
+  }
+});
+
 // @desc    Fetch all user packets
 // @route   GET /api/packets/user/:id
 // @access  Public

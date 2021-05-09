@@ -36,6 +36,10 @@ const actionSchema = mongoose.Schema(
     readByReceiver: {
       type: Boolean,
       default: false
+    },
+    requesterAddress: {
+      type: String,
+      default: ''
     }
   },
   {

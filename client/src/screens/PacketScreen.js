@@ -19,7 +19,7 @@ import 'react-drop-zone/dist/styles.css';
 import { listPacketDetails, addToWatchlist } from '../actions/packetActions';
 import { getUserRequests, createAction } from '../actions/actionActions';
 
-const PacketScreen = ({ history, match }) => {
+const PacketScreen = ({ history, match, account, contract }) => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
@@ -31,7 +31,11 @@ const PacketScreen = ({ history, match }) => {
   const { loading: loadingDetails, error, packet } = packetDetails;
 
   const actionCreate = useSelector((state) => state.actionCreate);
-  const { loading: loadingCreateAction, errorCreateAction, key } = actionCreate;
+  const {
+    loading: loadingCreateAction,
+    error: errorCreateAction,
+    data
+  } = actionCreate;
 
   const textAreaRefKey = useRef(null);
   const textAreaRefHash = useRef(null);
@@ -44,6 +48,7 @@ const PacketScreen = ({ history, match }) => {
   const [loadingPurchaseModal, showLoadingPurchaseModal] = useState(false);
   const [keyCopied, setKeyCopied] = useState(false);
   const [hashCopied, setHashCopied] = useState(false);
+  const [publicKey, setPublicKey] = useState('');
 
   // Hook that triggers when component did mount
   useEffect(() => {
@@ -59,16 +64,34 @@ const PacketScreen = ({ history, match }) => {
     //TODO:
     showPurchaseModal(false);
     dispatch(
-      createAction(packet._id, userInfo._id, packet.user._id, 'Purchase')
+      createAction(
+        packet._id,
+        userInfo._id,
+        packet.user._id,
+        'Purchase',
+        account,
+        contract,
+        publicKey
+      )
     );
     showLoadingPurchaseModal(true);
   };
 
   const sampleProceed = () => {
-    // TODO: Check blockchain if this user has
-    // requested sample of this product again
     showSampleModal(false);
-    dispatch(createAction(packet._id, userInfo._id, packet.user._id, 'Sample'));
+
+    dispatch(
+      createAction(
+        packet._id,
+        userInfo._id,
+        packet.user._id,
+        'Sample',
+        account,
+        contract,
+        publicKey
+      )
+    );
+    setPublicKey('');
     showLoadingSampleModal(true);
   };
 
@@ -116,6 +139,26 @@ const PacketScreen = ({ history, match }) => {
 
   const sampleModalContent = (
     <>
+      <div className='mb-3'>
+        Are you sure you want to request a sample of this data item? You will
+        need to enter your private key:
+      </div>
+      <Form>
+        <Form.Group controlId='pkey'>
+          <Form.Control
+            type='text'
+            placeholder='Enter private key'
+            title='Enter private key'
+            value={publicKey}
+            onChange={(e) => setPublicKey(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+      </Form>
+    </>
+  );
+
+  const sampleLoadingModalContent = (
+    <>
       {loadingCreateAction ? (
         <>
           <Loader />
@@ -149,7 +192,7 @@ const PacketScreen = ({ history, match }) => {
                         <Form.Control
                           type='textarea'
                           ref={textAreaRefHash}
-                          value={key.ipfsHash}
+                          value={data.ipfsHash}
                           aria-describedby='hashAppend'
                           readOnly
                         />
@@ -201,7 +244,7 @@ const PacketScreen = ({ history, match }) => {
                         <Form.Control
                           type='textarea'
                           ref={textAreaRefKey}
-                          value={key.encryptionKey}
+                          value={data.encryptionKey}
                           aria-describedby='inputGroupPrepend'
                           readOnly
                         />
@@ -357,7 +400,7 @@ const PacketScreen = ({ history, match }) => {
         close={closeSampleModal}
         proceed={sampleProceed}
         title='Sample'
-        body='Are you sure you want to proceed and request a sample of this data packet?'
+        body={sampleModalContent}
         danger={true}
         success={true}
       />
@@ -367,7 +410,7 @@ const PacketScreen = ({ history, match }) => {
         close={closeLoadingSampleModal}
         proceed={sampleLoadingProceed}
         title='Performing Action'
-        body={sampleModalContent}
+        body={sampleLoadingModalContent}
         success={true}
       />
       <ModalComponent

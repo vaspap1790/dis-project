@@ -59,16 +59,27 @@ export const requestListReducer = (state = { requests: [] }, action) => {
   }
 };
 
-export const actionCreateReducer = (state = { key: {} }, action) => {
+export const actionCreateReducer = (
+  state = { data: { ipfsHash: '', encryptionKey: '' } },
+  action
+) => {
   switch (action.type) {
     case ACTION_CREATE_REQUEST:
       return { loading: true };
     case ACTION_CREATE_SUCCESS:
-      return { loading: false, success: true, key: action.payload };
+      return { loading: false, success: true, data: action.payload };
     case ACTION_CREATE_FAIL:
-      return { loading: false, error: action.payload };
+      return {
+        data: { ipfsHash: '', encryptionKey: '' },
+        loading: false,
+        error: action.payload
+      };
     case ACTION_CREATE_RESET:
-      return { loading: false, key: {}, error: null };
+      return {
+        loading: false,
+        data: { ipfsHash: '', encryptionKey: '' },
+        error: null
+      };
     case ACTION_CREATE_EMPTY_ERROR:
       return { ...state, error: null };
     default:

@@ -71,7 +71,7 @@ const Header = ({ account, contract }) => {
 
   const getRegister1UP = async () => {
     let result = await contract.methods
-      .getRegisterUsers('6097f4d698c4402f1487be6f')
+      .getRegisterUsers('6097fd2af1cd1312ec99419d')
       .send({ from: account });
     console.log(result);
   };
@@ -142,7 +142,6 @@ const Header = ({ account, contract }) => {
                           <Button
                             title='Remove from Watchlist'
                             className='btn-Icon-Remove v-align h-align mx-1 px-3'
-                            // style={{ overflow: 'hidden', width: 'fit-content' }}
                             type='button'
                             variant='light'
                             onClick={() => removeFromWatchlistHandler(item)}

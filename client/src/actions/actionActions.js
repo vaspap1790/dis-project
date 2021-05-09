@@ -1,4 +1,5 @@
 import axios from 'axios';
+import EthCrypto from 'eth-crypto';
 import {
   ACTION_CREATE_EMPTY_ERROR,
   ACTION_CREATE_FAIL,
@@ -86,10 +87,15 @@ export const countUnreadActions = (id) => async (dispatch) => {
 };
 
 //////////////////////////////// Create Packet Actions ///////////////////////////////////
-export const createAction = (packetId, requesterId, receiverId, type) => async (
-  dispatch,
-  getState
-) => {
+export const createAction = (
+  packetId,
+  requesterId,
+  receiverId,
+  type,
+  account,
+  contract,
+  pKey
+) => async (dispatch, getState) => {
   try {
     dispatch({
       type: ACTION_CREATE_REQUEST
@@ -108,9 +114,48 @@ export const createAction = (packetId, requesterId, receiverId, type) => async (
     const action = { packetId, requesterId, receiverId, type };
     const { data } = await axios.post(`/api/action`, action, config);
 
+    let response = {};
+    let actionId = data._id;
+
+    if (data.type !== 'Sample') {
+      response = data;
+    } else {
+      const { data } = await axios.get(`/api/packets/keys/${packetId}`);
+      const { keys, ipfsHashes } = data;
+      let encryptedKeys = [];
+
+      const publicKey = EthCrypto.publicKeyByPrivateKey(pKey);
+
+      for (var i = 0; i < keys.length; i++) {
+        const encrypted = await EthCrypto.encryptWithPublicKey(
+          publicKey,
+          keys[i]
+        );
+        encryptedKeys.push(encrypted.ciphertext);
+      }
+
+      let result = await contract.methods
+        .addSampleRequest(requesterId, packetId, encryptedKeys)
+        .send({ from: account });
+
+      let index = result.events.SampleRequestResult.returnValues.index;
+
+      let requesterAddress =
+        result.events.SampleRequestResult.returnValues.requester;
+
+      await axios.post(
+        `/api/action/store/address`,
+        { actionId, requesterAddress },
+        config
+      );
+
+      response.ipfsHash = ipfsHashes[index];
+      response.encryptionKey = encryptedKeys[index];
+    }
+
     dispatch({
       type: ACTION_CREATE_SUCCESS,
-      payload: data
+      payload: response
     });
   } catch (error) {
     const message =

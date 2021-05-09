@@ -32,12 +32,7 @@ contract DataDappContract is Registry {
 
     //***********************************Events********************************//
     event UploadResult(UploadPacket upload);
-    event SampleRequestResult(
-        address requester,
-        bytes32 sampleRequestId,
-        bytes32[] sampleRequestData,
-        uint256 index
-    );
+    event SampleRequestResult(address requester, uint256 index);
     event DepositEvent(address requester);
     event SendMoneyEvent(address requester);
     event ReturnMoneyEvent(address requester);
@@ -75,13 +70,15 @@ contract DataDappContract is Registry {
         string[] memory _keys
     ) public registered(_requesterId) {
         bytes32 index = keccak256(abi.encodePacked(_packetId, msg.sender));
+        require(
+            sampleRequests[index].length == 0,
+            "Already requested sample of this item"
+        );
         for (uint8 i = 0; i < _keys.length; i++) {
             sampleRequests[index].push(keccak256(abi.encodePacked(_keys[i])));
         }
         emit SampleRequestResult(
             msg.sender,
-            index,
-            sampleRequests[index],
             getRandomKeyIndex(sampleRequests[index].length)
         );
     }
@@ -111,7 +108,8 @@ contract DataDappContract is Registry {
         uint256 price,
         bool _approve
     ) public registered(_ownerId) {
-        bytes32 index = keccak256(abi.encodePacked(_requesterAddress));
+        bytes32 index =
+            keccak256(abi.encodePacked(_packetId, _requesterAddress));
 
         if (_approve && hashKeysAndCompare(index, _keys)) {
             purchases[index].packetId = keccak256(abi.encodePacked(_packetId));

@@ -6,7 +6,8 @@ const {
   updatePacket,
   createPacket,
   getTopPackets,
-  getUserDetails
+  getUserDetails,
+  getPacketKeys
 } = require('../controllers/packetController.js');
 const protect = require('../middleware/authMiddleware.js');
 
@@ -17,5 +18,6 @@ router.route('/top').get(getTopPackets);
 router.route('/user/:id').get(getPacketsByUserId);
 router.route('/userDetails/:id').get(getUserDetails);
 router.route('/:id').get(getPacketById).put(protect, updatePacket);
+router.route('/keys/:id').get(getPacketKeys);
 
 module.exports = router;

@@ -11,7 +11,6 @@ const cryptr = new Cryptr(`${process.env.ENCRYPT_KEY}`);
 // @access  Private
 exports.addNewAction = asyncHandler(async (req, res) => {
   const { packetId, requesterId, receiverId, type } = req.body;
-  let key = {};
 
   if (
     packetId === undefined ||
@@ -23,14 +22,26 @@ exports.addNewAction = asyncHandler(async (req, res) => {
     throw new Error('Something went wrong');
   } else {
     if (type === 'Sample') {
-      const action = new Action({
+      let alrearyRequested = await Action.find({
         requester: requesterId,
         receiver: receiverId,
-        packet: packetId,
-        type: type,
-        status: 'No Status'
+        packet: packetId
       });
-      const addedAction = await action.save();
+
+      if (alrearyRequested.length !== 0) {
+        res.status(404);
+        throw new Error('Already requested sample');
+      } else {
+        const action = new Action({
+          requester: requesterId,
+          receiver: receiverId,
+          packet: packetId,
+          type: type,
+          status: 'No Status'
+        });
+        const addedAction = await action.save();
+        res.status(201).json(addedAction);
+      }
     } else {
       const action = new Action({
         requester: requesterId,
@@ -39,19 +50,9 @@ exports.addNewAction = asyncHandler(async (req, res) => {
         type: type
       });
       const addedAction = await action.save();
-    }
-
-    if (type === 'Sample') {
-      let packet = await Packet.findById(packetId);
-
-      if (packet.encryptionKeys.length !== 0) {
-        let randInt = getRandomInt(packet.encryptionKeys.length);
-        key.encryptionKey = cryptr.decrypt(packet.encryptionKeys[randInt]);
-        key.ipfsHash = packet.ipfsHashes[randInt];
-      }
+      res.status(201).json(addedAction);
     }
   }
-  res.status(201).json(key);
 });
 
 // @desc    Fetch all user actions
@@ -94,6 +95,17 @@ exports.countUnreadActions = asyncHandler(async (req, res) => {
     showToReceiver: true
   });
   res.json(count);
+});
+
+// @desc    Store requester address
+// @route   POST /api/action/store/address
+// @access  Private
+exports.storeAddress = asyncHandler(async (req, res) => {
+  const { actionId, requesterAddress } = req.body;
+  const action = await Action.findById(actionId);
+  action.requesterAddress = requesterAddress;
+  action.save();
+  res.json('Address stored');
 });
 
 // @desc    Update action

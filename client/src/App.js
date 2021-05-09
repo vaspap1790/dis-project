@@ -103,7 +103,16 @@ const App = () => {
               />
             )}
           />
-          <Route path='/packet/:id' component={PacketScreen} />
+          <Route
+            path='/packet/:id'
+            render={(props) => (
+              <PacketScreen
+                {...props}
+                account={account}
+                contract={dataDappContract}
+              />
+            )}
+          />
           <Route
             path='/packets/create'
             render={(props) => (
