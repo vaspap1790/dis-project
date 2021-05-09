@@ -81,7 +81,8 @@ const SecondStep = (props) => {
               </span>{' '}
               <span style={{ verticalAlign: 'middle' }}>
                 <i
-                  className='fas fa-trash trash'
+                  className='fas fa-trash-alt'
+                  style={{ color: '#d9534f' }}
                   title='Remove from Uploads'
                   onClick={removeFromUploadsHandler}
                 ></i>

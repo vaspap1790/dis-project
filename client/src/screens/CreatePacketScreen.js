@@ -24,7 +24,7 @@ import {
 } from '../utils/validator';
 /* eslint react/prop-types: 0 */
 
-const CreatePacketScreen = ({ history }) => {
+const CreatePacketScreen = ({ history, account, contract }) => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
@@ -142,7 +142,7 @@ const CreatePacketScreen = ({ history }) => {
       encryptionKeys: encryptionKeys
     };
 
-    dispatch(createPacket(newPacket));
+    dispatch(createPacket(newPacket, account, contract));
     showLoadingModal(false);
 
     setTimeout(function () {

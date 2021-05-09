@@ -160,7 +160,10 @@ const LastStep = (props) => {
                     variant='light'
                     onClick={() => removeFromUploadsHandler(file.key)}
                   >
-                    <i className='fas fa-trash trash'></i>
+                    <i
+                      className='fas fa-trash-alt'
+                      style={{ color: '#d9534f' }}
+                    ></i>
                   </Button>
                 </td>
               </tr>

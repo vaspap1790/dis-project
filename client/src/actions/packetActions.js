@@ -140,7 +140,10 @@ export const emptyUserPacketsError = () => async (dispatch) => {
 };
 
 //////////////////////////////// Create Packet Actions ///////////////////////////////////
-export const createPacket = (packet) => async (dispatch, getState) => {
+export const createPacket = (packet, account, contract) => async (
+  dispatch,
+  getState
+) => {
   try {
     dispatch({
       type: PACKET_CREATE_REQUEST
@@ -157,6 +160,10 @@ export const createPacket = (packet) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.post(`/api/packets`, packet, config);
+    let result = await contract.methods
+      .addUpload(userInfo._id, data._id, packet.ipfsHashes)
+      .send({ from: account });
+    console.log(result);
 
     dispatch({
       type: PACKET_CREATE_SUCCESS,
