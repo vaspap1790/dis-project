@@ -1,4 +1,4 @@
-const packets = [
+exports.packets = [
   {
     name: 'Airpods Wireless Bluetooth Headphones',
     image: '/images/airpods.jpg',
@@ -60,5 +60,3 @@ const packets = [
     numReviews: 12
   }
 ];
-
-export default packets;

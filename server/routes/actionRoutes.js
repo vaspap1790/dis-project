@@ -1,12 +1,12 @@
-import express from 'express';
-import {
+const express = require('express');
+const {
   addNewAction,
   countUnreadActions,
   getNotifications,
   getRequests,
   updateAction
-} from '../controllers/actionController.js';
-import { protect } from '../middleware/authMiddleware.js';
+} = require('../controllers/actionController.js');
+const protect = require('../middleware/authMiddleware.js');
 
 const router = express.Router();
 
@@ -16,4 +16,4 @@ router.route('/requests/user/:id').get(getRequests);
 router.route('/count/user/:id').get(countUnreadActions);
 router.route('/update').put(protect, updateAction);
 
-export default router;
+module.exports = router;

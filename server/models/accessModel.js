@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const accessSchema = mongoose.Schema(
   {
@@ -20,4 +20,4 @@ const accessSchema = mongoose.Schema(
 
 const Access = mongoose.model('Access', accessSchema);
 
-export default Access;
+module.exports = Access;

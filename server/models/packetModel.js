@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const packetSchema = mongoose.Schema(
   {
@@ -55,4 +55,4 @@ const packetSchema = mongoose.Schema(
 
 const Packet = mongoose.model('Packet', packetSchema);
 
-export default Packet;
+module.exports = Packet;

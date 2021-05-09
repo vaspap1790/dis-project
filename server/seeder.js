@@ -1,13 +1,13 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import colors from 'colors';
-import users from './data/users.js';
-import packets from './data/packets.js';
-import User from './models/userModel.js';
-import Packet from './models/packetModel.js';
-import Review from './models/reviewModel.js';
-import Access from './models/accessModel.js';
-import connectDB from './config/db.js';
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const colors = require('colors');
+const users = require('./data/users.js');
+const packets = require('./data/packets.js');
+const User = require('./models/userModel.js');
+const Packet = require('./models/packetModel.js');
+const Review = require('./models/reviewModel.js');
+const Access = require('./models/accessModel.js');
+const connectDB = require('./config/db.js');
 
 dotenv.config();
 connectDB();

@@ -1,5 +1,5 @@
-import express from 'express';
-import {
+const express = require('express');
+const {
   getPackets,
   getPacketById,
   getPacketsByUserId,
@@ -7,8 +7,8 @@ import {
   createPacket,
   getTopPackets,
   getUserDetails
-} from '../controllers/packetController.js';
-import { protect } from '../middleware/authMiddleware.js';
+} = require('../controllers/packetController.js');
+const protect = require('../middleware/authMiddleware.js');
 
 const router = express.Router();
 
@@ -18,4 +18,4 @@ router.route('/user/:id').get(getPacketsByUserId);
 router.route('/userDetails/:id').get(getUserDetails);
 router.route('/:id').get(getPacketById).put(protect, updatePacket);
 
-export default router;
+module.exports = router;

@@ -1,15 +1,15 @@
-import asyncHandler from 'express-async-handler';
-import Action from '../models/actionModel.js';
-import Packet from '../models/packetModel.js';
-import { getRandomInt } from '../utils/utilities.js';
-import Cryptr from 'cryptr';
+const asyncHandler = require('express-async-handler');
+const Action = require('../models/actionModel.js');
+const Packet = require('../models/packetModel.js');
+const { getRandomInt } = require('../utils/utilities.js');
+const Cryptr = require('cryptr');
 
 const cryptr = new Cryptr(`${process.env.ENCRYPT_KEY}`);
 
 // @desc    Add new action
 // @route   POST /api/action
 // @access  Private
-const addNewAction = asyncHandler(async (req, res) => {
+exports.addNewAction = asyncHandler(async (req, res) => {
   const { packetId, requesterId, receiverId, type } = req.body;
   let key = {};
 
@@ -57,7 +57,7 @@ const addNewAction = asyncHandler(async (req, res) => {
 // @desc    Fetch all user actions
 // @route   GET /api/action/notif/user/:id
 // @access  Private
-const getNotifications = asyncHandler(async (req, res) => {
+exports.getNotifications = asyncHandler(async (req, res) => {
   const actions = await Action.find({
     receiver: req.params.id,
     showToReceiver: true
@@ -72,7 +72,7 @@ const getNotifications = asyncHandler(async (req, res) => {
 // @desc    Fetch all user actions
 // @route   GET /api/action/requests/user/:id
 // @access  Private
-const getRequests = asyncHandler(async (req, res) => {
+exports.getRequests = asyncHandler(async (req, res) => {
   const actions = await Action.find({
     requester: req.params.id,
     showToRequester: true
@@ -87,7 +87,7 @@ const getRequests = asyncHandler(async (req, res) => {
 // @desc    Count unread user actions
 // @route   GET /api/action/count/user/:id
 // @access  Private
-const countUnreadActions = asyncHandler(async (req, res) => {
+exports.countUnreadActions = asyncHandler(async (req, res) => {
   const count = await Action.countDocuments({
     receiver: req.params.id,
     readByReceiver: false,
@@ -99,7 +99,7 @@ const countUnreadActions = asyncHandler(async (req, res) => {
 // @desc    Update action
 // @route   POST /api/action/update/:id
 // @access  Private
-const updateAction = asyncHandler(async (req, res) => {
+exports.updateAction = asyncHandler(async (req, res) => {
   const { actionId, update, userId } = req.body;
   const action = await Action.findById(actionId);
 
@@ -139,11 +139,3 @@ const updateAction = asyncHandler(async (req, res) => {
 
   res.json('Action Updated');
 });
-
-export {
-  addNewAction,
-  getNotifications,
-  getRequests,
-  updateAction,
-  countUnreadActions
-};

@@ -21,7 +21,7 @@ import {
   validateConfirmPassword
 } from '../utils/validator';
 
-const RegisterScreen = ({ location, history }) => {
+const RegisterScreen = ({ location, history, account, contract }) => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
@@ -90,8 +90,7 @@ const RegisterScreen = ({ location, history }) => {
 
   const registerUser = () => {
     showConfirmationModal(false);
-    dispatch(register(username, email, password));
-
+    dispatch(register(username, email, password, account, contract));
     setTimeout(function () {
       dispatch(emptyRegisterError());
     }, 8000);

@@ -1,10 +1,10 @@
-import asyncHandler from 'express-async-handler';
-import Access from '../models/accessModel.js';
+const asyncHandler = require('express-async-handler');
+const Access = require('../models/accessModel.js');
 
 // @desc    Add new access
 // @route   POST /api/access
 // @access  Private
-const addNewAccess = asyncHandler(async (req, res) => {
+exports.addNewAccess = asyncHandler(async (req, res) => {
   const { packetId } = req.body;
 
   if (packetId === undefined) {
@@ -21,7 +21,7 @@ const addNewAccess = asyncHandler(async (req, res) => {
 // @desc    Fetch all user purchases
 // @route   GET /api/access/user/:id
 // @access  Private
-const getAccessesByUserId = asyncHandler(async (req, res) => {
+exports.getAccessesByUserId = asyncHandler(async (req, res) => {
   const accesses = await Access.find({ user: req.params.id }).populate(
     'packet',
     'name image'
@@ -29,5 +29,3 @@ const getAccessesByUserId = asyncHandler(async (req, res) => {
 
   res.json(accesses);
 });
-
-export { addNewAccess, getAccessesByUserId };

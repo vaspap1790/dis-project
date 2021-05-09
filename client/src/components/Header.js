@@ -23,7 +23,7 @@ import {
   getUserRequests
 } from '../actions/actionActions';
 
-const Header = () => {
+const Header = ({ account, contract }) => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
@@ -69,6 +69,13 @@ const Header = () => {
 
   const closeWatchlistModal = () => showWatchlistModal(false);
 
+  const getRegister1UP = async () => {
+    let result = await contract.methods
+      .getRegisterUsers('6097f4d698c4402f1487be6f')
+      .send({ from: account });
+    console.log(result);
+  };
+
   // This will be rendered
   return (
     <>
@@ -80,6 +87,9 @@ const Header = () => {
           className='py-3'
           collapseOnSelect
         >
+          <button type='button' onClick={getRegister1UP}>
+            Register1???UP
+          </button>
           <Container fluid className='px-4'>
             <LinkContainer to='/'>
               <Navbar.Brand>Data Dapp</Navbar.Brand>

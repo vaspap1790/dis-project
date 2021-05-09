@@ -1,16 +1,16 @@
-import path from 'path';
-import express from 'express';
-import dotenv from 'dotenv';
-import colors from 'colors';
-import morgan from 'morgan';
-import connectDB from './config/db.js';
-import { notFound, errorHandler } from './middleware/errorMiddleware.js';
-import packetRoutes from './routes/packetRoutes.js';
-import userRoutes from './routes/userRoutes.js';
-import accessRoutes from './routes/accessRoutes.js';
-import uploadRoutes from './routes/uploadRoutes.js';
-import reviewRoutes from './routes/reviewRoutes.js';
-import actionRoutes from './routes/actionRoutes.js';
+const path = require('path');
+const express = require('express');
+const dotenv = require('dotenv');
+const colors = require('colors');
+const morgan = require('morgan');
+const connectDB = require('./config/db.js');
+const { notFound, errorHandler } = require('./middleware/errorMiddleware.js');
+const packetRoutes = require('./routes/packetRoutes.js');
+const userRoutes = require('./routes/userRoutes.js');
+const accessRoutes = require('./routes/accessRoutes.js');
+const uploadRoutes = require('./routes/uploadRoutes.js');
+const reviewRoutes = require('./routes/reviewRoutes.js');
+const actionRoutes = require('./routes/actionRoutes.js');
 
 // Global variables will be available through 'process.env.*' in '.env' file
 dotenv.config();
@@ -41,8 +41,7 @@ app.use('/api/review', reviewRoutes);
 app.use('/api/action', actionRoutes);
 
 // Make this folder static so the web server can serve it
-const __dirname = path.resolve();
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+app.use('/uploads', express.static(path.join(path.resolve(), '/uploads')));
 
 // Error Handling
 app.use(notFound);

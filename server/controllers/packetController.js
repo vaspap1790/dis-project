@@ -1,15 +1,15 @@
-import asyncHandler from 'express-async-handler';
-import Packet from '../models/packetModel.js';
-import Review from '../models/reviewModel.js';
-import User from '../models/userModel.js';
-import Cryptr from 'cryptr';
+const asyncHandler = require('express-async-handler');
+const Packet = require('../models/packetModel.js');
+const Review = require('../models/reviewModel.js');
+const User = require('../models/userModel.js');
+const Cryptr = require('cryptr');
 
 const cryptr = new Cryptr(`${process.env.ENCRYPT_KEY}`);
 
 // @desc    Fetch all packets
 // @route   GET /api/packets
 // @access  Public
-const getPackets = asyncHandler(async (req, res) => {
+exports.getPackets = asyncHandler(async (req, res) => {
   const pageSize = 10;
   const ratings = [];
 
@@ -69,7 +69,7 @@ const getPackets = asyncHandler(async (req, res) => {
 // @desc    Fetch single packet
 // @route   GET /api/packets/:id
 // @access  Public
-const getPacketById = asyncHandler(async (req, res) => {
+exports.getPacketById = asyncHandler(async (req, res) => {
   let packet = await Packet.findById(req.params.id).populate(
     'user',
     'username'
@@ -85,7 +85,7 @@ const getPacketById = asyncHandler(async (req, res) => {
 // @desc    Fetch all user packets
 // @route   GET /api/packets/user/:id
 // @access  Public
-const getPacketsByUserId = asyncHandler(async (req, res) => {
+exports.getPacketsByUserId = asyncHandler(async (req, res) => {
   const pageSize = 10;
 
   const page = Number(req.query.pageNumber) || 1;
@@ -112,7 +112,7 @@ const getPacketsByUserId = asyncHandler(async (req, res) => {
 // @desc    Fetch user details
 // @route   GET /api/packets/userDetails/:id
 // @access  Public
-const getUserDetails = asyncHandler(async (req, res) => {
+exports.getUserDetails = asyncHandler(async (req, res) => {
   const packets = await Packet.find({ user: req.params.id });
   const userRating = await User.findById(req.params.id);
   let data = {};
@@ -162,7 +162,7 @@ const getUserDetails = asyncHandler(async (req, res) => {
 // @desc    Create a packet
 // @route   POST /api/packets
 // @access  Private
-const createPacket = asyncHandler(async (req, res) => {
+exports.createPacket = asyncHandler(async (req, res) => {
   const {
     name,
     price,
@@ -197,7 +197,7 @@ const createPacket = asyncHandler(async (req, res) => {
 // @desc    Update a packet
 // @route   PUT /api/packets/:id
 // @access  Private
-const updatePacket = asyncHandler(async (req, res) => {
+exports.updatePacket = asyncHandler(async (req, res) => {
   const { name, price, description, image, category } = req.body;
 
   const packet = await Packet.findById(req.params.id);
@@ -220,18 +220,8 @@ const updatePacket = asyncHandler(async (req, res) => {
 // @desc    Get top rated packets
 // @route   GET /api/packets/top
 // @access  Public
-const getTopPackets = asyncHandler(async (req, res) => {
+exports.getTopPackets = asyncHandler(async (req, res) => {
   const packets = await Packet.find({}).sort({ rating: -1 }).limit(5);
 
   res.json(packets);
 });
-
-export {
-  getPackets,
-  getPacketById,
-  getPacketsByUserId,
-  createPacket,
-  updatePacket,
-  getTopPackets,
-  getUserDetails
-};

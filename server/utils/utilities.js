@@ -1,5 +1,3 @@
-function getRandomInt(max) {
+exports.getRandomInt = (max) => {
   return Math.floor(Math.random() * max);
-}
-
-export { getRandomInt };
+};

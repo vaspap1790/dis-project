@@ -1,6 +1,6 @@
-import bcrypt from 'bcryptjs';
+const bcrypt = require('bcryptjs');
 
-const users = [
+exports.users = [
   {
     username: 'admin1',
     email: 'admin1@gmail.com',
@@ -24,5 +24,3 @@ const users = [
     numReviews: 22
   }
 ];
-
-export default users;

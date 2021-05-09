@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const actionSchema = mongoose.Schema(
   {
@@ -45,4 +45,4 @@ const actionSchema = mongoose.Schema(
 
 const ACTION = mongoose.model('ACTION', actionSchema);
 
-export default ACTION;
+module.exports = ACTION;

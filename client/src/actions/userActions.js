@@ -71,7 +71,13 @@ export const emptyLoginError = () => async (dispatch) => {
 };
 
 /////////////////////////////// Register Actions /////////////////////////////////
-export const register = (username, email, password) => async (dispatch) => {
+export const register = (
+  username,
+  email,
+  password,
+  account,
+  contract
+) => async (dispatch) => {
   try {
     dispatch({
       type: USER_REGISTER_REQUEST
@@ -100,6 +106,7 @@ export const register = (username, email, password) => async (dispatch) => {
     });
 
     localStorage.setItem('userInfo', JSON.stringify(data));
+    contract.methods.registerUser(data._id).send({ from: account });
   } catch (error) {
     dispatch({
       type: USER_REGISTER_FAIL,

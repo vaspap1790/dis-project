@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
+
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomeScreen from './screens/HomeScreen';
@@ -11,81 +13,113 @@ import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import AboutUsScreen from './screens/AboutUsScreen';
-// import getWeb3 from './getWeb3';
+
+import DataDappContract from './contracts/DataDappContract.json';
+import getWeb3 from './getWeb3';
 
 const App = () => {
-  // state = { storageValue: 0, web3: null, accounts: null, contract: null };
+  // Component level State
+  const [web3, setWeb3] = useState(null);
+  const [accounts, setAccounts] = useState(null);
+  const [account, setAccount] = useState(null);
+  const [dataDappContract, setDataDappContract] = useState(null);
 
-  // componentDidMount = async () => {
-  //   try {
-  //     // Get network provider and web3 instance.
-  //     const web3 = await getWeb3();
+  // Metamask Wallet: handle account changes
+  const getAccount = async () => {
+    const accounts = await ethereum.enable();
+    setAccount(accounts[0]);
+  };
+  const ethereum = window.ethereum;
+  if (ethereum) {
+    ethereum.on('accountsChanged', function (accounts) {
+      getAccount();
+    });
+  }
 
-  //     // Use web3 to get the user's accounts.
-  //     const accounts = await web3.eth.getAccounts();
+  // Hook that triggers when component did mount
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        // Get network provider and web3 instance
+        const web3Instance = await getWeb3();
+        setWeb3(web3Instance);
 
-  //     // Get the contract instance.
-  //     const networkId = await web3.eth.net.getId();
-  //     const deployedNetwork = SimpleStorageContract.networks[networkId];
-  //     const instance = new web3.eth.Contract(
-  //       SimpleStorageContract.abi,
-  //       deployedNetwork && deployedNetwork.address,
-  //     );
+        // Use web3 to get the accounts
+        const accountsInstance = await web3Instance.eth.getAccounts();
+        setAccounts(accountsInstance);
+        setAccount(accountsInstance[0]);
 
-  //     // Set web3, accounts, and contract to the state, and then proceed with an
-  //     // example of interacting with the contract's methods.
-  //     this.setState({ web3, accounts, contract: instance }, this.runExample);
-  //   } catch (error) {
-  //     // Catch any errors for any of the above operations.
-  //     alert(
-  //       `Failed to load web3, accounts, or contract. Check console for details.`,
-  //     );
-  //     console.error(error);
-  //   }
-  // };
+        // Get the network id
+        const networkId = await web3Instance.eth.net.getId();
 
-  // runExample = async () => {
-  //   const { accounts, contract } = this.state;
+        // Get contract instance
+        const dataDappContractInstance = new web3Instance.eth.Contract(
+          DataDappContract.abi,
+          DataDappContract.networks[networkId] &&
+            DataDappContract.networks[networkId].address
+        );
+        setDataDappContract(dataDappContractInstance);
 
-  //   // Stores a given value, 5 by default.
-  //   await contract.methods.set(5).send({ from: accounts[0] });
+        // Listen to contract events
+        dataDappContractInstance.events
+          .DepositEvent()
+          .on('data', async function (evt) {
+            console.log(evt);
+          });
+      } catch (error) {
+        console.log(
+          'Failed to load web3, accounts, or contract. Check console for details.'
+        );
+      }
+    }
+    fetchData();
+  }, []);
 
-  //   // Get the value from the contract to prove it worked.
-  //   const response = await contract.methods.get().call();
-
-  //   // Update state with the result.
-  //   this.setState({ storageValue: response });
-  // };
-
-  // if (!this.state.web3) {
-  //   return <div>Loading Web3, accounts, and contract...</div>;
-  // }
   return (
     <Router>
-      <Header />
+      <Header account={account} contract={dataDappContract} />
       <main className='py-3'>
         <Container fluid className='px-5'>
           <Route path='/login' component={LoginScreen} />
-          <Route path='/register' component={RegisterScreen} />
+          <Route
+            path='/register'
+            render={(props) => (
+              <RegisterScreen
+                {...props}
+                account={account}
+                contract={dataDappContract}
+              />
+            )}
+          />
           <Route path='/editDetails' component={RegisterScreen} />
           <Route path='/aboutUs' component={AboutUsScreen} />
-          <Route path='/profile/:id?' component={ProfileScreen} />
+          <Route
+            path='/profile/:id?'
+            render={(props) => (
+              <ProfileScreen
+                {...props}
+                account={account}
+                contract={dataDappContract}
+              />
+            )}
+          />
           <Route path='/packet/:id' component={PacketScreen} />
-          <Route path='/packets/create' component={CreatePacketScreen} />
+          <Route
+            path='/packets/create'
+            render={(props) => (
+              <CreatePacketScreen
+                {...props}
+                account={account}
+                contract={dataDappContract}
+              />
+            )}
+          />
           <Route path='/packets/update/:id' component={UpdatePacketScreen} />
           <Route path='/search/:keyword' component={HomeScreen} exact />
           <Route path='/' component={HomeScreen} exact />
         </Container>
       </main>
       <Footer />
-      {/* <p>
-          If your contracts compiled and migrated successfully, below will show
-          a stored value of 5 (by default).
-        </p>
-        <p>
-          Try changing the value stored on <strong>line 40</strong> of App.js.
-        </p>
-        <div>The stored value is: {this.state.storageValue}</div> */}
     </Router>
   );
 };

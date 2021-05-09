@@ -1,12 +1,12 @@
-import asyncHandler from 'express-async-handler';
-import Packet from '../models/packetModel.js';
-import Review from '../models/reviewModel.js';
-import Access from '../models/accessModel.js';
+const asyncHandler = require('express-async-handler');
+const Packet = require('../models/packetModel.js');
+const Review = require('../models/reviewModel.js');
+const Access = require('../models/accessModel.js');
 
 // @desc    Create new review
 // @route   POST /api/reviews
 // @access  Private
-const createPacketReview = asyncHandler(async (req, res) => {
+exports.createPacketReview = asyncHandler(async (req, res) => {
   const { rating, comment } = req.body;
   const packetId = req.params.id;
 
@@ -59,5 +59,3 @@ const createPacketReview = asyncHandler(async (req, res) => {
     throw new Error('Data packet not found');
   }
 });
-
-export { createPacketReview };
