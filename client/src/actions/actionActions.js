@@ -92,9 +92,11 @@ export const createAction = (
   requesterId,
   receiverId,
   type,
+  price,
   account,
   contract,
-  pKey
+  pKey,
+  web3
 ) => async (dispatch, getState) => {
   try {
     dispatch({
@@ -117,9 +119,7 @@ export const createAction = (
     let response = {};
     let actionId = data._id;
 
-    if (data.type !== 'Sample') {
-      response = data;
-    } else {
+    if (data.type === 'Sample') {
       const { data } = await axios.get(`/api/packets/keys/${packetId}`);
       const { keys, ipfsHashes } = data;
       let encryptedKeys = [];
@@ -137,7 +137,6 @@ export const createAction = (
       let result = await contract.methods
         .addSampleRequest(requesterId, packetId, encryptedKeys)
         .send({ from: account });
-      console.log(result);
 
       let index = result.events.SampleRequestResult.returnValues.index;
 
@@ -152,6 +151,14 @@ export const createAction = (
 
       response.ipfsHash = ipfsHashes[index];
       response.encryptionKey = encryptedKeys[index];
+    } else {
+      let priceInWei = web3.utils.toWei(price.toString(), 'ether');
+      let result = await web3.eth.sendTransaction({
+        from: account,
+        to: contract._address,
+        value: priceInWei
+      });
+      response = data;
     }
 
     dispatch({

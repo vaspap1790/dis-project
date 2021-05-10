@@ -71,7 +71,7 @@ const Header = ({ account, contract }) => {
 
   const getRegister1UP = async () => {
     let result = await contract.methods
-      .getRegisterUsers('6097fd2af1cd1312ec99419d')
+      .getRegisterUsers('6097fd2af1cd1312ec99419dda')
       .send({ from: account });
     console.log(result);
   };

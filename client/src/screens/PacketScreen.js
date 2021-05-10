@@ -19,7 +19,7 @@ import 'react-drop-zone/dist/styles.css';
 import { listPacketDetails, addToWatchlist } from '../actions/packetActions';
 import { getUserRequests, createAction } from '../actions/actionActions';
 
-const PacketScreen = ({ history, match, account, contract }) => {
+const PacketScreen = ({ history, match, account, contract, web3 }) => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
@@ -61,7 +61,6 @@ const PacketScreen = ({ history, match, account, contract }) => {
   };
 
   const purchaseProceed = () => {
-    //TODO:
     showPurchaseModal(false);
     dispatch(
       createAction(
@@ -69,9 +68,11 @@ const PacketScreen = ({ history, match, account, contract }) => {
         userInfo._id,
         packet.user._id,
         'Purchase',
+        packet.price,
         account,
         contract,
-        publicKey
+        publicKey,
+        web3
       )
     );
     showLoadingPurchaseModal(true);
@@ -87,9 +88,11 @@ const PacketScreen = ({ history, match, account, contract }) => {
           userInfo._id,
           packet.user._id,
           'Sample',
+          packet.price,
           account,
           contract,
-          publicKey
+          publicKey,
+          web3
         )
       );
       setPublicKey('');

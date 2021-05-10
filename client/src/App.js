@@ -110,6 +110,7 @@ const App = () => {
                 {...props}
                 account={account}
                 contract={dataDappContract}
+                web3={web3}
               />
             )}
           />
