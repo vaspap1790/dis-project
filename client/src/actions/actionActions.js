@@ -137,6 +137,7 @@ export const createAction = (
       let result = await contract.methods
         .addSampleRequest(requesterId, packetId, encryptedKeys)
         .send({ from: account });
+      console.log(result);
 
       let index = result.events.SampleRequestResult.returnValues.index;
 

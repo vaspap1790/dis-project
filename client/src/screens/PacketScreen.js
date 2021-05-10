@@ -78,21 +78,23 @@ const PacketScreen = ({ history, match, account, contract }) => {
   };
 
   const sampleProceed = () => {
-    showSampleModal(false);
+    if (publicKey.length !== 0) {
+      showSampleModal(false);
 
-    dispatch(
-      createAction(
-        packet._id,
-        userInfo._id,
-        packet.user._id,
-        'Sample',
-        account,
-        contract,
-        publicKey
-      )
-    );
-    setPublicKey('');
-    showLoadingSampleModal(true);
+      dispatch(
+        createAction(
+          packet._id,
+          userInfo._id,
+          packet.user._id,
+          'Sample',
+          account,
+          contract,
+          publicKey
+        )
+      );
+      setPublicKey('');
+      showLoadingSampleModal(true);
+    }
   };
 
   const sampleLoadingProceed = () => {
@@ -141,7 +143,7 @@ const PacketScreen = ({ history, match, account, contract }) => {
     <>
       <div className='mb-3'>
         Are you sure you want to request a sample of this data item? You will
-        need to enter your private key:
+        need to enter your private key (mandatory):
       </div>
       <Form>
         <Form.Group controlId='pkey'>
