@@ -40,6 +40,10 @@ const actionSchema = mongoose.Schema(
     requesterAddress: {
       type: String,
       default: ''
+    },
+    encryptedKeys: {
+      type: [String],
+      default: []
     }
   },
   {

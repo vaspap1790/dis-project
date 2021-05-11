@@ -16,7 +16,7 @@ import {
   listPacketDetails
 } from '../actions/packetActions';
 
-const ProfileScreen = ({ match, history }) => {
+const ProfileScreen = ({ match, history, account, contract, web3 }) => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
@@ -128,7 +128,11 @@ const ProfileScreen = ({ match, history }) => {
               {/*************** Notifications Tab ******************/}
               {!userDetails ? (
                 <Tab eventKey='notifications' title='Notifications'>
-                  <DataTableNotifications />
+                  <DataTableNotifications
+                    account={account}
+                    contract={contract}
+                    web3={web3}
+                  />
                 </Tab>
               ) : null}
               {/*************** Requests Tab ******************/}

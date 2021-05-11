@@ -43,14 +43,17 @@ const App = () => {
         // Get network provider and web3 instance
         const web3Instance = await getWeb3();
         setWeb3(web3Instance);
+        console.log(web3Instance);
 
         // Use web3 to get the accounts
         const accountsInstance = await web3Instance.eth.getAccounts();
         setAccounts(accountsInstance);
         setAccount(accountsInstance[0]);
+        console.log(accountsInstance);
 
         // Get the network id
         const networkId = await web3Instance.eth.net.getId();
+        console.log(networkId);
 
         // Get contract instance
         const dataDappContractInstance = new web3Instance.eth.Contract(
@@ -77,7 +80,7 @@ const App = () => {
 
   return (
     <Router>
-      <Header account={account} contract={dataDappContract} />
+      <Header web3={web3} />
       <main className='py-3'>
         <Container fluid className='px-5'>
           <Route path='/login' component={LoginScreen} />
@@ -100,6 +103,7 @@ const App = () => {
                 {...props}
                 account={account}
                 contract={dataDappContract}
+                web3={web3}
               />
             )}
           />

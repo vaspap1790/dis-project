@@ -8,6 +8,7 @@ contract DataDappContract is Registry {
     struct UploadPacket {
         address ownerAddress;
         bytes32[] ipfsHashes;
+        bool sold;
     }
 
     struct Purchase {
@@ -25,10 +26,11 @@ contract DataDappContract is Registry {
     //**********************************Mappings*******************************//
     mapping(bytes32 => UploadPacket) public uploads;
     mapping(bytes32 => bytes32[]) public sampleRequests;
-    uint256 nonce;
     mapping(bytes32 => Purchase) public purchases;
     mapping(bytes32 => uint256) public deposits;
     mapping(bytes32 => Review[]) public reviews;
+
+    uint256 nonce;
 
     //***********************************Events********************************//
     event UploadResult(UploadPacket upload);
@@ -37,6 +39,15 @@ contract DataDappContract is Registry {
     event SendMoneyEvent(address requester);
     event ReturnMoneyEvent(address requester);
     event ReviewResult(Review review);
+
+    //********************************Modifiers********************************//
+    modifier itemNotSold(string memory _id) {
+        require(
+            uploads[keccak256(abi.encodePacked(_id))].sold != true,
+            "Item has been sold"
+        );
+        _;
+    }
 
     //*********************************Functions*******************************//
     receive() external payable {
@@ -67,7 +78,7 @@ contract DataDappContract is Registry {
     function addSampleRequest(
         string memory _requesterId,
         string memory _packetId,
-        string[] memory _keys
+        bytes32[] memory _keys
     ) public registered(_requesterId) {
         bytes32 index = keccak256(abi.encodePacked(_packetId, msg.sender));
         require(
@@ -75,7 +86,7 @@ contract DataDappContract is Registry {
             "Already requested sample of this item"
         );
         for (uint8 i = 0; i < _keys.length; i++) {
-            sampleRequests[index].push(keccak256(abi.encodePacked(_keys[i])));
+            sampleRequests[index].push(_keys[i]);
         }
         emit SampleRequestResult(
             msg.sender,
@@ -107,7 +118,7 @@ contract DataDappContract is Registry {
         string[] memory _keys,
         uint256 price,
         bool _approve
-    ) public registered(_ownerId) {
+    ) public registered(_ownerId) itemNotSold(_packetId) {
         bytes32 index =
             keccak256(abi.encodePacked(_packetId, _requesterAddress));
 
@@ -118,6 +129,8 @@ contract DataDappContract is Registry {
             for (uint8 i = 0; i < _keys.length; i++) {
                 purchases[index].keys.push(_keys[i]);
             }
+
+            uploads[keccak256(abi.encodePacked(_packetId))].sold = true;
             sendMoney(_requesterAddress, payable(msg.sender), price);
         } else {
             returnMoney(payable(_requesterAddress), price);
@@ -134,8 +147,7 @@ contract DataDappContract is Registry {
 
         for (uint8 i = 0; i < keysFromSample.length; i++) {
             if (
-                keysFromSample[i] !=
-                keccak256(abi.encodePacked(_keysFromSeller[i]))
+                keysFromSample[i] != keccak256(abi.encode(_keysFromSeller[i]))
             ) {
                 confirm = false;
             }

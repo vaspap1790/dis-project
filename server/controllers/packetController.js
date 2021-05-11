@@ -30,6 +30,7 @@ exports.getPackets = asyncHandler(async (req, res) => {
   const keyword = req.query.keyword;
 
   let searchObject = {};
+  searchObject.sold = false;
 
   if (keyword) {
     searchObject.name = {
@@ -208,7 +209,7 @@ exports.createPacket = asyncHandler(async (req, res) => {
     ipfsHashes: ipfsHashes,
     encryptionKeys: encryptedEncryptionKeys
   });
-  console.log(packet);
+
   const createdPacket = await packet.save();
   res.status(201).json(createdPacket);
 });
@@ -240,7 +241,9 @@ exports.updatePacket = asyncHandler(async (req, res) => {
 // @route   GET /api/packets/top
 // @access  Public
 exports.getTopPackets = asyncHandler(async (req, res) => {
-  const packets = await Packet.find({}).sort({ rating: -1 }).limit(5);
+  const packets = await Packet.find({ sold: false })
+    .sort({ rating: -1 })
+    .limit(5);
 
   res.json(packets);
 });

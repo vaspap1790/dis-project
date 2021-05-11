@@ -4,7 +4,6 @@ import {
   ACTION_CREATE_EMPTY_ERROR,
   ACTION_CREATE_FAIL,
   ACTION_CREATE_REQUEST,
-  ACTION_CREATE_RESET,
   ACTION_CREATE_SUCCESS,
   NOTIF_LIST_FAIL,
   NOTIF_LIST_REQUEST,
@@ -87,98 +86,102 @@ export const countUnreadActions = (id) => async (dispatch) => {
 };
 
 //////////////////////////////// Create Packet Actions ///////////////////////////////////
-export const createAction = (
-  packetId,
-  requesterId,
-  receiverId,
-  type,
-  price,
-  account,
-  contract,
-  pKey,
-  web3
-) => async (dispatch, getState) => {
-  try {
-    dispatch({
-      type: ACTION_CREATE_REQUEST
-    });
-
-    const {
-      userLogin: { userInfo }
-    } = getState();
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`
-      }
-    };
-
-    const action = { packetId, requesterId, receiverId, type };
-    const { data } = await axios.post(`/api/action`, action, config);
-
-    let response = {};
-    let actionId = data._id;
-
-    if (data.type === 'Sample') {
-      const { data } = await axios.get(`/api/packets/keys/${packetId}`);
-      const { keys, ipfsHashes } = data;
-      let encryptedKeys = [];
-
-      const publicKey = EthCrypto.publicKeyByPrivateKey(pKey);
-
-      for (var i = 0; i < keys.length; i++) {
-        const encrypted = await EthCrypto.encryptWithPublicKey(
-          publicKey,
-          keys[i]
-        );
-        encryptedKeys.push(encrypted.ciphertext);
-      }
-
-      let result = await contract.methods
-        .addSampleRequest(requesterId, packetId, encryptedKeys)
-        .send({ from: account });
-
-      let index = result.events.SampleRequestResult.returnValues.index;
-
-      let requesterAddress =
-        result.events.SampleRequestResult.returnValues.requester;
-
-      await axios.post(
-        `/api/action/store/address`,
-        { actionId, requesterAddress },
-        config
-      );
-
-      response.ipfsHash = ipfsHashes[index];
-      response.encryptionKey = encryptedKeys[index];
-    } else {
-      let priceInWei = web3.utils.toWei(price.toString(), 'ether');
-      let result = await web3.eth.sendTransaction({
-        from: account,
-        to: contract._address,
-        value: priceInWei
+export const createAction =
+  (
+    packetId,
+    requesterId,
+    receiverId,
+    type,
+    price,
+    account,
+    contract,
+    pKey,
+    web3
+  ) =>
+  async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: ACTION_CREATE_REQUEST
       });
-      response = data;
-    }
 
-    dispatch({
-      type: ACTION_CREATE_SUCCESS,
-      payload: response
-    });
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    if (message === 'Not authorized!') {
-      dispatch(logout());
+      const {
+        userLogin: { userInfo }
+      } = getState();
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`
+        }
+      };
+
+      const action = { packetId, requesterId, receiverId, type };
+      const { data } = await axios.post(`/api/action`, action, config);
+
+      let response = {};
+      let actionId = data._id;
+
+      if (data.type === 'Sample') {
+        const { data } = await axios.get(`/api/packets/keys/${packetId}`);
+        const { keys, ipfsHashes } = data;
+        let encryptedKeys = [];
+        let encryptedKeysHashed = [];
+
+        for (var i = 0; i < keys.length; i++) {
+          const encryptedObj = await EthCrypto.encryptWithPublicKey(
+            pKey,
+            keys[i]
+          );
+          const string = EthCrypto.cipher.stringify(encryptedObj);
+          encryptedKeys.push(string);
+
+          const encoded = web3.eth.abi.encodeParameters(['string'], [string]);
+          const hash = web3.utils.sha3(encoded, { encoding: 'hex' });
+          encryptedKeysHashed.push(hash);
+        }
+
+        let result = await contract.methods
+          .addSampleRequest(requesterId, packetId, encryptedKeysHashed)
+          .send({ from: account });
+
+        let index = result.events.SampleRequestResult.returnValues.index;
+
+        response.ipfsHash = ipfsHashes[index];
+        response.encryptionKey = encryptedKeys[index];
+
+        await axios.post(
+          `/api/action/store/info`,
+          { actionId, account, encryptedKeys },
+          config
+        );
+      } else {
+        let priceInWei = web3.utils.toWei(price.toString(), 'ether');
+        let result = await web3.eth.sendTransaction({
+          from: account,
+          to: contract._address,
+          value: priceInWei
+        });
+        console.log(result);
+        response = data;
+      }
+
+      dispatch({
+        type: ACTION_CREATE_SUCCESS,
+        payload: response
+      });
+    } catch (error) {
+      const message =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      if (message === 'Not authorized!') {
+        dispatch(logout());
+      }
+      dispatch({
+        type: ACTION_CREATE_FAIL,
+        payload: message
+      });
     }
-    dispatch({
-      type: ACTION_CREATE_FAIL,
-      payload: message
-    });
-  }
-};
+  };
 
 export const emptyCreateActionError = () => async (dispatch) => {
   dispatch({
@@ -187,50 +190,112 @@ export const emptyCreateActionError = () => async (dispatch) => {
 };
 
 //////////////////////////////// Update Action Actions ///////////////////////////////////
-export const updateAction = (actionId, update, userId) => async (
-  dispatch,
-  getState
-) => {
-  try {
-    dispatch({
-      type: ACTION_UPDATE_REQUEST
-    });
+export const updateAction =
+  (actionId, update, userId, account, contract, web3) =>
+  async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: ACTION_UPDATE_REQUEST
+      });
 
-    const {
-      userLogin: { userInfo }
-    } = getState();
+      const {
+        userLogin: { userInfo }
+      } = getState();
 
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${userInfo.token}`
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`
+        }
+      };
+
+      if (update === 'Reject') {
+        const { data } = await axios.get(
+          `/api/action/purchase/request/${actionId}`
+        );
+        let packetId = data.packet._id;
+        let requesterAddress = data.requesterAddress;
+        let priceInWei = web3.utils.toWei(
+          data.packet.price.toString(),
+          'ether'
+        );
+        let keys = [];
+
+        let result = await contract.methods
+          .addPurchase(
+            userId,
+            packetId,
+            requesterAddress,
+            keys,
+            priceInWei,
+            false
+          )
+          .send({ from: account });
+        console.log(result);
+
+        await axios.put(
+          `/api/action/update`,
+          { actionId, update, userId },
+          config
+        );
+      } else if (update === 'Approve') {
+        const { data } = await axios.get(
+          `/api/action/purchase/request/${actionId}`
+        );
+        let packetId = data.packet._id;
+        let requesterAddress = data.requesterAddress;
+        let priceInWei = web3.utils.toWei(
+          data.packet.price.toString(),
+          'ether'
+        );
+        let encryptedKeys = data.encryptedKeys;
+
+        let result = await contract.methods
+          .addPurchase(
+            userId,
+            packetId,
+            requesterAddress,
+            encryptedKeys,
+            priceInWei,
+            true
+          )
+          .send({ from: account });
+        console.log(result);
+
+        if (result.events.SendMoneyEvent === undefined) {
+          console.log('Match failed');
+        } else {
+          console.log('Match succeed');
+          await axios.put(
+            `/api/action/update`,
+            { actionId, update, userId },
+            config
+          );
+        }
+      } else {
+        await axios.put(
+          `/api/action/update`,
+          { actionId, update, userId },
+          config
+        );
       }
-    };
 
-    const { data } = await axios.put(
-      `/api/action/update`,
-      { actionId, update, userId },
-      config
-    );
-
-    dispatch({
-      type: ACTION_UPDATE_SUCCESS,
-      payload: data
-    });
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    if (message === 'Not authorized!') {
-      dispatch(logout());
+      dispatch({
+        type: ACTION_UPDATE_SUCCESS,
+        payload: 'Success'
+      });
+    } catch (error) {
+      console.log(error);
+      const message = 'Something went rong';
+      if (message === 'Not authorized!') {
+        dispatch(logout());
+      }
+      dispatch({
+        type: ACTION_UPDATE_FAIL,
+        payload: message
+      });
     }
-    dispatch({
-      type: ACTION_UPDATE_FAIL,
-      payload: message
-    });
-  }
-};
+  };
 
 export const emptyUpdateAccessError = () => async (dispatch) => {
   dispatch({

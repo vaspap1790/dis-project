@@ -14,7 +14,7 @@ import { getUserNotifications, updateAction } from '../actions/actionActions';
 
 //import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
-const DataTableNotifications = () => {
+const DataTableNotifications = ({ account, contract, web3 }) => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
@@ -26,10 +26,8 @@ const DataTableNotifications = () => {
   const { notifications: data, loading, error } = notifList;
 
   const actionUpdate = useSelector((state) => state.actionUpdate);
-  const {
-    loading: actionUpdateLoading,
-    error: actionUpdateError
-  } = actionUpdate;
+  const { loading: actionUpdateLoading, error: actionUpdateError } =
+    actionUpdate;
 
   // Component level State
   const [actionId, setActionId] = useState('');
@@ -65,15 +63,19 @@ const DataTableNotifications = () => {
     showLoadingModal(true);
   };
 
-  const rejectProceed = () => {
+  const rejectProceed = async () => {
     showRejectModal(false);
-    dispatch(updateAction(actionId, 'Reject', userInfo._id));
+    dispatch(
+      updateAction(actionId, 'Reject', userInfo._id, account, contract, web3)
+    );
     showLoadingModal(true);
   };
 
   const approveProceed = () => {
     showApproveModal(false);
-    dispatch(updateAction(actionId, 'Approve', userInfo._id));
+    dispatch(
+      updateAction(actionId, 'Approve', userInfo._id, account, contract, web3)
+    );
     showLoadingModal(true);
   };
 
@@ -471,8 +473,8 @@ const DataTableNotifications = () => {
   //Sorting Options
   const defaultSorted = [
     {
-      dataField: 'readByReceiver',
-      order: 'asc'
+      dataField: 'createdAt',
+      order: 'desc'
     }
   ];
 

@@ -29,7 +29,7 @@ const LastStep = (props) => {
     file.encryptionKey = key;
 
     await setFiles(files.filter((file) => file.key !== fileKey));
-    setFiles((files) => [...files, file]);
+    setFiles((files) => [file, ...files]);
 
     showKeyModal(false);
     setFileKey('');

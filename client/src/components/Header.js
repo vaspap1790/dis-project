@@ -22,8 +22,9 @@ import {
   getUserNotifications,
   getUserRequests
 } from '../actions/actionActions';
+//import EthCrypto from 'eth-crypto';
 
-const Header = ({ account, contract }) => {
+const Header = ({ web3 }) => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
@@ -69,12 +70,9 @@ const Header = ({ account, contract }) => {
 
   const closeWatchlistModal = () => showWatchlistModal(false);
 
-  const getRegister1UP = async () => {
-    let result = await contract.methods
-      .getRegisterUsers('6097fd2af1cd1312ec99419dda')
-      .send({ from: account });
-    console.log(result);
-  };
+  //   const getRegister1UP = async () => {
+  // //TODO:Delete
+  //   };
 
   // This will be rendered
   return (
@@ -87,9 +85,9 @@ const Header = ({ account, contract }) => {
           className='py-3'
           collapseOnSelect
         >
-          <button type='button' onClick={getRegister1UP}>
+          {/* <button type='button' onClick={getRegister1UP}>
             Register1???UP
-          </button>
+          </button> */}
           <Container fluid className='px-4'>
             <LinkContainer to='/'>
               <Navbar.Brand>Data Dapp</Navbar.Brand>

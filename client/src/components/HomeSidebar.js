@@ -9,7 +9,7 @@ import {
 } from 'react-pro-sidebar';
 import Rating from '../components/Rating';
 import Category from '../components/Category';
-import { Row, Col, Alert, Button, Form } from 'react-bootstrap';
+import { Row, Col, Button, Form } from 'react-bootstrap';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import Switch from 'react-switch';

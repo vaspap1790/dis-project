@@ -29,7 +29,7 @@ const Packet = ({ packet, handler, isProfile }) => {
   // This will be rendered
   return (
     <>
-      <Card className='my-3 p-3 rounded'>
+      <Card className='my-3 p-3 rounded' style={{ overflow: 'hidden' }}>
         {!isProfile ? (
           <span className='favourite blue-hover p-2'>
             <i
@@ -39,14 +39,16 @@ const Packet = ({ packet, handler, isProfile }) => {
             ></i>
           </span>
         ) : (
-          <span className='favourite blue-hover p-2'>
-            <i
-              className='fas fa-edit link-icon'
-              title='Edit Data Packet'
-              id={`${packet._id}`}
-              onClick={handler}
-            ></i>
-          </span>
+          !packet.sold && (
+            <span className='favourite blue-hover p-2'>
+              <i
+                className='fas fa-edit link-icon'
+                title='Edit Data Packet'
+                id={`${packet._id}`}
+                onClick={handler}
+              ></i>
+            </span>
+          )
         )}
         <Link to={`/packet/${packet._id}`}>
           <Card.Img
@@ -96,6 +98,7 @@ const Packet = ({ packet, handler, isProfile }) => {
           <Card.Text as='h3'>
             <i className='fab fa-ethereum'></i>
             {packet.price}
+            {packet.sold && <span className='sold-item small px-3'>SOLD</span>}
           </Card.Text>
         </Card.Body>
       </Card>

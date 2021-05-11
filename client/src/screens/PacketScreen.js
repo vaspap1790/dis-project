@@ -130,7 +130,7 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
     }, 3000);
   };
 
-  const purchaseModalContent = (
+  const purchaseLoadingModalContent = (
     <>
       {loadingCreateAction ? (
         <Loader />
@@ -146,14 +146,14 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
     <>
       <div className='mb-3'>
         Are you sure you want to request a sample of this data item? You will
-        need to enter your private key (mandatory):
+        need to enter your public key (mandatory):
       </div>
       <Form>
-        <Form.Group controlId='pkey'>
+        <Form.Group>
           <Form.Control
             type='text'
-            placeholder='Enter private key'
-            title='Enter private key'
+            placeholder='Enter public key'
+            title='Enter public key'
             value={publicKey}
             onChange={(e) => setPublicKey(e.target.value)}
           ></Form.Control>
@@ -423,7 +423,7 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
         close={closePurchaseModal}
         proceed={purchaseProceed}
         title='Purchase'
-        body='Are you sure you want to proceed and request to purchase this data packet?'
+        body='Are you sure you want to request to purchase this data item? You will have to request a Sample first.'
         danger={true}
         success={true}
       />
@@ -432,7 +432,7 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
         close={closeLoadingPurchaseModal}
         proceed={purchaseLoadingProceed}
         title='Performing Action'
-        body={purchaseModalContent}
+        body={purchaseLoadingModalContent}
         success={true}
       />
     </>

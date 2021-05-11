@@ -52,6 +52,23 @@ input[type='checkbox']:hover {
   border-radius: 50%;
 }
 
+.sold-item {
+  color: white !important;
+  background-color: #4bbf73 !important;
+  font-weight: bold;
+  z-index: 10000;
+  position: absolute;
+  top: 92%;
+  left: 79%;
+  transform: translate(-50%, -50%);
+  border-radius: 0%;
+  -webkit-transform: rotate(-38deg);
+  -moz-transform: rotate(-38deg);
+  -ms-transform: rotate(-38deg);
+  -o-transform: rotate(-38deg);
+  transform: rotate(-38deg);
+}
+
 .notif {
   z-index: 2;
   position: absolute;

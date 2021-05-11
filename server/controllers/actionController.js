@@ -1,9 +1,9 @@
 const asyncHandler = require('express-async-handler');
 const Action = require('../models/actionModel.js');
+const Access = require('../models/accessModel.js');
 const Packet = require('../models/packetModel.js');
-const { getRandomInt } = require('../utils/utilities.js');
-const Cryptr = require('cryptr');
 
+const Cryptr = require('cryptr');
 const cryptr = new Cryptr(`${process.env.ENCRYPT_KEY}`);
 
 // @desc    Add new action
@@ -21,13 +21,14 @@ exports.addNewAction = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('Something went wrong');
   } else {
-    if (type === 'Sample') {
-      let alrearyRequested = await Action.find({
-        requester: requesterId,
-        receiver: receiverId,
-        packet: packetId
-      });
+    let alrearyRequested = await Action.find({
+      requester: requesterId,
+      receiver: receiverId,
+      packet: packetId,
+      type: 'Sample'
+    });
 
+    if (type === 'Sample') {
       if (alrearyRequested.length !== 0) {
         res.status(404);
         throw new Error('Already requested sample');
@@ -43,14 +44,19 @@ exports.addNewAction = asyncHandler(async (req, res) => {
         res.status(201).json(addedAction);
       }
     } else {
-      const action = new Action({
-        requester: requesterId,
-        receiver: receiverId,
-        packet: packetId,
-        type: type
-      });
-      const addedAction = await action.save();
-      res.status(201).json(addedAction);
+      if (alrearyRequested.length === 0) {
+        res.status(404);
+        throw new Error('You have to request for a Sample first');
+      } else {
+        const action = new Action({
+          requester: requesterId,
+          receiver: receiverId,
+          packet: packetId,
+          type: type
+        });
+        const addedAction = await action.save();
+        res.status(201).json(addedAction);
+      }
     }
   }
 });
@@ -98,14 +104,40 @@ exports.countUnreadActions = asyncHandler(async (req, res) => {
 });
 
 // @desc    Store requester address
-// @route   POST /api/action/store/address
+// @route   POST /api/action/store/info
 // @access  Private
-exports.storeAddress = asyncHandler(async (req, res) => {
-  const { actionId, requesterAddress } = req.body;
+exports.storeInfo = asyncHandler(async (req, res) => {
+  const { actionId, account, encryptedKeys } = req.body;
   const action = await Action.findById(actionId);
-  action.requesterAddress = requesterAddress;
+  action.requesterAddress = account;
+  action.encryptedKeys = encryptedKeys;
   action.save();
-  res.json('Address stored');
+  res.json('Info stored');
+});
+
+// @desc    Fetch purchase request
+// @route   GET /api/action/purchase/request/:id
+// @access  Public
+exports.fetchPurchaseRequest = asyncHandler(async (req, res) => {
+  const purchaseAction = await Action.findById(req.params.id).populate(
+    'packet',
+    'price'
+  );
+  const sampleAction = await Action.find({
+    requester: purchaseAction.requester,
+    receiver: purchaseAction.receiver,
+    packet: purchaseAction.packet,
+    type: 'Sample'
+  });
+
+  let encryptedKeys = sampleAction[0].encryptedKeys;
+  let requesterAddress = sampleAction[0].requesterAddress;
+
+  purchaseAction.encryptedKeys = encryptedKeys;
+  purchaseAction.requesterAddress = requesterAddress;
+  purchaseAction.save();
+
+  res.json(purchaseAction);
 });
 
 // @desc    Update action
@@ -117,10 +149,22 @@ exports.updateAction = asyncHandler(async (req, res) => {
 
   switch (update) {
     case 'Approve':
+      const access = new Access({
+        user: action.requester,
+        packet: action.packet
+      });
+      await access.save();
+
+      let packet = await Packet.findById(action.packet);
+      packet.sold = true;
+      packet.save();
+
+      action.readByReceiver = true;
       action.status = 'Approved';
       action.save();
       break;
     case 'Reject':
+      action.readByReceiver = true;
       action.status = 'Rejected';
       action.save();
       break;

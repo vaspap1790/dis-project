@@ -17,10 +17,7 @@ import {
   actionCreateReducer,
   actionUpdateReducer
 } from './reducers/actionReducers';
-import {
-  accessAddReducer,
-  accesssUserReducer
-} from './reducers/accessReducers';
+import { accesssUserReducer } from './reducers/accessReducers';
 import { reviewCreateReducer } from './reducers/reviewReducers';
 import {
   userLoginReducer,
@@ -40,7 +37,6 @@ const reducer = combineReducers({
   userRegister: userRegisterReducer,
   userUpdateProfile: userUpdateProfileReducer,
   userDetails: userDetailsReducer,
-  accessAdd: accessAddReducer,
   accessUser: accesssUserReducer,
   reviewCreate: reviewCreateReducer,
   packetTopRated: packetTopRatedReducer,
