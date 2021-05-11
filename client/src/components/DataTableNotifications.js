@@ -9,7 +9,7 @@ import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import Loader from './Loader';
 import { countUnreadActions } from '../actions/actionActions';
 import ModalComponent from '../components/ModalComponent';
-
+import { prelistPacketDetails } from '../actions/packetActions';
 import { getUserNotifications, updateAction } from '../actions/actionActions';
 
 const DataTableNotifications = ({ account, contract, web3 }) => {
@@ -195,7 +195,7 @@ const DataTableNotifications = ({ account, contract, web3 }) => {
         <Row>
           <Col xs={1}></Col>
           <Col xs={3} className='v-align justify-content-start'>
-            <Link to={`/packet/${row.packet._id}`}>
+            <Link to={`/packet/${row.packet._id}`} onClick={clickHandler}>
               <Image
                 src={row.packet.image}
                 alt={row.name}
@@ -207,7 +207,9 @@ const DataTableNotifications = ({ account, contract, web3 }) => {
             </Link>
           </Col>
           <Col xs={4} className='v-align h-align small'>
-            <Link to={`/packet/${row.packet._id}`}>{cell}</Link>
+            <Link to={`/packet/${row.packet._id}`} onClick={clickHandler}>
+              {cell}
+            </Link>
           </Col>
           <Col xs={4}></Col>
         </Row>
@@ -494,6 +496,10 @@ const DataTableNotifications = ({ account, contract, web3 }) => {
     }
 
     return style;
+  };
+
+  const clickHandler = () => {
+    dispatch(prelistPacketDetails());
   };
 
   //DataTableNotifications instantiation

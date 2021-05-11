@@ -77,7 +77,7 @@ export const packetsUserReducer = (
 
 export const packetDetailsReducer = (
   state = {
-    packet: { name: '', description: '', category: '', image: '' }
+    packet: { name: '', description: '', category: '', image: '', user: {} }
   },
   action
 ) => {
@@ -87,7 +87,7 @@ export const packetDetailsReducer = (
     case PRE_PACKET_DETAILS_REQUEST:
       return {
         loading: true,
-        packet: { name: '', description: '', category: '', image: '' }
+        packet: { name: '', description: '', category: '', image: '', user: {} }
       };
     case PACKET_DETAILS_SUCCESS:
       return {

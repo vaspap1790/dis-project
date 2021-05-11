@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import Moment from 'react-moment';
 import {
   Row,
   Col,
@@ -314,40 +316,42 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
         {loadingDetails ? (
           <Loader />
         ) : error ? null : (
-          <>
-            <Button
-              className='btn btn-info mr-1'
-              title='Add to Watchlist'
-              onClick={() => addToWatclistHandler(packet)}
-            >
-              Watch <i className='fas fa-eye'></i>
-            </Button>
-            <Button
-              onClick={() => showSampleModal(true)}
-              className='btn btn-warning mr-1'
-              disabled={userInfo === undefined || !userInfo}
-              title={
-                userInfo === undefined || !userInfo
-                  ? 'You have to be logged in to perform this action'
-                  : 'See a sample of the data packet'
-              }
-            >
-              Sample <i className='fas fa-search'></i>
-            </Button>
-            <Button
-              onClick={() => showPurchaseModal(true)}
-              className='btn btn-success mr-1'
-              disabled={userInfo === undefined || !userInfo}
-              title={
-                userInfo === undefined || !userInfo
-                  ? 'You have to be logged in to perform this action'
-                  : 'Purchase this item'
-              }
-            >
-              Purchase <i className='fab fa-ethereum'></i>
-            </Button>
-            <Meta title={packet.name} />
-          </>
+          !packet.sold && (
+            <>
+              <Button
+                className='btn btn-info mr-1'
+                title='Add to Watchlist'
+                onClick={() => addToWatclistHandler(packet)}
+              >
+                Watch <i className='fas fa-eye'></i>
+              </Button>
+              <Button
+                onClick={() => showSampleModal(true)}
+                className='btn btn-warning mr-1'
+                disabled={userInfo === undefined || !userInfo}
+                title={
+                  userInfo === undefined || !userInfo
+                    ? 'You have to be logged in to perform this action'
+                    : 'See a sample of the data packet'
+                }
+              >
+                Sample <i className='fas fa-search'></i>
+              </Button>
+              <Button
+                onClick={() => showPurchaseModal(true)}
+                className='btn btn-success mr-1'
+                disabled={userInfo === undefined || !userInfo}
+                title={
+                  userInfo === undefined || !userInfo
+                    ? 'You have to be logged in to perform this action'
+                    : 'Purchase this item'
+                }
+              >
+                Purchase <i className='fab fa-ethereum'></i>
+              </Button>
+              <Meta title={packet.name} />
+            </>
+          )
         )}
       </Row>
       {/************************************* Main screen ***************************************/}
@@ -359,11 +363,15 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
         <>
           <Row>
             <Col md={6} className='px-0'>
-              <Image
-                src={packet.image === '' ? '/images/sample.jpg' : packet.image}
-                alt={packet.name}
-                fluid
-              />
+              <div>
+                <Image
+                  src={
+                    packet.image === '' ? '/images/sample.jpg' : packet.image
+                  }
+                  alt={packet.name}
+                  style={{ maxWidth: '95%' }}
+                />
+              </div>
             </Col>
             <Col md={6} className='px-0'>
               <Row className='d-flex'>
@@ -371,17 +379,59 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
                   <ListGroup.Item>
                     <h3>{packet.name}</h3>
                   </ListGroup.Item>
+                  {!packet.sold && (
+                    <ListGroup.Item>
+                      Price: <i className='fab fa-ethereum'></i>
+                      {packet.price}
+                    </ListGroup.Item>
+                  )}
                   <ListGroup.Item>
-                    Price: <i className='fab fa-ethereum'></i>
-                    {packet.price}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
+                    <span style={{ display: 'block' }} className='mb-0'>
+                      uploaded by{' '}
+                      <Link
+                        to={`/profile/${packet.user._id}`}
+                        style={{ fontWeight: 'bold' }}
+                        title={packet.user.username}
+                      >
+                        {packet.user.username}
+                      </Link>
+                    </span>
                     <Rating
                       value={packet.user.rating}
                       text={`${packet.user.numReviews} reviews`}
                     />
+                    <div>
+                      at{' '}
+                      <Moment format='D MMM YYYY hh:mm:ss'>
+                        {packet.createdAt}
+                      </Moment>
+                    </div>
                   </ListGroup.Item>
                   <ListGroup.Item>Category: {packet.category}</ListGroup.Item>
+                  {packet.sold && (
+                    <ListGroup.Item>
+                      <span
+                        style={{ color: 'white', backgroundColor: '#4bbf73' }}
+                        className='small px-1'
+                      >
+                        SOLD
+                      </span>{' '}
+                      to{' '}
+                      <Link
+                        to={`/profile/${packet.user._id}`}
+                        style={{ fontWeight: 'bold' }}
+                        title={packet.soldTo.username}
+                      >
+                        {packet.soldTo.username}
+                      </Link>
+                      <div>
+                        at{' '}
+                        <Moment format='D MMM YYYY hh:mm:ss'>
+                          {packet.updatedAt}
+                        </Moment>
+                      </div>
+                    </ListGroup.Item>
+                  )}
                   <ListGroup.Item>
                     Description: {packet.description}
                   </ListGroup.Item>

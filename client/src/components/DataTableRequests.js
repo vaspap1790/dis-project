@@ -9,8 +9,7 @@ import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import Loader from './Loader';
 import { getUserRequests, updateAction } from '../actions/actionActions';
 import ModalComponent from '../components/ModalComponent';
-
-//import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
+import { prelistPacketDetails } from '../actions/packetActions';
 
 const DataTableRequests = () => {
   // Hook that enables components to interact with the App State through reducers
@@ -24,10 +23,8 @@ const DataTableRequests = () => {
   const { requests: data, loading, error } = requestList;
 
   const actionUpdate = useSelector((state) => state.actionUpdate);
-  const {
-    loading: actionUpdateLoading,
-    error: actionUpdateError
-  } = actionUpdate;
+  const { loading: actionUpdateLoading, error: actionUpdateError } =
+    actionUpdate;
 
   // Component level State
   const [actionId, setActionId] = useState('');
@@ -149,14 +146,13 @@ const DataTableRequests = () => {
   };
 
   //Column formatters
-
   const nameFormatter = (cell, row, rowIndex) => {
     return (
       <div className='' style={{ height: '3rem' }}>
         <Row>
           <Col xs={1}></Col>
           <Col xs={3} className='v-align justify-content-start'>
-            <Link to={`/packet/${row.packet._id}`}>
+            <Link to={`/packet/${row.packet._id}`} onClick={clickHandler}>
               <Image
                 src={row.packet.image}
                 alt={row.name}
@@ -168,7 +164,9 @@ const DataTableRequests = () => {
             </Link>
           </Col>
           <Col xs={4} className='v-align h-align small'>
-            <Link to={`/packet/${row.packet._id}`}>{cell}</Link>
+            <Link to={`/packet/${row.packet._id}`} onClick={clickHandler}>
+              {cell}
+            </Link>
           </Col>
           <Col xs={4}></Col>
         </Row>
@@ -394,6 +392,10 @@ const DataTableRequests = () => {
         value: data.length
       }
     ]
+  };
+
+  const clickHandler = () => {
+    dispatch(prelistPacketDetails());
   };
 
   //DataTableRequests instantiation

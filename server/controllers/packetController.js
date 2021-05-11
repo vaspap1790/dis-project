@@ -2,9 +2,11 @@ const asyncHandler = require('express-async-handler');
 const Packet = require('../models/packetModel.js');
 const Review = require('../models/reviewModel.js');
 const User = require('../models/userModel.js');
-const Cryptr = require('cryptr');
-const { populate } = require('../models/userModel.js');
 
+// const mongoose = require('mongoose');
+// mongoose.set('debug', true);
+
+const Cryptr = require('cryptr');
 const cryptr = new Cryptr(`${process.env.ENCRYPT_KEY}`);
 
 // @desc    Fetch all packets
@@ -41,7 +43,7 @@ exports.getPackets = asyncHandler(async (req, res) => {
   }
 
   if (ratings.length !== 0) {
-    searchObject.rating = {
+    searchObject['user.rating'] = {
       $in: ratings
     };
   }
@@ -53,7 +55,10 @@ exports.getPackets = asyncHandler(async (req, res) => {
     };
   }
 
-  const count = await Packet.countDocuments(searchObject);
+  const count = await Packet.countDocuments(searchObject).populate(
+    'user',
+    'rating'
+  );
   const packets = await Packet.find(searchObject)
     .populate('user', 'username rating numReviews')
     .limit(pageSize)
@@ -72,10 +77,9 @@ exports.getPackets = asyncHandler(async (req, res) => {
 // @route   GET /api/packets/:id
 // @access  Public
 exports.getPacketById = asyncHandler(async (req, res) => {
-  let packet = await Packet.findById(req.params.id).populate(
-    'user',
-    'username rating numReviews'
-  );
+  let packet = await Packet.findById(req.params.id)
+    .populate('user', 'username rating numReviews')
+    .populate('soldTo', 'username');
   if (packet) {
     res.json(packet);
   } else {

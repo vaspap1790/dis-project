@@ -13,6 +13,7 @@ import {
   emptyCreateReviewError,
   emptyCreateReviewSuccess
 } from '../actions/reviewActions';
+import { prelistPacketDetails } from '../actions/packetActions';
 
 const DataTablePurchased = ({ account, contract }) => {
   // Hook that enables components to interact with the App State through reducers
@@ -72,6 +73,72 @@ const DataTablePurchased = ({ account, contract }) => {
       </Form.Group>
     </Form>
   );
+
+  // const sampleLoadingModalContent = (
+  //   <>
+  //     {loadingCreateAction ? (
+  //       <>
+  //         <Loader />
+  //         <div>Retrieving key...</div>
+  //       </>
+  //     ) : errorCreateAction ? (
+  //       <Alert variant='danger'>{errorCreateAction}</Alert>
+  //     ) : (
+  //       <>
+  //         <div className='mb-2'>
+
+  //         </div>
+  //         <Table id='keyTable' bordered responsive size='sm'>
+  //           <thead>
+  //             <tr className='table-dark'>
+  //               <th className='uploadsTableHeaders text-center p-2'>
+  //                 IPFS Hash
+  //               </th>
+  //             </tr>
+  //           </thead>
+  //           <tbody>
+  //             <tr>
+  //               <td className='d-flex align-items-center'>
+  //                 <Col xs={12}>
+  //                   <Row>
+  //                     <InputGroup>
+  //                       <Form.Control
+  //                         type='textarea'
+  //                         ref={textAreaRefHash}
+  //                         value={data.ipfsHash}
+  //                         aria-describedby='hashAppend'
+  //                         readOnly
+  //                       />
+  //                       <InputGroup.Append>
+  //                         <InputGroup.Text
+  //                           id='hashAppend'
+  //                           style={{ borderLeft: '0.5px solid #fff' }}
+  //                         >
+  //                           <i
+  //                             className='fas fa-clipboard fa-lg link-icon blue-hover'
+  //                             onClick={copyToClipboardHash}
+  //                             title='Copy IPFS Hash to Clipboard'
+  //                           ></i>
+  //                         </InputGroup.Text>
+  //                       </InputGroup.Append>
+  //                     </InputGroup>
+  //                   </Row>
+  //                   {hashCopied ? (
+  //                     <Row className='mt-1 justify-content-end'>
+  //                       <div style={{ color: '#3ca861' }} className='small'>
+  //                         Hash copied to clipboard
+  //                       </div>
+  //                     </Row>
+  //                   ) : null}
+  //                 </Col>
+  //               </td>
+  //             </tr>
+  //           </tbody>
+  //         </Table>
+  //       </>
+  //     )}
+  //   </>
+  // );
 
   // Component Methods
   const closeRatingModal = () => {
@@ -165,7 +232,7 @@ const DataTablePurchased = ({ account, contract }) => {
   const imageFormatter = (cell, row, rowIndex) => {
     return (
       <div className='v-align h-align' style={{ height: '3rem' }}>
-        <Link to={`/packet/${row._id}`}>
+        <Link to={`/packet/${row._id}`} onClick={clickHandler}>
           <Image
             src={cell}
             alt={row.name}
@@ -182,7 +249,9 @@ const DataTablePurchased = ({ account, contract }) => {
   const nameFormatter = (cell, row, rowIndex) => {
     return (
       <div className='v-align h-align small' style={{ height: '3rem' }}>
-        <Link to={`/packet/${row._id}`}>{cell}</Link>
+        <Link to={`/packet/${row._id}`} onClick={clickHandler}>
+          {cell}
+        </Link>
       </div>
     );
   };
@@ -335,6 +404,10 @@ const DataTablePurchased = ({ account, contract }) => {
         value: data.length
       }
     ]
+  };
+
+  const clickHandler = () => {
+    dispatch(prelistPacketDetails());
   };
 
   //DataTablePurchased instantiation

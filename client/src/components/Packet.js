@@ -50,7 +50,7 @@ const Packet = ({ packet, handler, isProfile }) => {
             </span>
           )
         )}
-        <Link to={`/packet/${packet._id}`}>
+        <Link to={`/packet/${packet._id}`} onClick={clickHandler}>
           <Card.Img
             src={packet.image === '' ? '/images/sample.jpg' : packet.image}
             variant='top'
@@ -76,7 +76,6 @@ const Packet = ({ packet, handler, isProfile }) => {
                 by{' '}
                 <Link
                   to={`/profile/${packet.user._id}`}
-                  onClick={clickHandler}
                   style={{ fontWeight: 'bold' }}
                   title={packet.user.username}
                 >
@@ -84,18 +83,18 @@ const Packet = ({ packet, handler, isProfile }) => {
                 </Link>
               </span>
             )}
-            <span style={{ display: 'block' }} className='mb-0'>
-              at{' '}
-              <span className='text-muted'>
-                <Moment format='D MMM YYYY hh:mm:ss'>{packet.createdAt}</Moment>
-              </span>
-            </span>
             {!isProfile && (
               <Rating
                 value={packet.user.rating}
                 text={`${packet.user.numReviews} reviews`}
               />
             )}
+            <span style={{ display: 'block' }} className='mb-0'>
+              at{' '}
+              <span className='text-muted'>
+                <Moment format='D MMM YYYY hh:mm:ss'>{packet.createdAt}</Moment>
+              </span>
+            </span>
           </Card.Text>
           <Card.Text as='h3'>
             <i className='fab fa-ethereum'></i>
