@@ -1,6 +1,5 @@
 const asyncHandler = require('express-async-handler');
 const Action = require('../models/actionModel.js');
-const Access = require('../models/accessModel.js');
 const Packet = require('../models/packetModel.js');
 
 const Cryptr = require('cryptr');
@@ -149,14 +148,9 @@ exports.updateAction = asyncHandler(async (req, res) => {
 
   switch (update) {
     case 'Approve':
-      const access = new Access({
-        user: action.requester,
-        packet: action.packet
-      });
-      await access.save();
-
       let packet = await Packet.findById(action.packet);
       packet.sold = true;
+      packet.soldTo = action.requester;
       packet.save();
 
       action.readByReceiver = true;

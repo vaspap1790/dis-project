@@ -3,6 +3,7 @@ const Packet = require('../models/packetModel.js');
 const Review = require('../models/reviewModel.js');
 const User = require('../models/userModel.js');
 const Cryptr = require('cryptr');
+const { populate } = require('../models/userModel.js');
 
 const cryptr = new Cryptr(`${process.env.ENCRYPT_KEY}`);
 
@@ -54,7 +55,7 @@ exports.getPackets = asyncHandler(async (req, res) => {
 
   const count = await Packet.countDocuments(searchObject);
   const packets = await Packet.find(searchObject)
-    .populate('user', 'username')
+    .populate('user', 'username rating numReviews')
     .limit(pageSize)
     .skip(pageSize * (page - 1))
     .sort(sort);
@@ -73,7 +74,7 @@ exports.getPackets = asyncHandler(async (req, res) => {
 exports.getPacketById = asyncHandler(async (req, res) => {
   let packet = await Packet.findById(req.params.id).populate(
     'user',
-    'username'
+    'username rating numReviews'
   );
   if (packet) {
     res.json(packet);
@@ -133,49 +134,19 @@ exports.getPacketsByUserId = asyncHandler(async (req, res) => {
 // @route   GET /api/packets/userDetails/:id
 // @access  Public
 exports.getUserDetails = asyncHandler(async (req, res) => {
-  const packets = await Packet.find({ user: req.params.id });
-  const userRating = await User.findById(req.params.id);
+  const packetsLength = await Packet.countDocuments({ user: req.params.id });
+  const user = await User.findById(req.params.id);
+  const reviews = await Review.find({ user: req.params.id })
+    .populate('reviewer', 'username')
+    .populate('packet', 'name');
   let data = {};
 
-  if (packets && packets.length !== 0) {
-    const reviews = [];
-    for (var i = 0; i < packets.length; i++) {
-      const packetReview = await Review.find({ packet: packets[i]._id })
-        .populate('packet', 'name')
-        .populate('user', 'username');
-      if (packetReview.length === 1) {
-        reviews.push(packetReview[0]);
-      }
-      if (packetReview.length > 1) {
-        for (var j = 0; j < packetReview.length; j++) {
-          reviews.push(packetReview[j]);
-        }
-      }
-    }
+  data = {
+    reviews: reviews,
+    userRating: user,
+    numOfPackets: packetsLength
+  };
 
-    const packetsWithRatings = packets.filter((packet) => packet.rating !== 0);
-
-    userRating.numReviews = reviews.length;
-    if (packetsWithRatings.length !== 0) {
-      userRating.rating =
-        packetsWithRatings.reduce((acc, item) => item.rating + acc, 0) /
-        packetsWithRatings.length;
-    }
-
-    data = {
-      reviews: reviews,
-      userRating: userRating,
-      numOfPackets: packets.length
-    };
-
-    await userRating.save();
-  } else {
-    data = {
-      reviews: [],
-      userRating: userRating,
-      numOfPackets: 0
-    };
-  }
   res.json(data);
 });
 

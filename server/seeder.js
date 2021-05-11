@@ -6,7 +6,6 @@ const packets = require('./data/packets.js');
 const User = require('./models/userModel.js');
 const Packet = require('./models/packetModel.js');
 const Review = require('./models/reviewModel.js');
-const Access = require('./models/accessModel.js');
 const connectDB = require('./config/db.js');
 
 dotenv.config();
@@ -15,7 +14,6 @@ connectDB();
 const clearData = async () => {
   try {
     await Review.deleteMany();
-    await Access.deleteMany();
     await Packet.deleteMany();
     await User.deleteMany();
 
@@ -30,7 +28,6 @@ const clearData = async () => {
 const importData = async () => {
   try {
     await Review.deleteMany();
-    await Access.deleteMany();
     await Packet.deleteMany();
     await User.deleteMany();
 
@@ -62,18 +59,6 @@ const importData = async () => {
     const packet4 = createdPackets[3]._id;
     const packet5 = createdPackets[4]._id;
     const packet6 = createdPackets[5]._id;
-
-    //Accesses
-    await Access.create({ user: adminId, packet: packet3 });
-    await Access.create({ user: adminId, packet: packet4 });
-    await Access.create({ user: adminId, packet: packet5 });
-    await Access.create({ user: adminId, packet: packet6 });
-
-    await Access.create({ user: user1Id, packet: packet4 });
-    await Access.create({ user: user1Id, packet: packet5 });
-
-    await Access.create({ user: user2Id, packet: packet2 });
-    await Access.create({ user: user2Id, packet: packet3 });
 
     //Reviews
     await Review.create({

@@ -64,11 +64,7 @@ const ProfileSidebar = ({ id }) => {
       </SidebarHeader>
       <SidebarContent className='mt-3'>
         {/**************** Reviews Tab *******************/}
-        {loading ? (
-          <Loader />
-        ) : (
-          <ReviewsContainer reviews={reviews} isProfile={true} />
-        )}
+        {loading ? <Loader /> : <ReviewsContainer reviews={reviews} />}
       </SidebarContent>
     </ProSidebar>
   );

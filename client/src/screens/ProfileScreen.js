@@ -144,7 +144,7 @@ const ProfileScreen = ({ match, history, account, contract, web3 }) => {
               {/*************** Purchased Tab ******************/}
               {!userDetails ? (
                 <Tab eventKey='purchased' title='Purchased'>
-                  <DataTablePurchased />
+                  <DataTablePurchased account={account} contract={contract} />
                 </Tab>
               ) : null}
               {/*************** Uploaded Tab *******************/}

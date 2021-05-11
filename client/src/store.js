@@ -17,13 +17,13 @@ import {
   actionCreateReducer,
   actionUpdateReducer
 } from './reducers/actionReducers';
-import { accesssUserReducer } from './reducers/accessReducers';
 import { reviewCreateReducer } from './reducers/reviewReducers';
 import {
   userLoginReducer,
   userRegisterReducer,
   userUpdateProfileReducer,
-  userDetailsReducer
+  userDetailsReducer,
+  userPurchasesReducer
 } from './reducers/userReducers';
 
 // Initialise reducer
@@ -37,7 +37,7 @@ const reducer = combineReducers({
   userRegister: userRegisterReducer,
   userUpdateProfile: userUpdateProfileReducer,
   userDetails: userDetailsReducer,
-  accessUser: accesssUserReducer,
+  userPurchases: userPurchasesReducer,
   reviewCreate: reviewCreateReducer,
   packetTopRated: packetTopRatedReducer,
   watchlist: watchlistReducer,

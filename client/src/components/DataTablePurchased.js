@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
@@ -9,18 +9,12 @@ import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import ModalComponent from './ModalComponent';
 import Loader from './Loader';
 import {
-  getUserAccess,
-  emptyAccessProfileError
-} from '../actions/accessActions';
-import {
-  createPacketReview,
+  createUserReview,
   emptyCreateReviewError,
   emptyCreateReviewSuccess
 } from '../actions/reviewActions';
 
-//import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
-
-const DataTablePurchased = () => {
+const DataTablePurchased = ({ account, contract }) => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
 
@@ -28,12 +22,12 @@ const DataTablePurchased = () => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const accessUser = useSelector((state) => state.accessUser);
+  const userPurchases = useSelector((state) => state.userPurchases);
   const {
-    userAccess: data,
-    loading: loadingUserAccess,
-    error: userAccessError
-  } = accessUser;
+    purchases: data,
+    loading: loadingPurchases,
+    error: purchasesError
+  } = userPurchases;
 
   const reviewCreate = useSelector((state) => state.reviewCreate);
   const {
@@ -46,7 +40,7 @@ const DataTablePurchased = () => {
   const [ratingModal, showRatingModal] = useState(false);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
-  const [packetId, setPacketId] = useState('');
+  const [userId, setUserId] = useState('');
 
   // Component Variables
   const form = (
@@ -79,26 +73,26 @@ const DataTablePurchased = () => {
     </Form>
   );
 
-  // Hook that triggers when component did mount
-  useEffect(() => {
-    dispatch(getUserAccess(userInfo._id));
-  }, [dispatch, userInfo]);
-
   // Component Methods
   const closeRatingModal = () => {
     showRatingModal(false);
     setRating(0);
     setComment('');
-    setPacketId('');
+    setUserId('');
   };
   const openRatingModal = () => showRatingModal(true);
 
   const rate = () => {
     dispatch(
-      createPacketReview(packetId, {
-        rating,
-        comment
-      })
+      createUserReview(
+        userId,
+        {
+          rating,
+          comment
+        },
+        account,
+        contract
+      )
     );
 
     setTimeout(function () {
@@ -107,9 +101,7 @@ const DataTablePurchased = () => {
     }, 10000);
   };
 
-  const handleUserAccessErrorOnClose = () => {
-    dispatch(emptyAccessProfileError());
-  };
+  const handlePurchasedErrorOnClose = () => {};
 
   // Header formatters
   const imageHeaderFormatter = (column, colIndex) => {
@@ -148,6 +140,19 @@ const DataTablePurchased = () => {
     );
   };
 
+  const userHeaderFormatter = (
+    column,
+    colIndex,
+    { sortElement, filterElement }
+  ) => {
+    return (
+      <div className='v-align h-align' style={{ height: '3rem' }}>
+        <span>{column.text}</span>
+        <span>{sortElement}</span>{' '}
+      </div>
+    );
+  };
+
   const actionHeaderFormatter = (column, colIndex) => {
     return (
       <div className='v-align h-align' style={{ height: '3rem' }}>
@@ -160,7 +165,7 @@ const DataTablePurchased = () => {
   const imageFormatter = (cell, row, rowIndex) => {
     return (
       <div className='v-align h-align' style={{ height: '3rem' }}>
-        <Link to={`/packet/${row.packet._id}`}>
+        <Link to={`/packet/${row._id}`}>
           <Image
             src={cell}
             alt={row.name}
@@ -176,16 +181,30 @@ const DataTablePurchased = () => {
 
   const nameFormatter = (cell, row, rowIndex) => {
     return (
-      <div className='v-align h-align' style={{ height: '3rem' }}>
-        <Link to={`/packet/${row.packet._id}`}>{cell}</Link>
+      <div className='v-align h-align small' style={{ height: '3rem' }}>
+        <Link to={`/packet/${row._id}`}>{cell}</Link>
       </div>
     );
   };
 
   const dateFormatter = (cell, row, rowIndex) => {
     return (
-      <div className='v-align h-align' style={{ height: '3rem' }}>
+      <div className='v-align h-align small' style={{ height: '3rem' }}>
         <Moment format='D MMM YYYY hh:mm:ss'>{cell}</Moment>
+      </div>
+    );
+  };
+
+  const userFormatter = (cell, row, rowIndex) => {
+    return (
+      <div className='v-align h-align small' style={{ height: '3rem' }}>
+        <Link
+          to={`/profile/${row.user._id}`}
+          className='link'
+          title='See User Profile'
+        >
+          {cell}
+        </Link>
       </div>
     );
   };
@@ -208,10 +227,10 @@ const DataTablePurchased = () => {
         <span
           type='button'
           variant='primary'
-          title='Rate'
+          title='Rate the User'
           className='blue-hover'
           onClick={() => {
-            setPacketId(cell);
+            setUserId(row.user._id);
             openRatingModal();
           }}
         >
@@ -224,7 +243,7 @@ const DataTablePurchased = () => {
   //Column Declaration
   const columns = [
     {
-      dataField: 'packet.image',
+      dataField: 'image',
       text: 'Image',
       headerStyle: {
         borderStyle: 'none'
@@ -235,7 +254,7 @@ const DataTablePurchased = () => {
       headerFormatter: imageHeaderFormatter
     },
     {
-      dataField: 'packet.name',
+      dataField: 'name',
       text: 'Name',
       sort: true,
       headerTitle: true,
@@ -251,7 +270,7 @@ const DataTablePurchased = () => {
       headerFormatter: nameHeaderFormatter
     },
     {
-      dataField: 'createdAt',
+      dataField: 'updatedAt',
       text: 'Date',
       sort: true,
       headerTitle: true,
@@ -264,7 +283,22 @@ const DataTablePurchased = () => {
       headerFormatter: dateHeaderFormatter
     },
     {
-      dataField: 'packet._id',
+      dataField: 'user.username',
+      text: 'From',
+      sort: true,
+      headerTitle: true,
+      headerStyle: {
+        borderStyle: 'none',
+        borderRightStyle: 'solid',
+        borderRightColor: '#fff',
+        borderLeftStyle: 'solid',
+        borderLeftColor: '#fff'
+      },
+      formatter: userFormatter,
+      headerFormatter: userHeaderFormatter
+    },
+    {
+      dataField: '_id',
       text: 'Actions',
       headerStyle: {
         borderStyle: 'none'
@@ -307,18 +341,18 @@ const DataTablePurchased = () => {
   return (
     <>
       <div className='p-2 mt-3'>
-        {loadingUserAccess ? (
+        {loadingPurchases ? (
           <Loader />
-        ) : userAccessError ? (
+        ) : purchasesError ? (
           <Alert
             variant='danger'
             onClose={() => {
-              handleUserAccessErrorOnClose();
+              handlePurchasedErrorOnClose();
             }}
             dismissible
           >
-            {userAccessError}{' '}
-            {userAccessError === 'Not Authorised!' ? (
+            {purchasesError}{' '}
+            {purchasesError === 'Not Authorised!' ? (
               <span>
                 Try to Logout and Login again to refresh your access token
               </span>

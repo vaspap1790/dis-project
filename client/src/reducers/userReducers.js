@@ -17,7 +17,11 @@ import {
   USER_DETAILS_REQUEST,
   USER_DETAILS_SUCCESS,
   USER_DETAILS_FAIL,
-  USER_DETAILS_RESET
+  USER_DETAILS_RESET,
+  PURCHASES_REQUEST,
+  PURCHASES_SUCCESS,
+  PURCHASES_FAIL,
+  PURCHASES_RESET
 } from '../constants/userConstants';
 
 export const userLoginReducer = (state = {}, action) => {
@@ -93,6 +97,24 @@ export const userDetailsReducer = (
       return { ...state, loading: false, error: action.payload };
     case USER_DETAILS_RESET:
       return { userData: { reviews: [], userRating: [] } };
+    default:
+      return state;
+  }
+};
+
+export const userPurchasesReducer = (state = { purchases: [] }, action) => {
+  switch (action.type) {
+    case PURCHASES_REQUEST:
+      return { loading: true, purchases: [] };
+    case PURCHASES_SUCCESS:
+      return {
+        loading: false,
+        purchases: action.payload
+      };
+    case PURCHASES_FAIL:
+      return { loading: false, error: action.payload, purchases: [] };
+    case PURCHASES_RESET:
+      return { purchases: [] };
     default:
       return state;
   }

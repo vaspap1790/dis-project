@@ -90,10 +90,12 @@ const Packet = ({ packet, handler, isProfile }) => {
                 <Moment format='D MMM YYYY hh:mm:ss'>{packet.createdAt}</Moment>
               </span>
             </span>
-            <Rating
-              value={packet.rating}
-              text={`${packet.numReviews} reviews`}
-            />
+            {!isProfile && (
+              <Rating
+                value={packet.user.rating}
+                text={`${packet.user.numReviews} reviews`}
+              />
+            )}
           </Card.Text>
           <Card.Text as='h3'>
             <i className='fab fa-ethereum'></i>

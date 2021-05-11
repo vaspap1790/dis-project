@@ -58,7 +58,7 @@ input[type='checkbox']:hover {
   font-weight: bold;
   z-index: 10000;
   position: absolute;
-  top: 92%;
+  top: 91%;
   left: 79%;
   transform: translate(-50%, -50%);
   border-radius: 0%;
@@ -160,9 +160,9 @@ input[type='checkbox']:hover {
   .card-title {
     position: relative;
     overflow: hidden;
-    max-height: 50px;
-    min-height: 50px;
-    line-height: 20px;
+    max-height: 40px;
+    min-height: 40px;
+    line-height: 18px;
     overflow-wrap: break-word;
     width: 100%;
     font-size: 0.82rem !important;

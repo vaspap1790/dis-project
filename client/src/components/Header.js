@@ -17,11 +17,12 @@ import SearchBox from './SearchBox';
 import ModalComponent from '../components/ModalComponent';
 import { logout } from '../actions/userActions';
 import { removeFromWatchlist } from '../actions/packetActions';
-import { countUnreadActions } from '../actions/actionActions';
 import {
   getUserNotifications,
-  getUserRequests
+  getUserRequests,
+  countUnreadActions
 } from '../actions/actionActions';
+import { getUserPurchases } from '../actions/userActions';
 //import EthCrypto from 'eth-crypto';
 
 const Header = ({ web3 }) => {
@@ -47,11 +48,13 @@ const Header = ({ web3 }) => {
       dispatch(countUnreadActions(userInfo._id));
       dispatch(getUserNotifications(userInfo._id));
       dispatch(getUserRequests(userInfo._id));
+      dispatch(getUserPurchases(userInfo._id));
 
       const intervalId = setInterval(function () {
         dispatch(countUnreadActions(userInfo._id));
         dispatch(getUserNotifications(userInfo._id));
         dispatch(getUserRequests(userInfo._id));
+        dispatch(getUserPurchases(userInfo._id));
       }, 120000);
 
       return () => clearInterval(intervalId);

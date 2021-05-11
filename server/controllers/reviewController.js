@@ -1,61 +1,51 @@
 const asyncHandler = require('express-async-handler');
-const Packet = require('../models/packetModel.js');
+const User = require('../models/userModel.js');
 const Review = require('../models/reviewModel.js');
-const Access = require('../models/accessModel.js');
 
 // @desc    Create new review
 // @route   POST /api/reviews
 // @access  Private
-exports.createPacketReview = asyncHandler(async (req, res) => {
+exports.createUserReview = asyncHandler(async (req, res) => {
   const { rating, comment } = req.body;
-  const packetId = req.params.id;
+  const userId = req.params.id;
+  const reviewerId = req.user._id;
 
-  const packet = await Packet.findById(packetId);
+  const user = await User.findById(userId);
 
-  if (packet) {
-    const accessToThisPacket = await Access.find({ packet: packetId });
-    const usersEligibleToRate = accessToThisPacket.filter(
-      (access) => access.user !== req.user._id
-    );
-
+  if (user) {
     const pastReviews = await Review.find({
-      packet: packetId,
-      user: req.user._id
+      reviewer: reviewerId,
+      user: userId
     });
 
     if (pastReviews.length > 0) {
       res.status(400);
-      throw new Error('Data packet already reviewed');
+      throw new Error('User already reviewed');
     }
-
-    if (packet.user === req.user._id || usersEligibleToRate.length === 0) {
-      res.status(400);
-      throw new Error('Not authorised!');
-    }
-
-    const packetReviews = await Review.find({ packet: packetId });
 
     const review = new Review({
-      user: req.user._id,
-      packet: packetId,
+      user: userId,
+      reviewer: reviewerId,
       rating: Number(rating),
       comment: comment
     });
-
-    packetReviews.push(review);
-
-    packet.numReviews = packetReviews.length;
-
-    packet.rating =
-      packetReviews.reduce((acc, item) => item.rating + acc, 0) /
-      packetReviews.length;
-
     await review.save();
-    await packet.save();
+
+    const userReviews = await Review.find({
+      user: userId
+    });
+
+    user.numReviews = userReviews.length;
+
+    user.rating =
+      userReviews.reduce((acc, item) => item.rating + acc, 0) /
+      userReviews.length;
+
+    await user.save();
 
     res.status(201).json({ message: 'Review added' });
   } else {
     res.status(404);
-    throw new Error('Data packet not found');
+    throw new Error('User not found');
   }
 });

@@ -377,8 +377,8 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <Rating
-                      value={packet.rating}
-                      text={`${packet.numReviews} reviews`}
+                      value={packet.user.rating}
+                      text={`${packet.user.numReviews} reviews`}
                     />
                   </ListGroup.Item>
                   <ListGroup.Item>Category: {packet.category}</ListGroup.Item>

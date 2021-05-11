@@ -7,6 +7,10 @@ const packetSchema = mongoose.Schema(
       require: true,
       ref: 'User'
     },
+    soldTo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
     name: {
       type: String,
       required: true

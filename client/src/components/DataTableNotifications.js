@@ -12,8 +12,6 @@ import ModalComponent from '../components/ModalComponent';
 
 import { getUserNotifications, updateAction } from '../actions/actionActions';
 
-//import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
-
 const DataTableNotifications = ({ account, contract, web3 }) => {
   // Hook that enables components to interact with the App State through reducers
   const dispatch = useDispatch();
@@ -233,18 +231,8 @@ const DataTableNotifications = ({ account, contract, web3 }) => {
 
   const typeFormatter = (cell, row, rowIndex) => {
     return (
-      <div className='v-align h-align' style={{ height: '3rem' }}>
-        <span
-          className={
-            cell === 'Sample'
-              ? 'small badge-pill badge-warning'
-              : cell === 'Purchase'
-              ? 'small badge-pill badge-success'
-              : ''
-          }
-        >
-          {cell}
-        </span>
+      <div className='v-align h-align small' style={{ height: '3rem' }}>
+        {cell}
       </div>
     );
   };

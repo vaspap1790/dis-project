@@ -1,9 +1,9 @@
 const express = require('express');
-const { createPacketReview } = require('../controllers/reviewController.js');
+const { createUserReview } = require('../controllers/reviewController.js');
 const protect = require('../middleware/authMiddleware.js');
 
 const router = express.Router();
 
-router.route('/:id').post(protect, createPacketReview);
+router.route('/:id').post(protect, createUserReview);
 
 module.exports = router;

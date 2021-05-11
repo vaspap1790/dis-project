@@ -7,7 +7,6 @@ const connectDB = require('./config/db.js');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware.js');
 const packetRoutes = require('./routes/packetRoutes.js');
 const userRoutes = require('./routes/userRoutes.js');
-const accessRoutes = require('./routes/accessRoutes.js');
 const uploadRoutes = require('./routes/uploadRoutes.js');
 const reviewRoutes = require('./routes/reviewRoutes.js');
 const actionRoutes = require('./routes/actionRoutes.js');
@@ -35,7 +34,6 @@ app.get('/', (req, res) => {
 });
 app.use('/api/packets', packetRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/access', accessRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/review', reviewRoutes);
 app.use('/api/action', actionRoutes);

@@ -7,10 +7,10 @@ const reviewSchema = mongoose.Schema(
       require: true,
       ref: 'User'
     },
-    packet: {
+    reviewer: {
       type: mongoose.Schema.Types.ObjectId,
       require: true,
-      ref: 'Packet'
+      ref: 'User'
     },
     rating: {
       type: Number,

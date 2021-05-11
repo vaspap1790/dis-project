@@ -29,3 +29,9 @@ export const USER_DETAILS_REQUEST = 'USER_DETAILS_REQUEST';
 export const USER_DETAILS_SUCCESS = 'USER_DETAILS_SUCCESS';
 export const USER_DETAILS_FAIL = 'USER_DETAILS_FAIL';
 export const USER_DETAILS_RESET = 'USER_DETAILS_RESET';
+
+////////////////////////// User Purchases Actions //////////////////////////////
+export const PURCHASES_REQUEST = 'PURCHASES_REQUEST';
+export const PURCHASES_SUCCESS = 'PURCHASES_SUCCESS';
+export const PURCHASES_FAIL = 'PURCHASES_FAIL';
+export const PURCHASES_RESET = 'PURCHASES_RESET';

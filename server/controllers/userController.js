@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const { generateToken } = require('../utils/generateToken.js');
 const User = require('../models/userModel.js');
+const Packet = require('../models/packetModel.js');
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -15,7 +16,6 @@ exports.authUser = asyncHandler(async (req, res) => {
       _id: user._id,
       username: user.username,
       email: user.email,
-      isAdmin: user.isAdmin,
       token: generateToken(user._id)
     });
   } else {
@@ -48,7 +48,6 @@ exports.registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       username: user.username,
       email: user.email,
-      isAdmin: user.isAdmin,
       token: generateToken(user._id)
     });
   } else {
@@ -66,14 +65,23 @@ exports.getUserProfile = asyncHandler(async (req, res) => {
   if (user) {
     res.json({
       _id: user._id,
-      username: user.username,
-      email: user.email,
-      isAdmin: user.isAdmin
+      username: user.username
     });
   } else {
     res.status(404);
     throw new Error('User not found');
   }
+});
+
+// @desc    Get user purchases
+// @route   GET /api/users/purchases/:id
+// @access  Public
+exports.getUserPurchases = asyncHandler(async (req, res) => {
+  const packets = await Packet.find({ soldTo: req.params.id }).populate(
+    'user',
+    'username'
+  );
+  res.json(packets);
 });
 
 // @desc    Update user profile
@@ -103,7 +111,6 @@ exports.updateUserProfile = asyncHandler(async (req, res) => {
       _id: updatedUser._id,
       username: updatedUser.username,
       email: updatedUser.email,
-      isAdmin: updatedUser.isAdmin,
       token: generateToken(updatedUser._id)
     });
   } else {

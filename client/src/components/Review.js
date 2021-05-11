@@ -4,7 +4,7 @@ import Moment from 'react-moment';
 import { ListGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-const Review = ({ review, isProfile, openModal }) => {
+const Review = ({ review, openModal }) => {
   return (
     <>
       <ListGroup.Item className='m-1'>
@@ -15,28 +15,14 @@ const Review = ({ review, isProfile, openModal }) => {
         ></i>
         From:{' '}
         <Link
-          to={`/profile/${review.user._id}`}
-          title={review.user.username}
+          to={`/profile/${review.reviewer._id}`}
+          title={review.reviewer.username}
           style={{ fontWeight: 'bold' }}
         >
-          {review.user.username.length > 20
-            ? review.user.username.substring(0, 18) + '..'
-            : review.user.username}
+          {review.reviewer.username.length > 20
+            ? review.reviewer.username.substring(0, 18) + '..'
+            : review.reviewer.username}
         </Link>
-        {isProfile ? (
-          <div>
-            For:{' '}
-            <Link
-              to={`/packet/${review.packet._id}`}
-              title={review.packet.name}
-              style={{ fontWeight: 'bold' }}
-            >
-              {review.packet.name.length > 20
-                ? review.packet.name.substring(0, 18) + '..'
-                : review.packet.name}
-            </Link>
-          </div>
-        ) : null}
         <div className='text-muted'>
           <Moment format='D MMM YYYY hh:mm:ss'>{review.createdAt}</Moment>
         </div>
