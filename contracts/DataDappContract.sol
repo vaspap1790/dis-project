@@ -35,9 +35,9 @@ contract DataDappContract is Registry {
     //***********************************Events********************************//
     event UploadResult(UploadPacket upload);
     event SampleRequestResult(address requester, uint256 index);
-    event DepositEvent(address requester);
-    event SendMoneyEvent(address requester);
-    event ReturnMoneyEvent(address requester);
+    event DepositEvent(address requester, uint256 deposit);
+    event SendMoneyEvent(uint256 depositRequester);
+    event ReturnMoneyEvent(uint256 depositRequester);
     event ReviewResult(Review review);
 
     //********************************Modifiers********************************//
@@ -53,7 +53,7 @@ contract DataDappContract is Registry {
     receive() external payable {
         bytes32 index = keccak256(abi.encodePacked(msg.sender));
         deposits[index] += msg.value;
-        emit DepositEvent(msg.sender);
+        emit DepositEvent(msg.sender, deposits[index]);
     }
 
     //***********************************Upload********************************//
@@ -166,7 +166,7 @@ contract DataDappContract is Registry {
         deposits[index] -= price;
         _to.transfer(moneyToSent);
 
-        emit SendMoneyEvent(_to);
+        emit SendMoneyEvent(deposits[index]);
     }
 
     function returnMoney(address payable _to, uint256 price) internal {
@@ -176,15 +176,7 @@ contract DataDappContract is Registry {
         deposits[index] -= price;
         _to.transfer(moneyToSent);
 
-        emit ReturnMoneyEvent(_to);
-    }
-
-    function getPurchaseKeys(
-        string memory _requesterId,
-        string memory _packetId
-    ) public view registered(_requesterId) returns (string[] memory) {
-        bytes32 index = keccak256(abi.encodePacked(_packetId, msg.sender));
-        return purchases[index].keys;
+        emit ReturnMoneyEvent(deposits[keccak256(abi.encodePacked(_to))]);
     }
 
     //***********************************Review*********************************//
@@ -199,12 +191,5 @@ contract DataDappContract is Registry {
         reviews[keccak256(abi.encodePacked(_rated))].push(review);
 
         emit ReviewResult(review);
-    }
-
-    //***********************************Testing*********************************//
-    event Check(bool _isRegistered);
-
-    function getRegisterUsers(string memory _id) public {
-        emit Check(registeredUsers[keccak256(abi.encodePacked(_id))]);
     }
 }
