@@ -1,4 +1,4 @@
-const DataDappContract = artifacts.require('./DataDappContract.sol');
+const TestDataDappContract = artifacts.require('./TestDataDappContract.sol');
 
 const encryptedKeysHashed = [
   '0xb4177e1d1855a0a6d50291c02e48755378261c4114e8c5ad6ddb85b5f81fa62c',
@@ -11,11 +11,10 @@ const encryptedKeys = [
 ];
 
 /////////////////////////////////// Tests \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-contract('DataDappContract', (accounts) => {
+contract('TestDataDappContract', (accounts) => {
   // Check registered() modifier
   it('...should throw if user is not registered', async () => {
-    // Get Contract DataDappContract instance
-    const dataDappContract = await DataDappContract.deployed();
+    const dataDappContract = await TestDataDappContract.deployed();
     try {
       const result = await dataDappContract.addUpload(
         'user1',
@@ -32,8 +31,7 @@ contract('DataDappContract', (accounts) => {
 
   // Check receive() function
   it('...should deposit successfully', async () => {
-    // Get Contract DataDappContract instance
-    const dataDappContract = await DataDappContract.deployed();
+    const dataDappContract = await TestDataDappContract.deployed();
 
     const account1BalanceBefore = await web3.eth.getBalance(accounts[1]);
     let deposit1 = await dataDappContract.sendTransaction({
@@ -70,8 +68,7 @@ contract('DataDappContract', (accounts) => {
 
   // Check addUpload() function
   it('...should upload a packet successfully', async () => {
-    // Get Contract DataDappContract instance
-    const dataDappContract = await DataDappContract.deployed();
+    const dataDappContract = await TestDataDappContract.deployed();
 
     await dataDappContract.registerUser('user1', {
       from: accounts[0]
@@ -91,18 +88,11 @@ contract('DataDappContract', (accounts) => {
       accounts[0],
       'Upload failed - UploadResult Event'
     );
-
-    // const getter = await dataDappContract.uploads.call(
-    //   keccak256_encodePacked('packet1')
-    // );
-
-    // assert.equal(getter.ownerAddress, accounts[0], 'Upload failed - Getter');
   });
 
   // Check addSampleRequest() function
   it('...should request for a sample successfully', async () => {
-    // Get Contract DataDappContract instance
-    const dataDappContract = await DataDappContract.deployed();
+    const dataDappContract = await TestDataDappContract.deployed();
 
     // Register the requester
     await dataDappContract.registerUser('user2', {
@@ -127,8 +117,7 @@ contract('DataDappContract', (accounts) => {
 
   // Check addPurchase() function - owner rejection
   it('...should return money to requester', async () => {
-    // Get Contract DataDappContract instance
-    const dataDappContract = await DataDappContract.deployed();
+    const dataDappContract = await TestDataDappContract.deployed();
 
     const account1BalanceBefore = await web3.eth.getBalance(accounts[1]);
     const purchase = await dataDappContract.addPurchase(
@@ -157,8 +146,7 @@ contract('DataDappContract', (accounts) => {
 
   // Check addPurchase() function - owner approval
   it('...should transfer money to owner', async () => {
-    // Get Contract DataDappContract instance
-    const dataDappContract = await DataDappContract.deployed();
+    const dataDappContract = await TestDataDappContract.deployed();
 
     const account0BalanceBefore = await web3.eth.getBalance(accounts[0]);
     const purchase = await dataDappContract.addPurchase(
@@ -188,8 +176,7 @@ contract('DataDappContract', (accounts) => {
 
   // Check itemNotSold() - modifier
   it('...should throw if item has been sold', async () => {
-    // Get Contract DataDappContract instance
-    const dataDappContract = await DataDappContract.deployed();
+    const dataDappContract = await TestDataDappContract.deployed();
     try {
       const purchase = await dataDappContract.addPurchase(
         'user1',
@@ -209,8 +196,7 @@ contract('DataDappContract', (accounts) => {
 
   // Check addReview() - function
   it('...should store a review successfully', async () => {
-    // Get Contract DataDappContract instance
-    const dataDappContract = await DataDappContract.deployed();
+    const dataDappContract = await TestDataDappContract.deployed();
 
     const review = await dataDappContract.addReview(
       'user1',
@@ -226,6 +212,95 @@ contract('DataDappContract', (accounts) => {
       review.logs[0].args[0].reviewer,
       'user2',
       'Add review failed - ReviewResult'
+    );
+  });
+
+  // Check getRandomKeyIndex() - function
+  it('...should return an int in range', async () => {
+    const dataDappContract = await TestDataDappContract.deployed();
+
+    const result = await dataDappContract.test_getRandomKeyIndex(5);
+
+    assert.isTrue(
+      result.logs[0].args._index.toNumber() >= 0 &&
+        result.logs[0].args._index.toNumber() <= 5,
+      'Int not in range'
+    );
+  });
+
+  // Check hashKeysAndCompare() - function
+  it('...should return true for matching the keys', async () => {
+    const dataDappContract = await TestDataDappContract.deployed();
+
+    const result = await dataDappContract.test_hashKeysAndCompare(
+      'packet1',
+      accounts[1],
+      encryptedKeys
+    );
+
+    assert.isTrue(result.logs[0].args._bool, 'Match failed');
+  });
+
+  // Check sendMoney() - function
+  it('...should send money from account2 to account3', async () => {
+    const dataDappContract = await TestDataDappContract.deployed();
+
+    const account2BalanceBefore = await web3.eth.getBalance(accounts[2]);
+    const account3BalanceBefore = await web3.eth.getBalance(accounts[3]);
+
+    await dataDappContract.sendTransaction({
+      from: accounts[2],
+      to: contract._address,
+      value: web3.utils.toWei('5', 'ether')
+    });
+
+    await dataDappContract.test_sendMoney(
+      accounts[2],
+      accounts[3],
+      web3.utils.toWei('5', 'ether')
+    );
+
+    const account2BalanceAfter = await web3.eth.getBalance(accounts[2]);
+    const account3BalanceAfter = await web3.eth.getBalance(accounts[3]);
+
+    assert.isTrue(
+      Number(account2BalanceAfter) < Number(account2BalanceBefore),
+      'Money not extracted from account2'
+    );
+    assert.isTrue(
+      Number(account3BalanceAfter) > Number(account3BalanceBefore),
+      'Money not transfered to account3'
+    );
+  });
+
+  // Check returnMoney() - function
+  it('...should return money from contract to account4', async () => {
+    const dataDappContract = await TestDataDappContract.deployed();
+
+    const account4BalanceBeforeDeposit = await web3.eth.getBalance(accounts[4]);
+
+    await dataDappContract.sendTransaction({
+      from: accounts[4],
+      to: contract._address,
+      value: web3.utils.toWei('5', 'ether')
+    });
+
+    const account4BalanceBeforeReturn = await web3.eth.getBalance(accounts[4]);
+
+    await dataDappContract.test_returnMoney(
+      accounts[4],
+      web3.utils.toWei('5', 'ether')
+    );
+    const account4BalanceAfter = await web3.eth.getBalance(accounts[4]);
+
+    assert.isTrue(
+      Number(account4BalanceBeforeDeposit) >
+        Number(account4BalanceBeforeReturn),
+      'Money not extracted from account4'
+    );
+    assert.isTrue(
+      Number(account4BalanceBeforeReturn) < Number(account4BalanceAfter),
+      'Money not transfered to account4'
     );
   });
 });
