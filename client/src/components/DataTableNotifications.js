@@ -207,7 +207,11 @@ const DataTableNotifications = ({ account, contract, web3 }) => {
             </Link>
           </Col>
           <Col xs={4} className='v-align h-align small'>
-            <Link to={`/packet/${row.packet._id}`} onClick={clickHandler}>
+            <Link
+              to={`/packet/${row.packet._id}`}
+              onClick={clickHandler}
+              title={row.packet.name}
+            >
               {cell}
             </Link>
           </Col>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
-import { Image, Form, Alert } from 'react-bootstrap';
+import { Image, Form, Alert, Table, Row, Col } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
@@ -42,6 +42,9 @@ const DataTablePurchased = ({ account, contract }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [userId, setUserId] = useState('');
+  const [purchasedKeysModal, showPurchasedKeysModal] = useState(false);
+  const [hashes, setHashes] = useState([]);
+  const [keys, setKeys] = useState([]);
 
   // Component Variables
   const form = (
@@ -74,73 +77,64 @@ const DataTablePurchased = ({ account, contract }) => {
     </Form>
   );
 
-  // const sampleLoadingModalContent = (
-  //   <>
-  //     {loadingCreateAction ? (
-  //       <>
-  //         <Loader />
-  //         <div>Retrieving key...</div>
-  //       </>
-  //     ) : errorCreateAction ? (
-  //       <Alert variant='danger'>{errorCreateAction}</Alert>
-  //     ) : (
-  //       <>
-  //         <div className='mb-2'>
-
-  //         </div>
-  //         <Table id='keyTable' bordered responsive size='sm'>
-  //           <thead>
-  //             <tr className='table-dark'>
-  //               <th className='uploadsTableHeaders text-center p-2'>
-  //                 IPFS Hash
-  //               </th>
-  //             </tr>
-  //           </thead>
-  //           <tbody>
-  //             <tr>
-  //               <td className='d-flex align-items-center'>
-  //                 <Col xs={12}>
-  //                   <Row>
-  //                     <InputGroup>
-  //                       <Form.Control
-  //                         type='textarea'
-  //                         ref={textAreaRefHash}
-  //                         value={data.ipfsHash}
-  //                         aria-describedby='hashAppend'
-  //                         readOnly
-  //                       />
-  //                       <InputGroup.Append>
-  //                         <InputGroup.Text
-  //                           id='hashAppend'
-  //                           style={{ borderLeft: '0.5px solid #fff' }}
-  //                         >
-  //                           <i
-  //                             className='fas fa-clipboard fa-lg link-icon blue-hover'
-  //                             onClick={copyToClipboardHash}
-  //                             title='Copy IPFS Hash to Clipboard'
-  //                           ></i>
-  //                         </InputGroup.Text>
-  //                       </InputGroup.Append>
-  //                     </InputGroup>
-  //                   </Row>
-  //                   {hashCopied ? (
-  //                     <Row className='mt-1 justify-content-end'>
-  //                       <div style={{ color: '#3ca861' }} className='small'>
-  //                         Hash copied to clipboard
-  //                       </div>
-  //                     </Row>
-  //                   ) : null}
-  //                 </Col>
-  //               </td>
-  //             </tr>
-  //           </tbody>
-  //         </Table>
-  //       </>
-  //     )}
-  //   </>
-  // );
+  const purchasedKeysModalContent = (
+    <>
+      <div className='mb-2'>
+        The Encryption keys are encrypted with your public key. You should use
+        your private key to decrypt them.
+      </div>
+      <Table id='hashTable' bordered responsive size='sm'>
+        <thead>
+          <tr className='table-dark'>
+            <th className='uploadsTableHeaders text-center p-2'>IPFS Hashes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {hashes.map((hash, index) => (
+              <td className='d-flex align-items-center'>
+                <Col xs={12}>
+                  <Row>
+                    <Form.Control type='textarea' value={hash} readOnly />
+                  </Row>
+                </Col>
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </Table>
+      <Table id='keyTable' bordered responsive size='sm'>
+        <thead>
+          <tr className='table-dark'>
+            <th className='uploadsTableHeaders text-center p-2'>
+              Encryption Keys
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {keys.map((key, index) => (
+              <td className='d-flex align-items-center'>
+                <Col xs={12}>
+                  <Row>
+                    <Form.Control type='textarea' value={key} readOnly />
+                  </Row>
+                </Col>
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </Table>
+    </>
+  );
 
   // Component Methods
+  const closePurchasedKeysModal = () => {
+    showPurchasedKeysModal(false);
+    setKeys([]);
+    setHashes([]);
+  };
+
   const closeRatingModal = () => {
     showRatingModal(false);
     setRating(0);
@@ -249,7 +243,7 @@ const DataTablePurchased = ({ account, contract }) => {
   const nameFormatter = (cell, row, rowIndex) => {
     return (
       <div className='v-align h-align small' style={{ height: '3rem' }}>
-        <Link to={`/packet/${row._id}`} onClick={clickHandler}>
+        <Link to={`/packet/${row._id}`} onClick={clickHandler} title={row.name}>
           {cell}
         </Link>
       </div>
@@ -284,11 +278,12 @@ const DataTablePurchased = ({ account, contract }) => {
         <span
           type='button'
           variant='primary'
-          title='Download'
+          title='Get keys'
           className='blue-hover'
           onClick={() => {
-            //TODO: download data packet
-            console.log(cell);
+            setHashes(row.ipfsHashes);
+            setKeys(row.encryptionKeys);
+            showPurchasedKeysModal(true);
           }}
         >
           <i className='fas fa-arrow-down'></i>
@@ -463,6 +458,14 @@ const DataTablePurchased = ({ account, contract }) => {
         loading={reviewLoading}
         errorMessage={reviewError}
         successMessage={reviewSuccess}
+      />
+      <ModalComponent
+        size='xl'
+        show={purchasedKeysModal}
+        close={closePurchasedKeysModal}
+        title='Purchased Item'
+        body={purchasedKeysModalContent}
+        info={true}
       />
     </>
   );
