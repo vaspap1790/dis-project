@@ -1,9 +1,4 @@
 const Registry = artifacts.require('./Registry.sol');
-const Web3 = require('web3');
-
-/////////////////////////////////// Utils \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-const provider = new Web3.providers.HttpProvider('http://127.0.0.1:9545');
-let web3 = new Web3(provider);
 
 /////////////////////////////////// Tests \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 contract('Registry', (accounts) => {
@@ -19,7 +14,7 @@ contract('Registry', (accounts) => {
     assert.equal(
       result.logs[0].args._id,
       'user1',
-      'User with id user1 not registered - Register Event'
+      'User not registered - Register Event'
     );
   });
 });

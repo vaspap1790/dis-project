@@ -1,9 +1,4 @@
 const DataDappContract = artifacts.require('./DataDappContract.sol');
-const Web3 = require('web3');
-
-/////////////////////////////////// Utils \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-const provider = new Web3.providers.HttpProvider('http://127.0.0.1:9545');
-let web3 = new Web3(provider);
 
 const encryptedKeysHashed = [
   '0xb4177e1d1855a0a6d50291c02e48755378261c4114e8c5ad6ddb85b5f81fa62c',
@@ -40,6 +35,7 @@ contract('DataDappContract', (accounts) => {
     // Get Contract DataDappContract instance
     const dataDappContract = await DataDappContract.deployed();
 
+    const account1BalanceBefore = await web3.eth.getBalance(accounts[1]);
     let deposit1 = await dataDappContract.sendTransaction({
       from: accounts[1],
       to: contract._address,
@@ -62,6 +58,13 @@ contract('DataDappContract', (accounts) => {
       deposit2.logs[0].args.deposit.toString(),
       web3.utils.toWei('10', 'ether'),
       'Deposit2 failed - DepositEvent'
+    );
+
+    const account1BalanceAfter = await web3.eth.getBalance(accounts[1]);
+    assert.notDeepEqual(
+      account1BalanceAfter,
+      account1BalanceBefore,
+      'Money not extracted from account1'
     );
   });
 
@@ -127,6 +130,7 @@ contract('DataDappContract', (accounts) => {
     // Get Contract DataDappContract instance
     const dataDappContract = await DataDappContract.deployed();
 
+    const account1BalanceBefore = await web3.eth.getBalance(accounts[1]);
     const purchase = await dataDappContract.addPurchase(
       'user1',
       'packet1',
@@ -144,6 +148,11 @@ contract('DataDappContract', (accounts) => {
       web3.utils.toWei('5', 'ether'),
       'Return money failed - ReturnMoneyEvent'
     );
+    const account1BalanceAfter = await web3.eth.getBalance(accounts[1]);
+    assert.isTrue(
+      Number(account1BalanceAfter) > Number(account1BalanceBefore),
+      'Money not transfered to account1'
+    );
   });
 
   // Check addPurchase() function - owner approval
@@ -151,6 +160,7 @@ contract('DataDappContract', (accounts) => {
     // Get Contract DataDappContract instance
     const dataDappContract = await DataDappContract.deployed();
 
+    const account0BalanceBefore = await web3.eth.getBalance(accounts[0]);
     const purchase = await dataDappContract.addPurchase(
       'user1',
       'packet1',
@@ -167,6 +177,12 @@ contract('DataDappContract', (accounts) => {
       purchase.logs[0].args.depositRequester.toString(),
       0,
       'Send money failed - SendMoneyEvent'
+    );
+
+    const account0BalanceAfter = await web3.eth.getBalance(accounts[0]);
+    assert.isTrue(
+      Number(account0BalanceAfter) > Number(account0BalanceBefore),
+      'Money not transfered to account0'
     );
   });
 
