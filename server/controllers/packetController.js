@@ -32,6 +32,8 @@ exports.getPackets = asyncHandler(async (req, res) => {
   const priceTo = Number(req.query.priceTo) || 0;
   const keyword = req.query.keyword;
 
+  const category = req.query.category;
+
   let searchObject = {};
   searchObject.sold = false;
 
@@ -40,6 +42,10 @@ exports.getPackets = asyncHandler(async (req, res) => {
       $regex: req.query.keyword,
       $options: 'i' //case insensitive
     };
+  }
+
+  if (category !== 'undefined' && category !== 'All Categories') {
+    searchObject.category = category;
   }
 
   if (ratings.length !== 0) {

@@ -82,7 +82,8 @@ const HomeScreen = ({ match, history }) => {
       rating4: rating4,
       rating5: rating5,
       priceFrom: priceFrom,
-      priceTo: priceTo
+      priceTo: priceTo,
+      category: category
     });
   };
 

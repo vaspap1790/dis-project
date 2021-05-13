@@ -31,43 +31,46 @@ import { logout } from './userActions';
 
 ///////////////////////////////// List Actions ////////////////////////////////////
 // thunk allows to make async requests here
-export const listPackets = (
-  keyword = '',
-  pageNumber = '',
-  sorting = 'createdAt_desc',
-  filters = {
-    rating1: false,
-    rating2: false,
-    rating3: false,
-    rating4: false,
-    rating5: false,
-    priceFrom: 0,
-    priceTo: 0
-  }
-) => async (dispatch) => {
-  try {
-    dispatch({ type: PACKET_LIST_REQUEST });
+export const listPackets =
+  (
+    keyword = '',
+    pageNumber = '',
+    sorting = 'createdAt_desc',
+    filters = {
+      rating1: false,
+      rating2: false,
+      rating3: false,
+      rating4: false,
+      rating5: false,
+      priceFrom: 0,
+      priceTo: 0,
+      category: 'All Categories'
+    }
+  ) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: PACKET_LIST_REQUEST });
 
-    const { data } = await axios.get(
-      `/api/packets?keyword=${keyword}&sorting=${sorting}
+      const { data } = await axios.get(
+        `/api/packets?keyword=${keyword}&sorting=${sorting}
       &rating1=${filters.rating1}&rating2=${filters.rating2}&rating3=${filters.rating3}&rating4=${filters.rating4}
-      &rating5=${filters.rating5}&priceFrom=${filters.priceFrom}&priceTo=${filters.priceTo}&pageNumber=${pageNumber}`
-    );
+      &rating5=${filters.rating5}&priceFrom=${filters.priceFrom}&priceTo=${filters.priceTo}&category=${filters.category}&pageNumber=${pageNumber}`
+      );
 
-    dispatch({
-      type: PACKET_LIST_SUCCESS,
-      payload: data
-    });
-  } catch (error) {
-    dispatch({
-      type: PACKET_LIST_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-    });
-  }
-};
+      dispatch({
+        type: PACKET_LIST_SUCCESS,
+        payload: data
+      });
+    } catch (error) {
+      dispatch({
+        type: PACKET_LIST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message
+      });
+    }
+  };
 
 /////////////////////////////// Details Actions ///////////////////////////////////
 export const listPacketDetails = (id) => async (dispatch) => {
@@ -106,32 +109,30 @@ export const prelistPacketDetails = () => async (dispatch) => {
 };
 
 //////////////////////////////// User Actions ///////////////////////////////////
-export const getUserPackets = (
-  id,
-  pageNumber = '',
-  sorting = 'createdAt_desc'
-) => async (dispatch) => {
-  try {
-    dispatch({ type: PACKET_USER_REQUEST });
+export const getUserPackets =
+  (id, pageNumber = '', sorting = 'createdAt_desc') =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: PACKET_USER_REQUEST });
 
-    const { data } = await axios.get(
-      `/api/packets/user/${id}?sorting=${sorting}&pageNumber=${pageNumber}`
-    );
+      const { data } = await axios.get(
+        `/api/packets/user/${id}?sorting=${sorting}&pageNumber=${pageNumber}`
+      );
 
-    dispatch({
-      type: PACKET_USER_SUCCESS,
-      payload: data
-    });
-  } catch (error) {
-    dispatch({
-      type: PACKET_USER_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-    });
-  }
-};
+      dispatch({
+        type: PACKET_USER_SUCCESS,
+        payload: data
+      });
+    } catch (error) {
+      dispatch({
+        type: PACKET_USER_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message
+      });
+    }
+  };
 
 export const emptyUserPacketsError = () => async (dispatch) => {
   dispatch({
@@ -140,49 +141,47 @@ export const emptyUserPacketsError = () => async (dispatch) => {
 };
 
 //////////////////////////////// Create Packet Actions ///////////////////////////////////
-export const createPacket = (packet, account, contract) => async (
-  dispatch,
-  getState
-) => {
-  try {
-    dispatch({
-      type: PACKET_CREATE_REQUEST
-    });
+export const createPacket =
+  (packet, account, contract) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: PACKET_CREATE_REQUEST
+      });
 
-    const {
-      userLogin: { userInfo }
-    } = getState();
+      const {
+        userLogin: { userInfo }
+      } = getState();
 
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`
+        }
+      };
+
+      const { data } = await axios.post(`/api/packets`, packet, config);
+      let result = await contract.methods
+        .addUpload(userInfo._id, data._id, packet.ipfsHashes)
+        .send({ from: account });
+      console.log(result);
+
+      dispatch({
+        type: PACKET_CREATE_SUCCESS,
+        payload: data
+      });
+    } catch (error) {
+      const message =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      if (message === 'Not authorized!') {
+        dispatch(logout());
       }
-    };
-
-    const { data } = await axios.post(`/api/packets`, packet, config);
-    let result = await contract.methods
-      .addUpload(userInfo._id, data._id, packet.ipfsHashes)
-      .send({ from: account });
-    console.log(result);
-
-    dispatch({
-      type: PACKET_CREATE_SUCCESS,
-      payload: data
-    });
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    if (message === 'Not authorized!') {
-      dispatch(logout());
+      dispatch({
+        type: PACKET_CREATE_FAIL,
+        payload: message
+      });
     }
-    dispatch({
-      type: PACKET_CREATE_FAIL,
-      payload: message
-    });
-  }
-};
+  };
 
 export const emptyCreatePacketError = () => async (dispatch) => {
   dispatch({
