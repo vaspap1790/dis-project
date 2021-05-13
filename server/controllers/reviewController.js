@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel.js');
 const Review = require('../models/reviewModel.js');
+const Packet = require('../models/packetModel.js');
 
 // @desc    Create new review
 // @route   POST /api/reviews
@@ -40,6 +41,17 @@ exports.createUserReview = asyncHandler(async (req, res) => {
     user.rating =
       userReviews.reduce((acc, item) => item.rating + acc, 0) /
       userReviews.length;
+
+    const packets = await Packet.find({
+      user: userId
+    });
+
+    if (packets.length !== 0) {
+      packets.forEach((packet) => {
+        packet.ownerRating = user.rating;
+        packet.save();
+      });
+    }
 
     await user.save();
 

@@ -28,6 +28,10 @@ const packetSchema = mongoose.Schema(
       type: String,
       required: true
     },
+    ownerRating: {
+      type: Number,
+      default: 0
+    },
     ipfsHashes: {
       type: [String],
       required: true,

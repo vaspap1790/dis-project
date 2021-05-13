@@ -43,7 +43,7 @@ exports.getPackets = asyncHandler(async (req, res) => {
   }
 
   if (ratings.length !== 0) {
-    searchObject['user.rating'] = {
+    searchObject.ownerRating = {
       $in: ratings
     };
   }
@@ -55,10 +55,7 @@ exports.getPackets = asyncHandler(async (req, res) => {
     };
   }
 
-  const count = await Packet.countDocuments(searchObject).populate(
-    'user',
-    'rating'
-  );
+  const count = await Packet.countDocuments(searchObject);
   const packets = await Packet.find(searchObject)
     .populate('user', 'username rating numReviews')
     .limit(pageSize)
