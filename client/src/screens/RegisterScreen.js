@@ -159,28 +159,6 @@ const RegisterScreen = ({ location, history, account, contract }) => {
         {userInfoLogin ? (
           <>
             <Meta title='Data Dapp | Update User details' />
-            <Button
-              className='btn btn-success mr-1'
-              disabled={!validForm || loadingUpdate}
-              type='submit'
-              title={validForm ? 'Update' : 'Make changes to submit'}
-              onClick={() => showConfirmationModal(true)}
-            >
-              {loadingRegister ? (
-                <>
-                  Loading...
-                  <Spinner
-                    as='span'
-                    animation='border'
-                    size='sm'
-                    role='status'
-                    aria-hidden='true'
-                  />
-                </>
-              ) : (
-                <>Update</>
-              )}
-            </Button>
             <h1 className='my-auto ml-2' style={{ display: 'inline' }}>
               Update User Details
             </h1>
@@ -188,28 +166,6 @@ const RegisterScreen = ({ location, history, account, contract }) => {
         ) : (
           <>
             <Meta title='Data Dapp | Sign Up' />
-            <Button
-              className='btn btn-info mr-1'
-              disabled={!validForm || loadingRegister}
-              type='submit'
-              title={validForm ? 'Register' : 'Enter all fields to submit'}
-              onClick={() => showConfirmationModal(true)}
-            >
-              {loadingRegister ? (
-                <>
-                  Loading...
-                  <Spinner
-                    as='span'
-                    animation='border'
-                    size='sm'
-                    role='status'
-                    aria-hidden='true'
-                  />
-                </>
-              ) : (
-                <>Register</>
-              )}
-            </Button>
             <h1 className='my-auto ml-2' style={{ display: 'inline' }}>
               Sign Up
             </h1>
@@ -428,6 +384,53 @@ const RegisterScreen = ({ location, history, account, contract }) => {
               </div>
             )}
           </Form.Group>
+          {userInfoLogin ? (
+            <Button
+              className='btn btn-success mr-1'
+              disabled={!validForm || loadingUpdate}
+              type='submit'
+              title={validForm ? 'Update' : 'Make changes to submit'}
+              onClick={() => showConfirmationModal(true)}
+            >
+              {loadingRegister ? (
+                <>
+                  Loading...
+                  <Spinner
+                    as='span'
+                    animation='border'
+                    size='sm'
+                    role='status'
+                    aria-hidden='true'
+                  />
+                </>
+              ) : (
+                <>Update</>
+              )}
+            </Button>
+          ) : (
+            <Button
+              className='btn btn-info mr-1'
+              disabled={!validForm || loadingRegister}
+              type='submit'
+              title={validForm ? 'Register' : 'Enter all fields to submit'}
+              onClick={() => showConfirmationModal(true)}
+            >
+              {loadingRegister ? (
+                <>
+                  Loading...
+                  <Spinner
+                    as='span'
+                    animation='border'
+                    size='sm'
+                    role='status'
+                    aria-hidden='true'
+                  />
+                </>
+              ) : (
+                <>Register</>
+              )}
+            </Button>
+          )}
         </Form>
 
         {!userInfoLogin && (

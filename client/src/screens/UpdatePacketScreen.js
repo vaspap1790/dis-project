@@ -17,16 +17,13 @@ import {
 } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import ModalComponent from '../components/ModalComponent';
+import { BANKING_DATA, IOT_SENSOR_DATA, OTHER } from '../constants/categories';
 import {
   updatePacket,
   emptyUpdatePacketSuccess,
   emptyUpdatePacketError
 } from '../actions/packetActions';
-import {
-  validateName,
-  validateDescription,
-  validateCategory
-} from '../utils/validator';
+import { validateName, validateDescription } from '../utils/validator';
 
 const UpdatePacketScreen = ({ history, match }) => {
   // Hook that enables components to interact with the App State through reducers
@@ -62,10 +59,7 @@ const UpdatePacketScreen = ({ history, match }) => {
     validateName(name) &&
     description !== undefined &&
     description.length !== 0 &&
-    validateDescription(description) &&
-    category !== undefined &&
-    category.length !== 0 &&
-    validateCategory(category);
+    validateDescription(description);
 
   // Hook that triggers when component did mount
   useEffect(() => {
@@ -245,7 +239,8 @@ const UpdatePacketScreen = ({ history, match }) => {
                   </span>{' '}
                   <span style={{ verticalAlign: 'middle' }}>
                     <i
-                      className='fas fa-trash trash'
+                      className='fas fa-trash-alt'
+                      style={{ color: '#d9534f' }}
                       title='Remove from Uploads'
                       onClick={removeFromUploadsHandler}
                     ></i>
@@ -327,31 +322,18 @@ const UpdatePacketScreen = ({ history, match }) => {
                   <Form.Group controlId='category'>
                     <Form.Label>Category</Form.Label>
                     <Form.Control
-                      className={
-                        category.length === 0 || !validateCategory(category)
-                          ? 'is-invalid'
-                          : packet === undefined || category === packet.category
-                          ? ''
-                          : validateCategory(category) && 'is-valid'
-                      }
-                      type='text'
-                      placeholder='Enter Category'
+                      as='select'
                       title='Enter Category'
+                      name='category'
                       value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                    ></Form.Control>
-                    {category.length === 0 || !validateCategory(category) ? (
-                      <div className='invalid-feedback'>
-                        Category must be from 5 to 50 characters long
-                      </div>
-                    ) : packet === undefined ||
-                      category === packet.category ? null : (
-                      validateCategory(category) && (
-                        <div className='valid-feedback' display={'none'}>
-                          Correct
-                        </div>
-                      )
-                    )}
+                      onChange={(e) => {
+                        setCategory(e.target.value);
+                      }}
+                    >
+                      <option value={BANKING_DATA}>{BANKING_DATA}</option>
+                      <option value={IOT_SENSOR_DATA}>{IOT_SENSOR_DATA}</option>
+                      <option value={OTHER}>{OTHER}</option>
+                    </Form.Control>
                   </Form.Group>
                 </Col>
                 <Col>

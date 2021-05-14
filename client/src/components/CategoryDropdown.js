@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Dropdown, DropdownButton } from 'react-bootstrap';
 
-const Category = ({ category, handleCategory, categories }) => {
+const CategoryDropdown = ({ category, handleCategory, categories }) => {
   return (
     <>
       <Row>
@@ -36,4 +36,4 @@ const Category = ({ category, handleCategory, categories }) => {
   );
 };
 
-export default Category;
+export default CategoryDropdown;

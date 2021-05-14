@@ -8,7 +8,7 @@ import {
   SidebarContent
 } from 'react-pro-sidebar';
 import Rating from '../components/Rating';
-import Category from '../components/Category';
+import CategoryDropdown from '../components/CategoryDropdown';
 import { Row, Col, Button, Form } from 'react-bootstrap';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -468,7 +468,7 @@ const HomeSidebar = ({
                   className='d-flex align-items-start justify-content-between pt-0'
                   style={{ height: '10rem' }}
                 >
-                  <Category
+                  <CategoryDropdown
                     category={category}
                     handleCategory={setCategory}
                     categories={categories}
@@ -484,7 +484,7 @@ const HomeSidebar = ({
                 className='d-flex align-items-start justify-content-between pt-0'
                 style={{ height: '20rem' }}
               >
-                <Category
+                <CategoryDropdown
                   category={category}
                   handleCategory={setCategory}
                   categories={categories}

@@ -72,27 +72,6 @@ const LoginScreen = ({ location, history }) => {
         >
           Go Back
         </Button>
-        <Button
-          className='btn btn-success mr-1'
-          disabled={!validForm || loading}
-          title={validForm ? 'Sign In' : 'Enter all fields to submit'}
-          onClick={() => logIn()}
-        >
-          {loading ? (
-            <>
-              Loading...
-              <Spinner
-                as='span'
-                animation='border'
-                size='sm'
-                role='status'
-                aria-hidden='true'
-              />
-            </>
-          ) : (
-            <>Sign in</>
-          )}
-        </Button>
         <h1 className='my-auto ml-2' style={{ display: 'inline' }}>
           Sign In
         </h1>
@@ -150,6 +129,28 @@ const LoginScreen = ({ location, history }) => {
               onChange={(e) => setPassword(e.target.value)}
             ></Form.Control>
           </Form.Group>
+          <Button
+            className='btn btn-success mr-1'
+            type='submit'
+            disabled={!validForm || loading}
+            title={validForm ? 'Sign In' : 'Enter all fields to submit'}
+            onClick={() => logIn()}
+          >
+            {loading ? (
+              <>
+                Loading...
+                <Spinner
+                  as='span'
+                  animation='border'
+                  size='sm'
+                  role='status'
+                  aria-hidden='true'
+                />
+              </>
+            ) : (
+              <>Sign in</>
+            )}
+          </Button>
         </Form>
 
         <Row className='py-3'>

@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import Stats from './Stats';
-import {
-  validateName,
-  validateDescription,
-  validateCategory
-} from '../utils/validator';
+import { BANKING_DATA, IOT_SENSOR_DATA, OTHER } from '../constants/categories';
+import { validateName, validateDescription } from '../utils/validator';
 
 const FirstStep = (props) => {
   // Component level State
@@ -99,15 +96,7 @@ const FirstStep = (props) => {
           <Form.Group controlId='category'>
             <Form.Label>Category</Form.Label>
             <Form.Control
-              className={
-                category.length === 0
-                  ? ''
-                  : validateCategory(category)
-                  ? 'is-valid'
-                  : 'is-invalid'
-              }
-              type='text'
-              placeholder='Enter Category'
+              as='select'
               title='Enter Category'
               name='category'
               value={category}
@@ -115,16 +104,11 @@ const FirstStep = (props) => {
                 setCategory(e.target.value);
                 update(e);
               }}
-            ></Form.Control>
-            {category.length === 0 ? null : validateCategory(category) ? (
-              <div className='valid-feedback' display={'none'}>
-                Correct
-              </div>
-            ) : (
-              <div className='invalid-feedback'>
-                Category must be from 5 to 50 characters long
-              </div>
-            )}
+            >
+              <option value={BANKING_DATA}>{BANKING_DATA}</option>
+              <option value={IOT_SENSOR_DATA}>{IOT_SENSOR_DATA}</option>
+              <option value={OTHER}>{OTHER}</option>
+            </Form.Control>
           </Form.Group>
         </Form>
       </div>
