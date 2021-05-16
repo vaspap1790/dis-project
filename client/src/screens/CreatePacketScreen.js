@@ -167,7 +167,7 @@ const CreatePacketScreen = ({ history, account, contract }) => {
     <>
       {/************************************** Nav&Title ****************************************/}
       <Row className='d-flex justify-content-start align-items-center mb-3'>
-        <Meta title='Data Dapp | Upload Item' />
+        <Meta title='dataDapp | Upload Item' />
         <Button
           className='btn btn-primary mr-1'
           title='Go Back'

@@ -64,7 +64,7 @@ const LoginScreen = ({ location, history }) => {
     <>
       {/************************************** Nav&Title ****************************************/}
       <Row className='d-flex justify-content-start align-items-center mb-3'>
-        <Meta title='Data Dapp | Sign In' />
+        <Meta title='dataDapp | Sign In' />
         <Button
           className='btn btn-primary mr-1'
           title='Go Back'

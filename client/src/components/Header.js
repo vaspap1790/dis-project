@@ -85,7 +85,7 @@ const Header = ({ web3 }) => {
           bg='primary'
           variant='dark'
           expand='lg'
-          className='py-3'
+          className='py-0'
           collapseOnSelect
         >
           {/* <button type='button' onClick={getRegister1UP}>
@@ -93,7 +93,14 @@ const Header = ({ web3 }) => {
           </button> */}
           <Container fluid className='px-4'>
             <LinkContainer to='/'>
-              <Navbar.Brand>Data Dapp</Navbar.Brand>
+              <Navbar.Brand>
+                <Image
+                  src='/images/logo-black.png'
+                  alt='dataDapp logo'
+                  rounded
+                  style={{ width: '15rem' }}
+                />
+              </Navbar.Brand>
             </LinkContainer>
             <Navbar.Toggle aria-controls='basic-navbar-nav' />
             <Navbar.Collapse id='basic-navbar-nav'>

@@ -6,7 +6,7 @@ const JumbotronHome = ({ wholeScreen }) => {
   return (
     <Jumbotron className='py-4'>
       <h1 style={{ zIndex: 5, position: 'relative' }}>
-        Welcome to Data Dapp, people of Ethereum{' '}
+        Welcome to dataDapp, people of Ethereum{' '}
         {wholeScreen ? (
           <i className='fab fa-ethereum eth-jumbo fa-8x'></i>
         ) : (
@@ -28,7 +28,7 @@ const JumbotronHome = ({ wholeScreen }) => {
       </p>
       <p>
         <Link to={'/aboutUs'}>
-          <Button className='btn-primary' title='Learn more about Data Dapp'>
+          <Button className='btn-primary' title='Learn more about dataDapp'>
             Learn more
           </Button>
         </Link>

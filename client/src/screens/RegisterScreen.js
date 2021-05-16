@@ -158,14 +158,14 @@ const RegisterScreen = ({ location, history, account, contract }) => {
         </Button>
         {userInfoLogin ? (
           <>
-            <Meta title='Data Dapp | Update User details' />
+            <Meta title='dataDapp | Update User details' />
             <h1 className='my-auto ml-2' style={{ display: 'inline' }}>
               Update User Details
             </h1>
           </>
         ) : (
           <>
-            <Meta title='Data Dapp | Sign Up' />
+            <Meta title='dataDapp | Sign Up' />
             <h1 className='my-auto ml-2' style={{ display: 'inline' }}>
               Sign Up
             </h1>

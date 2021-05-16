@@ -140,7 +140,7 @@ const UpdatePacketScreen = ({ history, match }) => {
     <>
       {/************************************** Nav&Title ****************************************/}
       <Row className='d-flex justify-content-start align-items-center mb-3'>
-        <Meta title='Data Dapp | Update Item' />
+        <Meta title='dataDapp | Update Item' />
         <Button
           className='btn btn-primary mr-1'
           title='Go Back'

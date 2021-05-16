@@ -14,7 +14,7 @@ const Footer = () => {
               Home
             </div>
             <div className='p-1 link-icon blue-hover text-uppercase small'>
-              Why Data Dapp?
+              Why dataDapp?
             </div>
           </Col>
           <Col
@@ -44,7 +44,7 @@ const Footer = () => {
               Contact Us
             </div>
             <div className='p-1 text-uppercase small'>
-              &copy; 2021 Data Dapp | All Rights Reserved
+              &copy; 2021 dataDapp | All Rights Reserved
             </div>
           </Col>
           <Col xs={4} className='d-flex'></Col>

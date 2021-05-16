@@ -89,7 +89,7 @@ const ProfileScreen = ({ match, history, account, contract, web3 }) => {
     <>
       {/************************************** Nav&Title ****************************************/}
       <Row className='d-flex justify-content-start align-items-center mb-3'>
-        <Meta title='Data Dapp | Profile' />
+        <Meta title='dataDapp | Profile' />
         <Button
           className='btn btn-primary mr-1'
           title='Go Back'

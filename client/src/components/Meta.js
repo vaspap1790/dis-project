@@ -12,7 +12,7 @@ const Meta = ({ title, description, keywords }) => {
 };
 
 Meta.defaultProps = {
-  title: 'Welcome To Data Dapp',
+  title: 'Welcome to dataDapp',
   description: 'A decentralised data marketplace',
   keywords: 'ethereum, data packets, decentralisation'
 };
