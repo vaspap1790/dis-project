@@ -73,10 +73,6 @@ const Header = ({ web3 }) => {
 
   const closeWatchlistModal = () => showWatchlistModal(false);
 
-  //   const getRegister1UP = async () => {
-  // //TODO:Delete
-  //   };
-
   // This will be rendered
   return (
     <>
@@ -88,9 +84,6 @@ const Header = ({ web3 }) => {
           className='py-0'
           collapseOnSelect
         >
-          {/* <button type='button' onClick={getRegister1UP}>
-            Register1???UP
-          </button> */}
           <Container fluid className='px-4'>
             <LinkContainer to='/'>
               <Navbar.Brand>

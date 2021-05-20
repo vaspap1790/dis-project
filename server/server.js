@@ -20,12 +20,11 @@ connectDB();
 // Instantiate Express server
 const app = express();
 
-// Middlewares
-// Logging
+// Middleware - Logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
-// Permit json in the request body
+// Middleware - Permit json in the request body
 app.use(express.json());
 
 // Routing
@@ -41,7 +40,7 @@ app.use('/api/action', actionRoutes);
 // Make this folder static so the web server can serve it
 app.use('/uploads', express.static(path.join(path.resolve(), '/uploads')));
 
-// Error Handling
+// Middleware - Error Handling
 app.use(notFound);
 app.use(errorHandler);
 
