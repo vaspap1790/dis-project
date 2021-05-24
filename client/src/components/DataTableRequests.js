@@ -435,7 +435,7 @@ const DataTableRequests = () => {
             striped
             hover
             condensed
-            noDataIndication={'No actions'}
+            noDataIndication={'No requests'}
             pagination={paginationFactory(pagingOptions)}
             filter={filterFactory()}
             headerClasses='table-dark'

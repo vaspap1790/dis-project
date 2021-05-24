@@ -539,7 +539,7 @@ const DataTableNotifications = ({ account, contract, web3 }) => {
             striped
             hover
             condensed
-            noDataIndication={'No actions'}
+            noDataIndication={'No notifications'}
             pagination={paginationFactory(pagingOptions)}
             filter={filterFactory()}
             headerClasses='table-dark'

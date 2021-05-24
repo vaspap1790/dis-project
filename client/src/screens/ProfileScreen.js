@@ -166,23 +166,25 @@ const ProfileScreen = ({ match, history, account, contract, web3 }) => {
                   </Alert>
                 ) : (
                   <>
-                    <Row className='mx-0 align-items-center mt-3'>
-                      <Col xs={2}>
-                        <Sorting
-                          sorting={sorting}
-                          handleSorting={handleSorting}
-                        />
-                      </Col>
-                      <Col xs={10}>
-                        <Row className='d-flex justify-content-end'>
-                          <Paginate
-                            pages={pages}
-                            page={page}
-                            handlePage={handlePageNumber}
+                    {packets !== undefined && packets.length !== 0 && (
+                      <Row className='mx-0 align-items-center mt-3'>
+                        <Col xs={2}>
+                          <Sorting
+                            sorting={sorting}
+                            handleSorting={handleSorting}
                           />
-                        </Row>
-                      </Col>
-                    </Row>
+                        </Col>
+                        <Col xs={10}>
+                          <Row className='d-flex justify-content-end'>
+                            <Paginate
+                              pages={pages}
+                              page={page}
+                              handlePage={handlePageNumber}
+                            />
+                          </Row>
+                        </Col>
+                      </Row>
+                    )}
                     <Row className='align-items-center'>
                       {loading ? (
                         <Loader />
@@ -192,6 +194,13 @@ const ProfileScreen = ({ match, history, account, contract, web3 }) => {
                         </Alert>
                       ) : (
                         <>
+                          {packets !== undefined && packets.length === 0 && (
+                            <Col>
+                              <Alert variant='info'>
+                                No Data Packets Uploaded
+                              </Alert>
+                            </Col>
+                          )}
                           {packets !== undefined
                             ? packets.map((packet) => (
                                 <Col
