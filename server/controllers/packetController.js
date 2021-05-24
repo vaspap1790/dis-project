@@ -68,7 +68,14 @@ exports.getPackets = asyncHandler(async (req, res) => {
     .skip(pageSize * (page - 1))
     .sort(sort);
 
-  res.json({ packets, page, pages: Math.ceil(count / pageSize) });
+  maxPrice = 0;
+  packets.forEach((packet) => {
+    if (packet.price !== null && packet.price > maxPrice) {
+      maxPrice = packet.price;
+    }
+  });
+
+  res.json({ packets, page, pages: Math.ceil(count / pageSize), maxPrice });
 });
 
 // @desc    Fetch single packet

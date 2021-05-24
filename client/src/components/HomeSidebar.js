@@ -42,8 +42,23 @@ const HomeSidebar = ({
   rating5,
   priceFrom,
   priceTo,
-  category
+  category,
+  maxPrice
 }) => {
+  let marks = {
+    0: (
+      <span style={{ textAlign: 'right' }}>
+        <i className='fab fa-ethereum'></i>0
+      </span>
+    )
+  };
+  marks[`${maxPrice}`] = (
+    <span style={{ textAlign: 'left' }}>
+      <i className='fab fa-ethereum'></i>
+      {maxPrice}
+    </span>
+  );
+
   return (
     <ProSidebar
       className='mt-3'
@@ -375,20 +390,9 @@ const HomeSidebar = ({
                 <Row>
                   <div className='sliderArea-collapsed mt-5'>
                     <Range
-                      marks={{
-                        0: (
-                          <>
-                            <i className='fab fa-ethereum'></i>0
-                          </>
-                        ),
-                        1000: (
-                          <>
-                            <i className='fab fa-ethereum'></i>1000
-                          </>
-                        )
-                      }}
+                      marks={marks}
                       min={0}
-                      max={1000}
+                      max={maxPrice}
                       defaultValue={[0, 0]}
                       tipProps={{
                         placement: 'top',
@@ -441,20 +445,9 @@ const HomeSidebar = ({
             <MenuItem>
               <div className='sliderArea mt-2'>
                 <Range
-                  marks={{
-                    0: (
-                      <span style={{ textAlign: 'right' }}>
-                        <i className='fab fa-ethereum'></i>0
-                      </span>
-                    ),
-                    1000: (
-                      <span style={{ textAlign: 'left' }}>
-                        <i className='fab fa-ethereum'></i>1000
-                      </span>
-                    )
-                  }}
+                  marks={marks}
                   min={0}
-                  max={1000}
+                  max={maxPrice}
                   defaultValue={[0, 0]}
                   tipProps={{
                     placement: 'top',

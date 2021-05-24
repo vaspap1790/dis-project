@@ -22,7 +22,7 @@ const HomeScreen = ({ match, history }) => {
 
   // App level State
   const packetList = useSelector((state) => state.packetList);
-  const { loading, error, packets, pages, page } = packetList;
+  const { loading, error, packets, pages, page, maxPrice } = packetList;
 
   // Component level state
   const [collapsed, setCollapsed] = useState(false);
@@ -164,6 +164,7 @@ const HomeScreen = ({ match, history }) => {
               priceFrom={priceFrom}
               priceTo={priceTo}
               category={category}
+              maxPrice={maxPrice}
             />
           </div>
         </Col>

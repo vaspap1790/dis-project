@@ -29,7 +29,10 @@ import {
   PACKET_CREATE_EMPTY_SUCCESS
 } from '../constants/packetConstants';
 
-export const packetListReducer = (state = { packets: [], page: 1 }, action) => {
+export const packetListReducer = (
+  state = { packets: [], page: 1, maxPrice: 0 },
+  action
+) => {
   switch (action.type) {
     case PACKET_LIST_REQUEST:
       return { loading: true, packets: [] };
@@ -38,7 +41,8 @@ export const packetListReducer = (state = { packets: [], page: 1 }, action) => {
         loading: false,
         packets: action.payload.packets,
         pages: action.payload.pages,
-        page: action.payload.page
+        page: action.payload.page,
+        maxPrice: action.payload.maxPrice
       };
     case PACKET_LIST_FAIL:
       return { loading: false, error: action.payload, packets: [] };
