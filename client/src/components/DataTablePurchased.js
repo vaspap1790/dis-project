@@ -20,9 +20,6 @@ const DataTablePurchased = ({ account, contract }) => {
   const dispatch = useDispatch();
 
   // App level State
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
-
   const userPurchases = useSelector((state) => state.userPurchases);
   const {
     purchases: data,

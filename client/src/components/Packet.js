@@ -52,7 +52,7 @@ const Packet = ({ packet, handler, isProfile }) => {
         )}
         <Link to={`/packet/${packet._id}`} onClick={clickHandler}>
           <Card.Img
-            src={packet.image === '' ? '/images/sample.jpg' : packet.image}
+            src={packet.image === '' ? '/images/sample.png' : packet.image}
             variant='top'
             title={packet.name}
             style={{
@@ -98,7 +98,8 @@ const Packet = ({ packet, handler, isProfile }) => {
           </Card.Text>
           <Card.Text as='h3'>
             <i className='fab fa-ethereum'></i>
-            {packet.price}
+            {packet.price}{' '}
+            <span style={{ textTransform: 'lowercase' }}>wei</span>
             {packet.sold && <span className='sold-item small px-3'>SOLD</span>}
           </Card.Text>
         </Card.Body>

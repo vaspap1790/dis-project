@@ -20,6 +20,7 @@ import getWeb3 from './getWeb3';
 const App = () => {
   // Component level State
   const [web3, setWeb3] = useState(null);
+  // eslint-disable-next-line
   const [accounts, setAccounts] = useState(null);
   const [account, setAccount] = useState(null);
   const [dataDappContract, setDataDappContract] = useState(null);

@@ -337,7 +337,7 @@ const UpdatePacketScreen = ({ history, match }) => {
                   </Form.Group>
                 </Col>
                 <Col>
-                  <label htmlFor='price'>Price</label>
+                  <label htmlFor='price'>Price (in wei)</label>
                   <InputGroup>
                     <InputGroup.Prepend>
                       <InputGroup.Text>
@@ -351,8 +351,7 @@ const UpdatePacketScreen = ({ history, match }) => {
                       id='price'
                       type='number'
                       min='0'
-                      step='0.001'
-                      title='Enter Price'
+                      title='Enter Price in wei'
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
                     />

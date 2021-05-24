@@ -35,11 +35,9 @@ export const getUserNotifications = (id) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: NOTIF_LIST_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
+      payload: 'Something went wrong'
     });
+    console.log(error);
   }
 };
 
@@ -56,11 +54,9 @@ export const getUserRequests = (id) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: REQUESTS_LIST_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
+      payload: 'Something went wrong'
     });
+    console.log(error);
   }
 };
 
@@ -77,11 +73,9 @@ export const countUnreadActions = (id) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: COUNT_UNREAD_ACTIONS_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
+      payload: 'Something went wrong'
     });
+    console.log(error);
   }
 };
 
@@ -154,7 +148,8 @@ export const createAction =
           config
         );
       } else {
-        let priceInWei = web3.utils.toWei(price.toString(), 'ether');
+        //let priceInWei = web3.utils.toWei(price.toString(), 'ether');
+        let priceInWei = price.toString();
         let result = await web3.eth.sendTransaction({
           from: account,
           to: contract._address,
@@ -176,9 +171,10 @@ export const createAction =
       if (message === 'Not authorized!') {
         dispatch(logout());
       }
+      console.log(message);
       dispatch({
         type: ACTION_CREATE_FAIL,
-        payload: message
+        payload: 'Something went wrong'
       });
     }
   };
@@ -215,10 +211,11 @@ export const updateAction =
         );
         let packetId = data.packet._id;
         let requesterAddress = data.requesterAddress;
-        let priceInWei = web3.utils.toWei(
-          data.packet.price.toString(),
-          'ether'
-        );
+        // let priceInWei = web3.utils.toWei(
+        //   data.packet.price.toString(),
+        //   'ether'
+        // );
+        let priceInWei = data.packet.price.toString();
         let keys = [];
 
         let result = await contract.methods
@@ -244,10 +241,11 @@ export const updateAction =
         );
         let packetId = data.packet._id;
         let requesterAddress = data.requesterAddress;
-        let priceInWei = web3.utils.toWei(
-          data.packet.price.toString(),
-          'ether'
-        );
+        // let priceInWei = web3.utils.toWei(
+        //   data.packet.price.toString(),
+        //   'ether'
+        // );
+        let priceInWei = data.packet.price.toString();
         let encryptedKeys = data.encryptedKeys;
 
         let result = await contract.methods
@@ -290,9 +288,10 @@ export const updateAction =
       if (message === 'Not authorized!') {
         dispatch(logout());
       }
+      console.log(message);
       dispatch({
         type: ACTION_UPDATE_FAIL,
-        payload: message
+        payload: 'Something went wrong'
       });
     }
   };

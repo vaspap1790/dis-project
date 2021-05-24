@@ -366,7 +366,7 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
               <div>
                 <Image
                   src={
-                    packet.image === '' ? '/images/sample.jpg' : packet.image
+                    packet.image === '' ? '/images/sample.png' : packet.image
                   }
                   alt={packet.name}
                   style={{ maxWidth: '95%' }}
@@ -382,7 +382,7 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
                   {!packet.sold && (
                     <ListGroup.Item>
                       Price: <i className='fab fa-ethereum'></i>
-                      {packet.price}
+                      {packet.price} wei
                     </ListGroup.Item>
                   )}
                   <ListGroup.Item>

@@ -68,12 +68,7 @@ exports.getPackets = asyncHandler(async (req, res) => {
     .skip(pageSize * (page - 1))
     .sort(sort);
 
-  if (packets && packets.length !== 0) {
-    res.json({ packets, page, pages: Math.ceil(count / pageSize) });
-  } else {
-    res.status(404);
-    throw new Error('No data Packets uploaded');
-  }
+  res.json({ packets, page, pages: Math.ceil(count / pageSize) });
 });
 
 // @desc    Fetch single packet

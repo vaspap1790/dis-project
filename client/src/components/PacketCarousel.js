@@ -32,7 +32,8 @@ const PacketCarousel = () => {
             <Carousel.Caption className='carousel-caption'>
               <h4>
                 {packet.name} (<i className='fab fa-ethereum'></i>
-                {packet.price})
+                {packet.price}{' '}
+                <span style={{ textTransform: 'lowercase' }}>wei</span>)
               </h4>
             </Carousel.Caption>
           </Link>

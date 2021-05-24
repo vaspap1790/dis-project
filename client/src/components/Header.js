@@ -123,7 +123,7 @@ const Header = ({ web3 }) => {
                           <Image
                             src={
                               item.image === ''
-                                ? '/images/sample.jpg'
+                                ? '/images/sample.png'
                                 : item.image
                             }
                             alt={item.name}

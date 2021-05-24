@@ -64,11 +64,9 @@ export const listPackets =
     } catch (error) {
       dispatch({
         type: PACKET_LIST_FAIL,
-        payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message
+        payload: 'Something went wrong'
       });
+      console.log(error);
     }
   };
 
@@ -86,11 +84,9 @@ export const listPacketDetails = (id) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: PACKET_DETAILS_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
+      payload: 'Something went wrong'
     });
+    console.log(error);
   }
 };
 
@@ -100,11 +96,9 @@ export const prelistPacketDetails = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: PACKET_DETAILS_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
+      payload: 'Something went wrong'
     });
+    console.log(error);
   }
 };
 
@@ -126,11 +120,9 @@ export const getUserPackets =
     } catch (error) {
       dispatch({
         type: PACKET_USER_FAIL,
-        payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message
+        payload: 'Something went wrong'
       });
+      console.log(error);
     }
   };
 
@@ -176,9 +168,10 @@ export const createPacket =
       if (message === 'Not authorized!') {
         dispatch(logout());
       }
+      console.log(message);
       dispatch({
         type: PACKET_CREATE_FAIL,
-        payload: message
+        payload: 'Something went wrong'
       });
     }
   };
@@ -231,9 +224,10 @@ export const updatePacket = (packet) => async (dispatch, getState) => {
     if (message === 'Not authorized!') {
       dispatch(logout());
     }
+    console.log(message);
     dispatch({
       type: PACKET_UPDATE_FAIL,
-      payload: message
+      payload: 'Something went wrong'
     });
   }
 };
@@ -264,11 +258,9 @@ export const listTopPackets = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: PACKET_TOP_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
+      payload: 'Something went wrong'
     });
+    console.log(error);
   }
 };
 

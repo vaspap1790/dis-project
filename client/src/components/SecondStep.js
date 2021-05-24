@@ -91,7 +91,7 @@ const SecondStep = (props) => {
           )}
         </StyledDropZone>
         <Form onSubmit={submitHandler}>
-          <label htmlFor='price'>Price</label>
+          <label htmlFor='price'>Price (in wei)</label>
           <InputGroup>
             <InputGroup.Prepend>
               <InputGroup.Text>
@@ -105,8 +105,7 @@ const SecondStep = (props) => {
               id='price'
               type='number'
               min='0'
-              step='0.001'
-              title='Enter Price'
+              title='Enter Price in wei'
               name='price'
               value={price}
               onChange={(e) => {

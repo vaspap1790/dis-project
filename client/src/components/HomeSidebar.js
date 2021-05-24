@@ -26,6 +26,7 @@ const HomeSidebar = ({
   handleToggleSidebar,
   handleCollapsedChange,
   applyFilters,
+  clearFilters,
   setRating1,
   setRating2,
   setRating3,
@@ -189,14 +190,24 @@ const HomeSidebar = ({
             <MenuItem>
               <div className='d-flex align-items-center justify-content-between'>
                 <span style={{ color: '#adadad' }}>Ratings</span>
-                <Button
-                  variant='info'
-                  className='btn-sm'
-                  title='Apply the filters'
-                  onClick={applyFilters}
-                >
-                  Apply <i className='fas fa-filter'></i>
-                </Button>
+                <span>
+                  <Button
+                    variant='danger'
+                    className='btn-sm p-1 mr-1'
+                    title='Clear the filters'
+                    onClick={clearFilters}
+                  >
+                    Clear
+                  </Button>
+                  <Button
+                    variant='info'
+                    className='btn-sm p-1'
+                    title='Apply the filters'
+                    onClick={applyFilters}
+                  >
+                    Apply <i className='fas fa-filter'></i>
+                  </Button>
+                </span>
               </div>
             </MenuItem>
             <MenuItem title='Packets rated with 1 star'>

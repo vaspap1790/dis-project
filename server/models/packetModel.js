@@ -18,7 +18,7 @@ const packetSchema = mongoose.Schema(
     image: {
       type: String,
       required: false,
-      default: '/images/sample.jpg'
+      default: '/images/sample.png'
     },
     category: {
       type: String,

@@ -47,9 +47,10 @@ export const createUserReview =
       if (message === 'Not authorized!') {
         dispatch(logout());
       }
+      console.log(message);
       dispatch({
         type: REVIEW_CREATE_FAIL,
-        payload: message
+        payload: 'Something went wrong'
       });
     }
   };

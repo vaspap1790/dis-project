@@ -87,6 +87,17 @@ const HomeScreen = ({ match, history }) => {
     });
   };
 
+  const clearFilters = () => {
+    setRating1(false);
+    setRating2(false);
+    setRating3(false);
+    setRating4(false);
+    setRating5(false);
+    setPriceFrom(0);
+    setPriceTo(0);
+    setCategory('All Categories');
+  };
+
   const goBack = () => {
     history.goBack();
   };
@@ -136,6 +147,7 @@ const HomeScreen = ({ match, history }) => {
               handleToggleSidebar={handleToggleSidebar}
               handleCollapsedChange={handleCollapsedChange}
               applyFilters={applyFilters}
+              clearFilters={clearFilters}
               setRating1={setRating1}
               setRating2={setRating2}
               setRating3={setRating3}
@@ -188,6 +200,11 @@ const HomeScreen = ({ match, history }) => {
               </Col>
             ) : (
               <>
+                {packets.length === 0 && (
+                  <Col>
+                    <Alert variant='info'>No Data Packets Uploaded</Alert>
+                  </Col>
+                )}
                 {packets.map((packet) => (
                   <Col key={packet._id} sm={12} md={6} lg={4} xl={3}>
                     <Packet packet={packet} />

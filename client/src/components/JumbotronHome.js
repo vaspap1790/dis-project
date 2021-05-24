@@ -6,11 +6,11 @@ const JumbotronHome = ({ wholeScreen }) => {
   return (
     <Jumbotron className='py-4'>
       <h1 style={{ zIndex: 5, position: 'relative' }}>
-        Welcome to dataDapp, people of Ethereum{' '}
+        Welcome to dataDapp{' '}
         {wholeScreen ? (
           <i className='fab fa-ethereum eth-jumbo fa-8x'></i>
         ) : (
-          <i className='fab fa-ethereum eth-jumbo-half fa-10x'></i>
+          <i className='fab fa-ethereum eth-jumbo-half fa-9x'></i>
         )}
       </h1>
       <p
@@ -24,7 +24,10 @@ const JumbotronHome = ({ wholeScreen }) => {
         This is a Decentralised Ethereum based Data Marketplace. Lorem ipsum
         dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
         incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in
-        reprehenderit.
+        reprehenderit.Sed ut perspiciatis unde omnis iste natus error sit
+        voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque
+        ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae
+        dicta sunt explicabo.
       </p>
       <p>
         <Link to={'/aboutUs'}>

@@ -59,11 +59,9 @@ export const login = (email, password) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
+      payload: 'Something went wrong'
     });
+    console.log(error);
   }
 };
 
@@ -93,26 +91,30 @@ export const register =
         config
       );
 
-      dispatch({
-        type: USER_REGISTER_SUCCESS,
-        payload: data
-      });
+      const result = await contract.methods
+        .registerUser(data._id)
+        .send({ from: account });
 
-      dispatch({
-        type: USER_LOGIN_SUCCESS,
-        payload: data
-      });
+      if (result.events.Register === undefined) {
+        throw new Error();
+      } else {
+        dispatch({
+          type: USER_REGISTER_SUCCESS,
+          payload: data
+        });
 
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      contract.methods.registerUser(data._id).send({ from: account });
+        dispatch({
+          type: USER_LOGIN_SUCCESS,
+          payload: data
+        });
+        localStorage.setItem('userInfo', JSON.stringify(data));
+      }
     } catch (error) {
       dispatch({
         type: USER_REGISTER_FAIL,
-        payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message
+        payload: 'Something went wrong'
       });
+      console.log(error);
     }
   };
 
@@ -173,11 +175,9 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: USER_UPDATE_PROFILE_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
+      payload: 'Something went wrong'
     });
+    console.log(error);
   }
 };
 
@@ -207,11 +207,9 @@ export const getUserDetails = (id) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: USER_DETAILS_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
+      payload: 'Something went wrong'
     });
+    console.log(error);
   }
 };
 
@@ -229,10 +227,8 @@ export const getUserPurchases = (id) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: PURCHASES_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
+      payload: 'Something went wrong'
     });
+    console.log(error);
   }
 };

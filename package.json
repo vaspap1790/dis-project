@@ -10,7 +10,9 @@
     "start": "node server/server",
     "server": "nodemon server/server",
     "client": "npm start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "clear:db": "node server/scripts/clearDB",
+    "import:data": "node server/scripts/seeder"
   },
   "repository": {
     "type": "git",
