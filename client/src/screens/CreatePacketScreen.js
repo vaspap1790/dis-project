@@ -213,7 +213,7 @@ const CreatePacketScreen = ({ history, account, contract }) => {
           close={closeConfirmationModal}
           proceed={handleProceed}
           title='Confirm Upload'
-          body='Are you sure you want to proceed and upload the data packet?'
+          body='Are you sure you want to proceed and upload the data packet? This operation needs to interact with the Blockchain. The gas needed will charge your account.'
           danger={true}
           success={true}
         />

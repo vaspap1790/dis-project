@@ -154,12 +154,15 @@ export const createPacket =
       let result = await contract.methods
         .addUpload(userInfo._id, data._id, packet.ipfsHashes)
         .send({ from: account });
-      console.log(result);
 
-      dispatch({
-        type: PACKET_CREATE_SUCCESS,
-        payload: data
-      });
+      if(result.events.UploadResult === undefined) {
+        throw new Error();
+      }else{
+        dispatch({
+          type: PACKET_CREATE_SUCCESS,
+          payload: data
+        });
+      }
     } catch (error) {
       const message =
         error.response && error.response.data.message

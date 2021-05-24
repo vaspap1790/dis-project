@@ -105,6 +105,7 @@ const FirstStep = (props) => {
                 update(e);
               }}
             >
+              <option value=''>Select Category</option>
               <option value={BANKING_DATA}>{BANKING_DATA}</option>
               <option value={IOT_SENSOR_DATA}>{IOT_SENSOR_DATA}</option>
               <option value={OTHER}>{OTHER}</option>
