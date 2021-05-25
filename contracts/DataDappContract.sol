@@ -40,15 +40,6 @@ contract DataDappContract is Registry {
     event ReturnMoneyEvent(uint256 depositRequester);
     event ReviewResult(Review review);
 
-    //********************************Modifiers********************************//
-    modifier itemNotSold(string memory _id) {
-        require(
-            uploads[keccak256(abi.encodePacked(_id))].sold != true,
-            "Item has been sold"
-        );
-        _;
-    }
-
     //*********************************Functions*******************************//
     receive() external payable {
         bytes32 index = keccak256(abi.encodePacked(msg.sender));
@@ -118,11 +109,13 @@ contract DataDappContract is Registry {
         string[] memory _keys,
         uint256 price,
         bool _approve
-    ) public registered(_ownerId) itemNotSold(_packetId) {
+    ) public registered(_ownerId) {
         bytes32 index =
             keccak256(abi.encodePacked(_packetId, _requesterAddress));
 
-        if (_approve && hashKeysAndCompare(index, _keys)) {
+        if (
+            !itemSold(_packetId) && _approve && hashKeysAndCompare(index, _keys)
+        ) {
             purchases[index].packetId = keccak256(abi.encodePacked(_packetId));
             purchases[index].requesterAddress = _requesterAddress;
 
@@ -135,6 +128,10 @@ contract DataDappContract is Registry {
         } else {
             returnMoney(payable(_requesterAddress), price);
         }
+    }
+
+    function itemSold(string memory _id) internal view returns (bool) {
+        return uploads[keccak256(abi.encodePacked(_id))].sold;
     }
 
     function hashKeysAndCompare(bytes32 _index, string[] memory _keysFromSeller)

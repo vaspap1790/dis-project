@@ -93,33 +93,37 @@ export const createAction =
     web3
   ) =>
   async (dispatch, getState) => {
+    const {
+      userLogin: { userInfo }
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    };
+    let actionId;
+
     try {
       dispatch({
         type: ACTION_CREATE_REQUEST
       });
 
-      const {
-        userLogin: { userInfo }
-      } = getState();
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`
-        }
-      };
-
       const action = { packetId, requesterId, receiverId, type };
       const { data } = await axios.post(`/api/action`, action, config);
 
       let response = {};
-      let actionId = data._id;
+      actionId = data._id;
 
+      //***************************Request Sample********************************//
       if (data.type === 'Sample') {
+        //Retrieve packet information
         const { data } = await axios.get(`/api/packets/keys/${packetId}`);
         const { keys, ipfsHashes } = data;
         let encryptedKeys = [];
         let encryptedKeysHashed = [];
 
+        //Encrypt with buyer's public key and hash the encryption keys
         for (var i = 0; i < keys.length; i++) {
           const encryptedObj = await EthCrypto.encryptWithPublicKey(
             pKey,
@@ -133,49 +137,70 @@ export const createAction =
           encryptedKeysHashed.push(hash);
         }
 
+        //Call the Smart Contract
         let result = await contract.methods
           .addSampleRequest(requesterId, packetId, encryptedKeysHashed)
           .send({ from: account });
 
-        let index = result.events.SampleRequestResult.returnValues.index;
+        //SUCCESSFUL Transaction
+        if (result.events.SampleRequestResult !== undefined) {
+          let index = result.events.SampleRequestResult.returnValues.index;
 
-        response.ipfsHash = ipfsHashes[index];
-        response.encryptionKey = encryptedKeys[index];
+          response.ipfsHash = ipfsHashes[index];
+          response.encryptionKey = encryptedKeys[index];
 
-        await axios.post(
-          `/api/action/store/info`,
-          { actionId, account, encryptedKeys },
-          config
-        );
-      } else {
-        //let priceInWei = web3.utils.toWei(price.toString(), 'ether');
+          await axios.post(
+            `/api/action/store/info`,
+            { actionId, account, encryptedKeys },
+            config
+          );
+
+          dispatch({
+            type: ACTION_CREATE_SUCCESS,
+            payload: response
+          });
+        }
+        //FAILED Transaction - Rollback
+        else {
+          const rollback = await axios.delete(
+            `/api/action/delete/${actionId}`,
+            config
+          );
+          console.log(rollback);
+          throw new Error();
+        }
+      }
+      //***************************Request Purchase********************************//
+      else {
         let priceInWei = price.toString();
+
+        //Call the Smart Contract
         let result = await web3.eth.sendTransaction({
           from: account,
           to: contract._address,
           value: priceInWei
         });
+        //This result is handled in App.js in the Event Listener
         console.log(result);
-        response = data;
+      }
+    } catch (error) {
+      //***************************Handle Error********************************//
+      if (actionId !== undefined) {
+        await axios.delete(`/api/action/delete/${actionId}`, config);
       }
 
-      dispatch({
-        type: ACTION_CREATE_SUCCESS,
-        payload: response
-      });
-    } catch (error) {
-      const message =
+      let message =
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message;
       if (message === 'Not authorized!') {
         dispatch(logout());
       }
-      console.log(message);
       dispatch({
         type: ACTION_CREATE_FAIL,
         payload: 'Something went wrong'
       });
+      console.log(message);
     }
   };
 
@@ -205,19 +230,18 @@ export const updateAction =
         }
       };
 
+      //***************************Reject a Request********************************//
       if (update === 'Reject') {
+        //Retrieve information
         const { data } = await axios.get(
           `/api/action/purchase/request/${actionId}`
         );
         let packetId = data.packet._id;
         let requesterAddress = data.requesterAddress;
-        // let priceInWei = web3.utils.toWei(
-        //   data.packet.price.toString(),
-        //   'ether'
-        // );
         let priceInWei = data.packet.price.toString();
         let keys = [];
 
+        //Call the Smart Contract
         let result = await contract.methods
           .addPurchase(
             userId,
@@ -230,24 +254,35 @@ export const updateAction =
           .send({ from: account });
         console.log(result);
 
-        await axios.put(
-          `/api/action/update`,
-          { actionId, update, userId },
-          config
-        );
-      } else if (update === 'Approve') {
+        //SUCCESSFUL Transaction
+        if (result.events.ReturnMoneyEvent !== undefined) {
+          await axios.put(
+            `/api/action/update`,
+            { actionId, update, userId },
+            config
+          );
+          dispatch({
+            type: ACTION_UPDATE_SUCCESS,
+            payload: 'Success'
+          });
+        }
+        //FAILED Transaction
+        else {
+          throw new Error();
+        }
+      }
+      //***************************Approve a Request********************************//
+      else if (update === 'Approve') {
+        //Retrieve information
         const { data } = await axios.get(
           `/api/action/purchase/request/${actionId}`
         );
         let packetId = data.packet._id;
         let requesterAddress = data.requesterAddress;
-        // let priceInWei = web3.utils.toWei(
-        //   data.packet.price.toString(),
-        //   'ether'
-        // );
         let priceInWei = data.packet.price.toString();
         let encryptedKeys = data.encryptedKeys;
 
+        //Call the Smart Contract
         let result = await contract.methods
           .addPurchase(
             userId,
@@ -260,39 +295,93 @@ export const updateAction =
           .send({ from: account });
         console.log(result);
 
-        if (result.events.SendMoneyEvent === undefined) {
-          console.log('Match failed');
-        } else {
-          console.log('Match succeed');
+        //SUCCESSFUL transaction
+        if (result.events.SendMoneyEvent !== undefined) {
+          //Approve Request in DB
           await axios.put(
             `/api/action/update`,
             { actionId, update, userId },
             config
           );
+
+          //Retrieve all other requests for this packet
+          const { requests } = await axios.get(
+            `/api/action/purchase/requests/${packetId}`
+          );
+          let reject = 'Reject';
+
+          //Reject all other requests for this packet
+          for (let i = 0; i < requests.length; i++) {
+            //Retrieve information
+            let actionId = requests[i]._id;
+            let packetId = requests[i].packet._id;
+            let requesterAddress = requests[i].requesterAddress;
+            let priceInWei = requests[i].packet.price.toString();
+            let keys = [];
+
+            //Call the Smart Contract
+            let result = await contract.methods
+              .addPurchase(
+                userId,
+                packetId,
+                requesterAddress,
+                keys,
+                priceInWei,
+                false
+              )
+              .send({ from: account });
+            console.log(result);
+
+            //SUCCESSFUL Transaction
+            if (result.events.ReturnMoneyEvent !== undefined) {
+              await axios.put(
+                `/api/action/update`,
+                { actionId, reject, userId },
+                config
+              );
+            }
+            //FAILED Transaction
+            else {
+              console.log('Failed to reject action with id ' + requests[i]._id);
+            }
+          }
+
+          dispatch({
+            type: ACTION_UPDATE_SUCCESS,
+            payload: 'Success'
+          });
         }
-      } else {
+        //FAILED transaction
+        else {
+          throw new Error();
+        }
+      }
+      //****Other Types of Update Action - No interaction with the Smart Contract****//
+      else {
         await axios.put(
           `/api/action/update`,
           { actionId, update, userId },
           config
         );
+        dispatch({
+          type: ACTION_UPDATE_SUCCESS,
+          payload: 'Success'
+        });
       }
-
-      dispatch({
-        type: ACTION_UPDATE_SUCCESS,
-        payload: 'Success'
-      });
     } catch (error) {
-      console.log(error);
-      const message = 'Something went rong';
+      //***************************Handle Error********************************//
+      let message =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
       if (message === 'Not authorized!') {
         dispatch(logout());
       }
-      console.log(message);
       dispatch({
         type: ACTION_UPDATE_FAIL,
         payload: 'Something went wrong'
       });
+      console.log(error);
     }
   };
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
@@ -17,7 +18,12 @@ import AboutUsScreen from './screens/AboutUsScreen';
 import DataDappContract from './contracts/DataDappContract.json';
 import getWeb3 from './getWeb3';
 
+import { ACTION_CREATE_SUCCESS } from './constants/actionConstants';
+
 const App = () => {
+  // Hook that enables components to interact with the App State through reducers
+  const dispatch = useDispatch();
+
   // Component level State
   const [web3, setWeb3] = useState(null);
   // eslint-disable-next-line
@@ -66,6 +72,10 @@ const App = () => {
           .DepositEvent()
           .on('data', async function (evt) {
             console.log(evt);
+            dispatch({
+              type: ACTION_CREATE_SUCCESS,
+              payload: 'Action Created'
+            });
           });
       } catch (error) {
         console.log(
@@ -74,7 +84,7 @@ const App = () => {
       }
     }
     fetchData();
-  }, []);
+  }, [dispatch]);
 
   return (
     <Router>

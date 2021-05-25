@@ -15,7 +15,8 @@ const ModalComponent = ({
   closeButton,
   loading,
   errorMessage,
-  successMessage
+  successMessage,
+  smartContract
 }) => {
   return (
     <Modal
@@ -64,6 +65,12 @@ const ModalComponent = ({
         <div>{body}</div>
       </Modal.Body>
       <Modal.Footer>
+        {smartContract && (
+          <span style={{ fontStyle: 'italic' }} className='pb-2'>
+            This operation needs to interact with the Blockchain. The gas needed
+            will charge your account.
+          </span>
+        )}
         {info ? (
           <Button variant='info' onClick={close}>
             Close
@@ -75,7 +82,7 @@ const ModalComponent = ({
           </Button>
         ) : null}
         {success ? (
-          <Button variant='success' onClick={proceed}>
+          <Button variant='success' onClick={proceed} disabled={loading}>
             {loading ? (
               <>
                 Loading...
@@ -107,7 +114,8 @@ ModalComponent.defaultProps = {
   },
   closeButton: false,
   errorMessage: null,
-  successMessage: null
+  successMessage: null,
+  smartContract: false
 };
 
 ModalComponent.propTypes = {

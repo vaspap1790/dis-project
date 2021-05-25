@@ -60,6 +60,14 @@ exports.addNewAction = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Delete an action
+// @route   DELETE /api/action/delete/:id
+// @access  Private
+exports.deleteAction = asyncHandler(async (req, res) => {
+  const result = await Action.findByIdAndRemove(req.params.id);
+  res.json(result);
+});
+
 // @desc    Fetch all user actions
 // @route   GET /api/action/notif/user/:id
 // @access  Private
@@ -137,6 +145,17 @@ exports.fetchPurchaseRequest = asyncHandler(async (req, res) => {
   purchaseAction.save();
 
   res.json(purchaseAction);
+});
+
+// @desc    Fetch purchase requests with packetId
+// @route   GET /api/action/purchase/requests/:id
+// @access  Public
+exports.fetchPurchaseRequestsByPacketId = asyncHandler(async (req, res) => {
+  const purchaseActions = await Action.find({
+    packet: req.params.id,
+    status: 'Pending'
+  }).populate('packet', 'price');
+  res.json(purchaseActions);
 });
 
 // @desc    Update action

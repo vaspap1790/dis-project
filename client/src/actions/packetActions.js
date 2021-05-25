@@ -29,8 +29,9 @@ import {
 } from '../constants/packetConstants';
 import { logout } from './userActions';
 
+// thunk packet allows to make async requests here
+
 ///////////////////////////////// List Actions ////////////////////////////////////
-// thunk allows to make async requests here
 export const listPackets =
   (
     keyword = '',
@@ -135,47 +136,64 @@ export const emptyUserPacketsError = () => async (dispatch) => {
 //////////////////////////////// Create Packet Actions ///////////////////////////////////
 export const createPacket =
   (packet, account, contract) => async (dispatch, getState) => {
+    const {
+      userLogin: { userInfo }
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    };
+    let packetId;
+
     try {
       dispatch({
         type: PACKET_CREATE_REQUEST
       });
 
-      const {
-        userLogin: { userInfo }
-      } = getState();
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`
-        }
-      };
-
       const { data } = await axios.post(`/api/packets`, packet, config);
+      packetId = data._id;
+
+      //Call the Smart Contract
       let result = await contract.methods
-        .addUpload(userInfo._id, data._id, packet.ipfsHashes)
+        .addUpload(userInfo._id, packetId, packet.ipfsHashes)
         .send({ from: account });
 
-      if(result.events.UploadResult === undefined) {
-        throw new Error();
-      }else{
+      //SUCCESSFUL Transaction
+      if (result.events.UploadResult !== undefined) {
         dispatch({
           type: PACKET_CREATE_SUCCESS,
           payload: data
         });
       }
+      //FAILED Transaction - Rollback
+      else {
+        const rollback = await axios.delete(
+          `/api/packets/delete/${packetId}`,
+          config
+        );
+        console.log(rollback);
+        throw new Error();
+      }
     } catch (error) {
-      const message =
+      if (packetId !== undefined) {
+        await axios.delete(`/api/packets/delete/${packetId}`, config);
+      }
+
+      let message =
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message;
+
       if (message === 'Not authorized!') {
         dispatch(logout());
       }
-      console.log(message);
       dispatch({
         type: PACKET_CREATE_FAIL,
         payload: 'Something went wrong'
       });
+      console.log(message);
     }
   };
 

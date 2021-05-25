@@ -455,6 +455,7 @@ const DataTablePurchased = ({ account, contract }) => {
         loading={reviewLoading}
         errorMessage={reviewError}
         successMessage={reviewSuccess}
+        smartContract={true}
       />
       <ModalComponent
         size='xl'

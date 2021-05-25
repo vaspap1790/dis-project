@@ -447,7 +447,7 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
         show={watchlistModal}
         close={closeWatchlistModal}
         title='Add to Watchlist'
-        body='You successfully added the data packet to the Watchlist'
+        body='You successfully added the data packet to the Watchlist.'
         info={true}
       />
       <ModalComponent
@@ -458,6 +458,7 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
         body={sampleModalContent}
         danger={true}
         success={true}
+        smartContract={true}
       />
       <ModalComponent
         size='lg'
@@ -467,6 +468,7 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
         title='Performing Action'
         body={sampleLoadingModalContent}
         success={true}
+        loading={loadingCreateAction}
       />
       <ModalComponent
         show={purchaseModal}
@@ -476,6 +478,7 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
         body='Are you sure you want to request to purchase this data item? You will have to request a Sample first.'
         danger={true}
         success={true}
+        smartContract={true}
       />
       <ModalComponent
         show={loadingPurchaseModal}
@@ -484,6 +487,7 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
         title='Performing Action'
         body={purchaseLoadingModalContent}
         success={true}
+        loading={loadingCreateAction}
       />
     </>
   );

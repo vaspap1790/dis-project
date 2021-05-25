@@ -4,13 +4,15 @@ const {
   registerUser,
   getUserProfile,
   updateUserProfile,
-  getUserPurchases
+  getUserPurchases,
+  deleteUser
 } = require('../controllers/userController.js');
 const protect = require('../middleware/authMiddleware.js');
 
 const router = express.Router();
 
-router.route('/').post(registerUser);
+router.route('/').post(registerUser).delete(deleteUser);
+router.route('/delete/:id').delete(deleteUser);
 router.post('/login', authUser);
 router
   .route('/profile')

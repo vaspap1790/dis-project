@@ -24,7 +24,7 @@ exports.authUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    register a new usern
+// @desc    register a new user
 // @route   POST /api/users
 // @access  Public
 exports.registerUser = asyncHandler(async (req, res) => {
@@ -54,6 +54,14 @@ exports.registerUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('Invalid user data');
   }
+});
+
+// @desc    delete a new user
+// @route   DELETE /api/users/delete/:id
+// @access  Public
+exports.deleteUser = asyncHandler(async (req, res) => {
+  const result = await User.findByIdAndDelete(req.params.id);
+  res.json(result);
 });
 
 // @desc    Get user profile

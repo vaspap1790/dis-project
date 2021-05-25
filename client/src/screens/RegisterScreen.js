@@ -454,10 +454,11 @@ const RegisterScreen = ({ location, history, account, contract }) => {
         body={
           userInfoLogin
             ? 'Are you sure you want to update your information?'
-            : 'Are you sure you want to register the user? This operation needs to interact with the Blockchain. The gas needed will charge your account.'
+            : 'Are you sure you want to register the user?'
         }
         success={true}
         danger={true}
+        smartContract={true}
       />
     </>
   );

@@ -57,10 +57,21 @@ export const login = (email, password) => async (dispatch) => {
 
     localStorage.setItem('userInfo', JSON.stringify(data));
   } catch (error) {
-    dispatch({
-      type: USER_LOGIN_FAIL,
-      payload: 'Something went wrong'
-    });
+    let message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === 'Invalid Credentials') {
+      dispatch({
+        type: USER_LOGIN_FAIL,
+        payload: message
+      });
+    } else {
+      dispatch({
+        type: USER_LOGIN_FAIL,
+        payload: 'Something went wrong'
+      });
+    }
     console.log(error);
   }
 };
@@ -74,30 +85,32 @@ export const emptyLoginError = () => async (dispatch) => {
 /////////////////////////////// Register Actions /////////////////////////////////
 export const register =
   (username, email, password, account, contract) => async (dispatch) => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+    let newUserId;
+
     try {
       dispatch({
         type: USER_REGISTER_REQUEST
       });
-
-      const config = {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      };
 
       const { data } = await axios.post(
         '/api/users',
         { username, email, password },
         config
       );
+      newUserId = data._id;
 
+      //Call the Smart Contract
       const result = await contract.methods
-        .registerUser(data._id)
+        .registerUser(newUserId)
         .send({ from: account });
 
-      if (result.events.Register === undefined) {
-        throw new Error();
-      } else {
+      //SUCCESSFUL Transaction
+      if (result.events.Register !== undefined) {
         dispatch({
           type: USER_REGISTER_SUCCESS,
           payload: data
@@ -109,11 +122,34 @@ export const register =
         });
         localStorage.setItem('userInfo', JSON.stringify(data));
       }
+      //FAILED Transaction - Rollback
+      else {
+        const rollback = await axios.delete(`/api/users/delete/${newUserId}`);
+        console.log(rollback);
+        throw new Error();
+      }
     } catch (error) {
-      dispatch({
-        type: USER_REGISTER_FAIL,
-        payload: 'Something went wrong'
-      });
+      //***************************Handle Error********************************//
+      if (newUserId !== undefined) {
+        await axios.delete(`/api/users/delete/${newUserId}`);
+      }
+
+      let message =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+
+      if (message === 'This email is already in use') {
+        dispatch({
+          type: USER_REGISTER_FAIL,
+          payload: message
+        });
+      } else {
+        dispatch({
+          type: USER_REGISTER_FAIL,
+          payload: 'Something went wrong'
+        });
+      }
       console.log(error);
     }
   };

@@ -6,6 +6,7 @@ import "./DataDappContract.sol";
 contract TestDataDappContract is DataDappContract {
     event Test1(uint256 _index);
     event Test2(bool _bool);
+    event Test3(bool _bool);
 
     function test_getRandomKeyIndex(uint256 mod) external {
         emit Test1(getRandomKeyIndex(mod));
@@ -19,6 +20,10 @@ contract TestDataDappContract is DataDappContract {
         bytes32 _index =
             keccak256(abi.encodePacked(_packetId, _requesterAddress));
         emit Test2(hashKeysAndCompare(_index, _keysFromSeller));
+    }
+
+    function test_itemSold(string memory _id) external {
+        emit Test2(itemSold(_id));
     }
 
     function test_sendMoney(

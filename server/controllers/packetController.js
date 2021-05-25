@@ -189,6 +189,14 @@ exports.createPacket = asyncHandler(async (req, res) => {
   res.status(201).json(createdPacket);
 });
 
+// @desc    Delete a packet
+// @route   DELETE /api/packets/delete/:id
+// @access  Private
+exports.deletePacket = asyncHandler(async (req, res) => {
+  const result = await Packet.findByIdAndRemove(req.params.id);
+  res.json(result);
+});
+
 // @desc    Update a packet
 // @route   PUT /api/packets/:id
 // @access  Private

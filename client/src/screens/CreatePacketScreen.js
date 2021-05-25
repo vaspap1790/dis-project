@@ -213,9 +213,10 @@ const CreatePacketScreen = ({ history, account, contract }) => {
           close={closeConfirmationModal}
           proceed={handleProceed}
           title='Confirm Upload'
-          body='Are you sure you want to proceed and upload the data packet? This operation needs to interact with the Blockchain. The gas needed will charge your account.'
+          body='Are you sure you want to proceed and upload the data packet?'
           danger={true}
           success={true}
+          smartContract={true}
         />
         <ModalComponent
           show={loadingModal}
@@ -227,7 +228,7 @@ const CreatePacketScreen = ({ history, account, contract }) => {
           show={validationModal}
           close={closeValidationModal}
           title='Validation Failed'
-          body='Be sure you uploaded all the necessary information. Image and sampling are not mandatory.'
+          body='Be sure you uploaded all the necessary information. Only the image is not mandatory.'
           info={true}
         />
       </Container>

@@ -174,26 +174,6 @@ contract('TestDataDappContract', (accounts) => {
     );
   });
 
-  // Check itemNotSold() - modifier
-  it('...should throw if item has been sold', async () => {
-    const dataDappContract = await TestDataDappContract.deployed();
-    try {
-      const purchase = await dataDappContract.addPurchase(
-        'user1',
-        'packet1',
-        accounts[1],
-        encryptedKeys,
-        web3.utils.toWei('5', 'ether'),
-        true,
-        {
-          from: accounts[0]
-        }
-      );
-    } catch (error) {
-      assert(error, 'Item has been sold');
-    }
-  });
-
   // Check addReview() - function
   it('...should store a review successfully', async () => {
     const dataDappContract = await TestDataDappContract.deployed();
@@ -239,6 +219,18 @@ contract('TestDataDappContract', (accounts) => {
     );
 
     assert.isTrue(result.logs[0].args._bool, 'Match failed');
+  });
+
+  // Check itemSold() - function
+  it('...should return true if the item has been sold', async () => {
+    const dataDappContract = await TestDataDappContract.deployed();
+
+    const result = await dataDappContract.test_itemSold('packet1');
+
+    assert.isTrue(
+      result.logs[0].args._bool,
+      'Returns wrong value, item has been sold'
+    );
   });
 
   // Check sendMoney() - function

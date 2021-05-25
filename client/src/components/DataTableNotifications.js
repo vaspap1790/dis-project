@@ -556,6 +556,7 @@ const DataTableNotifications = ({ account, contract, web3 }) => {
         title='Performing Action'
         body={loadingModalContent}
         success={true}
+        loading={actionUpdateLoading}
       />
       <ModalComponent
         show={readModal}
@@ -583,6 +584,7 @@ const DataTableNotifications = ({ account, contract, web3 }) => {
         body='Are you sure you want to proceed and approve the purchase request?'
         danger={true}
         success={true}
+        smartContract={true}
       />
       <ModalComponent
         show={rejectModal}
@@ -592,6 +594,7 @@ const DataTableNotifications = ({ account, contract, web3 }) => {
         body='Are you sure you want to proceed and reject the purchase request?'
         danger={true}
         success={true}
+        smartContract={true}
       />
       <ModalComponent
         show={removeModal}
