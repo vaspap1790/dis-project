@@ -153,8 +153,19 @@ exports.fetchPurchaseRequest = asyncHandler(async (req, res) => {
 exports.fetchPurchaseRequestsByPacketId = asyncHandler(async (req, res) => {
   const purchaseActions = await Action.find({
     packet: req.params.id,
-    status: 'Pending'
+    status: 'Pending',
+    type: 'Purchase'
   }).populate('packet', 'price');
+
+  for (let i = 0; i < purchaseActions.length; i++) {
+    const relatedSampleRequests = await Action.find({
+      requester: purchaseActions[i].requester,
+      receiver: purchaseActions[i].receiver,
+      type: 'Sample'
+    });
+    const requesterAddress = relatedSampleRequests[0].requesterAddress;
+    purchaseActions[i].requesterAddress = requesterAddress;
+  }
   res.json(purchaseActions);
 });
 

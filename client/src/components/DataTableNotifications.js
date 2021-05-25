@@ -581,7 +581,7 @@ const DataTableNotifications = ({ account, contract, web3 }) => {
         close={closeApproveModal}
         proceed={approveProceed}
         title='Confirm Approve'
-        body='Are you sure you want to proceed and approve the purchase request?'
+        body='Are you sure you want to proceed and approve the purchase request? All other requests for this item will be rejected.'
         danger={true}
         success={true}
         smartContract={true}

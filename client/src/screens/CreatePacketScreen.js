@@ -81,6 +81,7 @@ const CreatePacketScreen = ({ history, account, contract }) => {
 
   const uploadHandler = () => {
     const { form } = state;
+    console.log(form);
     let keys = true;
     for (let i = 0; i < form.data.length; i++) {
       if (form.data[i].encryptionKey === '') {
@@ -97,7 +98,8 @@ const CreatePacketScreen = ({ history, account, contract }) => {
       !form.category ||
       !validateCategory(form.category) ||
       !form.price ||
-      !form.data
+      !form.data ||
+      form.data.length === 0
     ) {
       showValidationModal(true);
     } else {
@@ -148,7 +150,11 @@ const CreatePacketScreen = ({ history, account, contract }) => {
     setTimeout(function () {
       dispatch(emptyCreatePacketError());
       dispatch(emptyCreatePacketSuccess());
-    }, 8000);
+    }, 50000);
+  };
+
+  const closeError = async () => {
+    dispatch(emptyCreatePacketError());
   };
 
   const goBack = () => {
@@ -202,6 +208,7 @@ const CreatePacketScreen = ({ history, account, contract }) => {
                 uploadHandler={uploadHandler}
                 error={error}
                 loading={loading}
+                closeError={closeError}
               />
             </StepWizard>
           </div>

@@ -195,11 +195,17 @@ export const createAction =
           : error.message;
       if (message === 'Not authorized!') {
         dispatch(logout());
+      } else if (message === 'You have to request for a Sample first') {
+        dispatch({
+          type: ACTION_CREATE_FAIL,
+          payload: message
+        });
+      } else {
+        dispatch({
+          type: ACTION_CREATE_FAIL,
+          payload: 'Something went wrong'
+        });
       }
-      dispatch({
-        type: ACTION_CREATE_FAIL,
-        payload: 'Something went wrong'
-      });
       console.log(message);
     }
   };
@@ -305,44 +311,50 @@ export const updateAction =
           );
 
           //Retrieve all other requests for this packet
-          const { requests } = await axios.get(
+          const callForOtherRequests = await axios.get(
             `/api/action/purchase/requests/${packetId}`
           );
-          let reject = 'Reject';
+          const requests = callForOtherRequests.data;
 
+          console.log(requests);
           //Reject all other requests for this packet
           for (let i = 0; i < requests.length; i++) {
+            console.log(requests[i]);
             //Retrieve information
-            let actionId = requests[i]._id;
-            let packetId = requests[i].packet._id;
-            let requesterAddress = requests[i].requesterAddress;
-            let priceInWei = requests[i].packet.price.toString();
-            let keys = [];
+            let action_Id = requests[i]._id;
+            let packet_Id = requests[i].packet._id;
+            let requester_Address = requests[i].requesterAddress;
+            let price_InWei = requests[i].packet.price.toString();
+            let _keys = [];
+            try {
+              //Call the Smart Contract
+              let result = await contract.methods
+                .addPurchase(
+                  userId,
+                  packet_Id,
+                  requester_Address,
+                  _keys,
+                  price_InWei,
+                  false
+                )
+                .send({ from: account });
+              console.log(result);
 
-            //Call the Smart Contract
-            let result = await contract.methods
-              .addPurchase(
-                userId,
-                packetId,
-                requesterAddress,
-                keys,
-                priceInWei,
-                false
-              )
-              .send({ from: account });
-            console.log(result);
-
-            //SUCCESSFUL Transaction
-            if (result.events.ReturnMoneyEvent !== undefined) {
-              await axios.put(
-                `/api/action/update`,
-                { actionId, reject, userId },
-                config
-              );
-            }
-            //FAILED Transaction
-            else {
-              console.log('Failed to reject action with id ' + requests[i]._id);
+              //SUCCESSFUL Transaction
+              if (result.events.ReturnMoneyEvent !== undefined) {
+                const rejecttttt = await axios.put(
+                  `/api/action/update`,
+                  { actionId: action_Id, update: 'Reject', userId },
+                  config
+                );
+                console.log(rejecttttt);
+              }
+              //FAILED Transaction
+              else {
+                console.log('Failed to reject action with id ' + action_Id);
+              }
+            } catch (error) {
+              console.log('Failed to reject action with id ' + action_Id);
             }
           }
 

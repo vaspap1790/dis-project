@@ -71,6 +71,8 @@ const LastStep = (props) => {
     </Form>
   );
 
+  const { closeError } = props;
+
   // This will be rendered
   return (
     <div>
@@ -78,7 +80,15 @@ const LastStep = (props) => {
         Step 3/3: Upload data packet and handle sampling
       </div>
       {props.error && props.error !== null && (
-        <Alert variant='danger'>{props.error}</Alert>
+        <Alert
+          variant='danger'
+          dismissible
+          onClose={() => {
+            closeError();
+          }}
+        >
+          {props.error}
+        </Alert>
       )}
       <div
         style={{ minHeight: '55vh' }}
