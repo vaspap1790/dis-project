@@ -100,7 +100,7 @@ const Packet = ({ packet, handler, isProfile }) => {
             <i className='fab fa-ethereum'></i>
             {packet.price}{' '}
             <span style={{ textTransform: 'lowercase' }}>wei</span>
-            {packet.sold && <span className='sold-item small px-3'>SOLD</span>}
+            {packet.sold && <span className='sold-item small px-5'>SOLD</span>}
           </Card.Text>
         </Card.Body>
       </Card>

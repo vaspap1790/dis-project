@@ -48,6 +48,9 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
   const [purchaseModal, showPurchaseModal] = useState(false);
   const [loadingSampleModal, showLoadingSampleModal] = useState(false);
   const [loadingPurchaseModal, showLoadingPurchaseModal] = useState(false);
+  const [infoSampleModal, showInfoSampleModal] = useState(false);
+  const [infoPurchaseModal, showInfoPurchaseModal] = useState(false);
+
   const [keyCopied, setKeyCopied] = useState(false);
   const [hashCopied, setHashCopied] = useState(false);
   const [publicKey, setPublicKey] = useState('');
@@ -132,6 +135,26 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
     }, 3000);
   };
 
+  const goBack = () => {
+    history.goBack();
+  };
+
+  const addToWatclistHandler = (packet) => {
+    dispatch(addToWatchlist(packet));
+    showWatchlistModal(true);
+  };
+
+  const closeWatchlistModal = () => showWatchlistModal(false);
+  const closeSampleModal = () => showSampleModal(false);
+  const closePurchaseModal = () => showPurchaseModal(false);
+  const closeLoadingSampleModal = () => showLoadingSampleModal(false);
+  const closeLoadingPurchaseModal = () => showLoadingPurchaseModal(false);
+  const closeInfoSampleModal = () => showInfoSampleModal(false);
+  const openInfoSampleModal = () => showInfoSampleModal(true);
+  const closeInfoPurchaseModal = () => showInfoPurchaseModal(false);
+  const openInfoPurchaseModal = () => showInfoPurchaseModal(true);
+
+  // Component Variables
   const purchaseLoadingModalContent = (
     <>
       {loadingCreateAction ? (
@@ -286,73 +309,96 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
     </>
   );
 
-  const goBack = () => {
-    history.goBack();
-  };
+  const infoSampleModalContent = (
+    <div style={{ height: '50vh', overflowX: 'hidden', overflowY: 'auto' }}>
+      <Image
+        src='/images/buyer-sample-request.png'
+        alt='Upload Protocol'
+        style={{ maxWidth: '100%' }}
+        className='p-3'
+      />
+    </div>
+  );
 
-  const addToWatclistHandler = (packet) => {
-    dispatch(addToWatchlist(packet));
-    showWatchlistModal(true);
-  };
-
-  const closeWatchlistModal = () => showWatchlistModal(false);
-  const closeSampleModal = () => showSampleModal(false);
-  const closePurchaseModal = () => showPurchaseModal(false);
-  const closeLoadingSampleModal = () => showLoadingSampleModal(false);
-  const closeLoadingPurchaseModal = () => showLoadingPurchaseModal(false);
+  const infoPurchaseModalContent = (
+    <div style={{ height: '30vh', overflowX: 'hidden', overflowY: 'auto' }}>
+      <Image
+        src='/images/seller-answer.png'
+        alt='Upload Protocol'
+        style={{ maxWidth: '100%' }}
+        className='p-3'
+      />
+    </div>
+  );
 
   // This will be rendered
   return (
     <>
       {/************************************** Nav&Title ****************************************/}
-      <Row className='d-flex justify-content-start align-items-center mb-3'>
-        <Button
-          className='btn btn-primary mr-1'
-          title='Go Back'
-          onClick={goBack}
-        >
-          Go Back
-        </Button>
-        {loadingDetails ? (
-          <Loader />
-        ) : error ? null : (
-          !packet.sold && (
-            <>
-              <Button
-                className='btn btn-info mr-1'
-                title='Add to Watchlist'
-                onClick={() => addToWatclistHandler(packet)}
-              >
-                Watch <i className='fas fa-eye'></i>
-              </Button>
-              <Button
-                onClick={() => showSampleModal(true)}
-                className='btn btn-warning mr-1'
-                disabled={userInfo === undefined || !userInfo}
-                title={
-                  userInfo === undefined || !userInfo
-                    ? 'You have to be logged in to perform this action'
-                    : 'See a sample of the data packet'
-                }
-              >
-                Sample <i className='fas fa-search'></i>
-              </Button>
-              <Button
-                onClick={() => showPurchaseModal(true)}
-                className='btn btn-success mr-1'
-                disabled={userInfo === undefined || !userInfo}
-                title={
-                  userInfo === undefined || !userInfo
-                    ? 'You have to be logged in to perform this action'
-                    : 'Purchase this item'
-                }
-              >
-                Purchase <i className='fab fa-ethereum'></i>
-              </Button>
-              <Meta title={packet.name} />
-            </>
-          )
-        )}
+      <Row className='d-flex justify-content-between align-items-center mb-3'>
+        <span>
+          <Button
+            className='btn btn-primary mr-1'
+            title='Go Back'
+            onClick={goBack}
+          >
+            Go Back
+          </Button>
+          {loadingDetails ? (
+            <Loader />
+          ) : error ? null : (
+            !packet.sold && (
+              <span>
+                <Button
+                  className='btn btn-info mr-1'
+                  title='Add to Watchlist'
+                  onClick={() => addToWatclistHandler(packet)}
+                >
+                  Watch <i className='fas fa-eye'></i>
+                </Button>
+                <Button
+                  onClick={() => showSampleModal(true)}
+                  className='btn btn-warning mr-1'
+                  disabled={userInfo === undefined || !userInfo}
+                  title={
+                    userInfo === undefined || !userInfo
+                      ? 'You have to be logged in to perform this action'
+                      : 'See a sample of the data packet'
+                  }
+                >
+                  Sample <i className='fas fa-search'></i>
+                </Button>
+                <Button
+                  onClick={() => showPurchaseModal(true)}
+                  className='btn btn-success mr-1'
+                  disabled={userInfo === undefined || !userInfo}
+                  title={
+                    userInfo === undefined || !userInfo
+                      ? 'You have to be logged in to perform this action'
+                      : 'Purchase this item'
+                  }
+                >
+                  Purchase <i className='fab fa-ethereum'></i>
+                </Button>
+                <Meta title={packet.name} />
+              </span>
+            )
+          )}
+        </span>
+        <span>
+          <Button
+            className='btn btn-info mr-1'
+            onClick={() => openInfoSampleModal()}
+          >
+            Sample <i className='fas fa-search-plus fa-lg'></i>
+          </Button>
+          <Button
+            className='btn btn-info'
+            onClick={() => openInfoPurchaseModal()}
+          >
+            Purchase <i className='fas fa-search-plus fa-lg'></i>
+          </Button>
+        </span>
       </Row>
       {/************************************* Main screen ***************************************/}
       {loadingDetails ? (
@@ -488,6 +534,20 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
         body={purchaseLoadingModalContent}
         success={true}
         loading={loadingCreateAction}
+      />
+      <ModalComponent
+        show={infoSampleModal}
+        close={closeInfoSampleModal}
+        title='Sample Request Protocol'
+        body={infoSampleModalContent}
+        info={true}
+      />
+      <ModalComponent
+        show={infoPurchaseModal}
+        close={closeInfoPurchaseModal}
+        title='Purchase Request Protocol'
+        body={infoPurchaseModalContent}
+        info={true}
       />
     </>
   );

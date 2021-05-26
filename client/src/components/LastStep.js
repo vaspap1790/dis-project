@@ -128,10 +128,7 @@ const LastStep = (props) => {
                 >
                   {file.name}
                 </td>
-                <td
-                  style={{ verticalAlign: 'middle' }}
-                  className='text-center small'
-                >
+                <td style={{ verticalAlign: 'middle' }} className='text-center'>
                   <i
                     className='fas fa-key link-icon blue-hover'
                     title='Add Encryption Key'
@@ -165,7 +162,7 @@ const LastStep = (props) => {
                   {' '}
                   <Button
                     title='Remove from Uploads'
-                    className='btn-Icon-Remove btn-sm'
+                    className='btn-Icon-Remove p-0'
                     type='button'
                     variant='light'
                     onClick={() => removeFromUploadsHandler(file.key)}
