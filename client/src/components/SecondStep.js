@@ -3,7 +3,7 @@ import { StyledDropZone } from 'react-drop-zone';
 import axios from 'axios';
 import { Form, InputGroup, Image } from 'react-bootstrap';
 import 'react-drop-zone/dist/styles.css';
-import Stats from './Stats';
+import Steps from './Steps';
 import Loader from '../components/Loader';
 
 const SecondStep = (props) => {
@@ -116,7 +116,7 @@ const SecondStep = (props) => {
           </InputGroup>
         </Form>
       </div>
-      <Stats step={2} {...props} />
+      <Steps step={2} {...props} />
     </div>
   );
 };

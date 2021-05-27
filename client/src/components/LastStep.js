@@ -5,7 +5,7 @@ import { Alert, Table, Button, Form } from 'react-bootstrap';
 import ModalComponent from '../components/ModalComponent';
 import Moment from 'react-moment';
 import 'react-drop-zone/dist/styles.css';
-import Stats from './Stats';
+import Steps from './Steps';
 
 const LastStep = (props) => {
   // Component level State
@@ -178,7 +178,7 @@ const LastStep = (props) => {
           </tbody>
         </Table>
       </div>
-      <Stats step={3} {...props} files={files} />
+      <Steps step={3} {...props} files={files} />
 
       {/* Modals */}
       <ModalComponent

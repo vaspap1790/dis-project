@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
-import Stats from './Stats';
+import Steps from './Steps';
 import { BANKING_DATA, IOT_SENSOR_DATA, OTHER } from '../constants/categories';
 import { validateName, validateDescription } from '../utils/validator';
 
@@ -113,7 +113,7 @@ const FirstStep = (props) => {
           </Form.Group>
         </Form>
       </div>
-      <Stats step={1} {...props} />
+      <Steps step={1} {...props} />
     </div>
   );
 };

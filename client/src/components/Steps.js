@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import ModalComponent from './ModalComponent';
-import { OverlayTrigger, Popover, Spinner, Image } from 'react-bootstrap';
+import { Spinner, Image } from 'react-bootstrap';
 
-const Stats = ({
+const Steps = ({
   currentStep,
   firstStep,
   goToStep,
@@ -18,19 +18,9 @@ const Stats = ({
 }) => {
   // Component level State
   const [infoModal, showInfoModal] = useState(false);
+  const [infoImageModal, showInfoImageModal] = useState(false);
 
   // Component Variables
-  const popover = (
-    <Popover id='popover-basic'>
-      <Popover.Title as='h3'>Upload Image</Popover.Title>
-      <Popover.Content>
-        Tis image will be displayed for your item in the platform's landing
-        page. It is not mandatory to upload an image. If you don't, the default
-        image will be displayed.
-      </Popover.Content>
-    </Popover>
-  );
-
   const infoModalContent = (
     <div style={{ height: '50vh', overflowX: 'hidden', overflowY: 'auto' }}>
       <Image
@@ -42,9 +32,19 @@ const Stats = ({
     </div>
   );
 
+  const infoImageModalContent = (
+    <div>
+      Tis image will be displayed for your item in the platform's landing page.
+      It is not mandatory to upload an image. If you don't, the default image
+      will be displayed.
+    </div>
+  );
+
   // Component Methods
   const closeInfoModal = () => showInfoModal(false);
   const openInfoModal = () => showInfoModal(true);
+  const closeInfoImageModal = () => showInfoImageModal(false);
+  const openInfoImageModal = () => showInfoImageModal(true);
 
   // This will be rendered
   return (
@@ -52,15 +52,12 @@ const Stats = ({
       <div className='d-flex justify-content-end align-items-center'>
         {currentStep === 2 && (
           <>
-            <button className='btn btn-info'>
-              <OverlayTrigger
-                trigger='click'
-                placement='top'
-                rootClose
-                overlay={popover}
-              >
-                <i className='fas fa-search-plus fa-lg'></i>
-              </OverlayTrigger>
+            <button
+              className='btn btn-info'
+              onClick={() => openInfoImageModal()}
+              title='Upload Image Information'
+            >
+              <i className='fas fa-search-plus fa-lg'></i>
             </button>
             <button className='btn btn-warning mx-2' onClick={previousStep}>
               STEP {currentStep - 1}
@@ -69,7 +66,11 @@ const Stats = ({
         )}
         {currentStep === 3 && (
           <>
-            <button className='btn btn-info' onClick={() => openInfoModal()}>
+            <button
+              className='btn btn-info'
+              onClick={() => openInfoModal()}
+              title='Upload Protocol'
+            >
               <i className='fas fa-search-plus fa-lg'></i>
             </button>
             <button className='btn btn-warning mx-2' onClick={previousStep}>
@@ -117,8 +118,15 @@ const Stats = ({
         body={infoModalContent}
         info={true}
       />
+      <ModalComponent
+        show={infoImageModal}
+        close={closeInfoImageModal}
+        title='Upload image'
+        body={infoImageModalContent}
+        info={true}
+      />
     </>
   );
 };
 
-export default Stats;
+export default Steps;

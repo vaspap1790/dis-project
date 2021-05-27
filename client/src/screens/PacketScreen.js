@@ -389,12 +389,14 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
           <Button
             className='btn btn-info mr-1'
             onClick={() => openInfoSampleModal()}
+            title='Sample Request Protocol'
           >
             Sample <i className='fas fa-search-plus fa-lg'></i>
           </Button>
           <Button
             className='btn btn-info'
             onClick={() => openInfoPurchaseModal()}
+            title='Purchase Protocol'
           >
             Purchase <i className='fas fa-search-plus fa-lg'></i>
           </Button>

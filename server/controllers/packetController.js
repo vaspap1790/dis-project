@@ -225,7 +225,7 @@ exports.updatePacket = asyncHandler(async (req, res) => {
 // @access  Public
 exports.getTopPackets = asyncHandler(async (req, res) => {
   const packets = await Packet.find({ sold: false })
-    .sort({ rating: -1 })
+    .sort({ createdAt: -1 })
     .limit(5);
 
   res.json(packets);
