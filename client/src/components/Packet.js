@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Moment from 'react-moment';
-import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
 import Rating from './Rating';
@@ -13,6 +13,10 @@ const Packet = ({ packet, handler, isProfile }) => {
 
   // Component level State
   const [watchlistModal, showWatchlistModal] = useState(false);
+
+  // App level State
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
   // Component Methods
   const clickHandler = () => {
@@ -30,7 +34,10 @@ const Packet = ({ packet, handler, isProfile }) => {
   return (
     <>
       <Card className='my-3 p-3 rounded' style={{ overflow: 'hidden' }}>
-        {!isProfile ? (
+        {!isProfile ||
+        (userInfo !== undefined &&
+          userInfo !== null &&
+          userInfo._id !== packet.user) ? (
           <span className='favourite blue-hover p-2'>
             <i
               className='fas fa-eye link-icon'

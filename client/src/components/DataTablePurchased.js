@@ -77,6 +77,13 @@ const DataTablePurchased = ({ account, contract }) => {
   const purchasedKeysModalContent = (
     <>
       <div className='mb-2'>
+        You can access the files in{' '}
+        <span style={{ textDecoration: 'underline' }}>
+          https://ipfs.infura.io/ipfs/
+        </span>{' '}
+        + IPFS Hash
+      </div>
+      <div className='mb-2'>
         The Encryption keys are encrypted with your public key. You should use
         your private key to decrypt them.
       </div>

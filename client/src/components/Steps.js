@@ -34,7 +34,7 @@ const Steps = ({
 
   const infoImageModalContent = (
     <div>
-      Tis image will be displayed for your item in the platform's landing page.
+      This image will be displayed for your item in the platform's landing page.
       It is not mandatory to upload an image. If you don't, the default image
       will be displayed.
     </div>

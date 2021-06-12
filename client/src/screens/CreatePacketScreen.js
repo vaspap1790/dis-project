@@ -150,7 +150,7 @@ const CreatePacketScreen = ({ history, account, contract }) => {
     setTimeout(function () {
       dispatch(emptyCreatePacketError());
       dispatch(emptyCreatePacketSuccess());
-    }, 50000);
+    }, 5000);
   };
 
   const closeError = async () => {

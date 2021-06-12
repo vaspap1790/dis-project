@@ -466,7 +466,7 @@ const PacketScreen = ({ history, match, account, contract, web3 }) => {
                       </span>{' '}
                       to{' '}
                       <Link
-                        to={`/profile/${packet.user._id}`}
+                        to={`/profile/${packet.soldTo._id}`}
                         style={{ fontWeight: 'bold' }}
                         title={packet.soldTo.username}
                       >
